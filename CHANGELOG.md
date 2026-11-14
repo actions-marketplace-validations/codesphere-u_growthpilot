@@ -5,6 +5,12 @@ All notable changes to **GrowthPilot** are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.1] - 2026-11-14
+
+### Changed
+- **Handy-Inspired Editorial Light-Theme Website Redesign (`website/`):** Rebuilt the GitHub Pages experience around a warm `#fffce5` cream canvas, `#382731` deep plum ink, tactile `#faa2ca` / `#61052f` accents, centered `700px` editorial column, custom compass-scout SVG mascot, split CTA button + popover switcher, open `2x2` principles grid, and quiet dot-separated footer while maintaining a `100/100 (Grade A+)` self-audit score.
+- **Mobile & Interactive Studio Polish (`website/styles.css`, `website/app.js`):** Fixed mobile viewport wrapping (`scrollWidth === 390px` on `390x844` phones), aligned CRO 5-stat grid labels, synced `.toast` visibility states, and matched the filterable 18-rule table identically to `MKT001`–`MKT018`.
+
 ## [1.4.0] - 2026-11-14
 
 ### Added

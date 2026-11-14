@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "growthpilot"
-version = "1.4.0"
+version = "1.4.1"
 description = "Autonomous Zero-to-One Marketing, Technical SEO, GEO/AEO (llms.txt), CRO & Launch Engine with built-in MCP server."
 readme = "README.md"
 license = "MIT"

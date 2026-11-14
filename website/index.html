@@ -1,556 +1,685 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GrowthPilot — Autonomous SEO, GEO/AEO &amp; CRO Engine</title>
-  <meta name="description" content="Audit any codebase or live URL across 18 SEO, GEO (llms.txt), Schema.org &amp; CRO rules and generate deployable assets with zero dependencies." />
-  <meta name="keywords" content="GrowthPilot, llms.txt generator, Technical SEO CLI, GEO optimization, Schema.org JSON-LD, CRO copy analyzer, MCP server, GitHub Action SARIF" />
-  <link rel="canonical" href="https://codesphere-u.github.io/growthpilot/" />
-  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
-  <link rel="manifest" href="manifest.webmanifest" />
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GrowthPilot — Autonomous SEO, GEO/AEO &amp; CRO Engine</title>
+    <meta
+      name="description"
+      content="Audit any codebase or live URL across 18 SEO, GEO (llms.txt), Schema.org &amp; CRO rules and generate 12 deployable growth assets with zero dependencies."
+    />
+    <meta
+      name="keywords"
+      content="GrowthPilot, technical SEO audit, GEO, AEO, llms.txt generator, Schema.org JSON-LD, CRO grader, conversion optimization, SARIF CI"
+    />
+    <meta name="author" content="GrowthPilot Contributors" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#fffce5" />
+    <link rel="canonical" href="https://codesphere-u.github.io/growthpilot/" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <link rel="manifest" href="./manifest.webmanifest" />
 
-  <meta property="og:type" content="website" />
-  <meta property="og:site_name" content="GrowthPilot" />
-  <meta property="og:title" content="GrowthPilot — Autonomous SEO, GEO/AEO &amp; CRO Engine" />
-  <meta property="og:description" content="Turn any repository or live URL into 100/100 SEO, GEO (llms.txt), JSON-LD, CRO rewrites, and launch kits in seconds." />
-  <meta property="og:url" content="https://codesphere-u.github.io/growthpilot/" />
-  <meta property="og:image" content="https://codesphere-u.github.io/growthpilot/og-image.svg" />
-  <meta property="og:image:alt" content="GrowthPilot v1.4.0 score card showing 100 Grade A+ across 6 pillars" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://codesphere-u.github.io/growthpilot/" />
+    <meta property="og:site_name" content="GrowthPilot" />
+    <meta property="og:title" content="GrowthPilot — Autonomous SEO, GEO/AEO &amp; CRO Engine" />
+    <meta
+      property="og:description"
+      content="18 deterministic rules. 12 deploy-ready files. Audit codebases and live URLs for Search, AI answer engines, and conversions without cloud lock-in."
+    />
+    <meta property="og:image" content="https://codesphere-u.github.io/growthpilot/og-image.svg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="GrowthPilot editorial cream social card showing 100/100 Grade A+ score" />
 
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="GrowthPilot — Autonomous SEO, GEO/AEO &amp; CRO Engine" />
-  <meta name="twitter:description" content="Audit codebases and live websites across 18 deterministic SEO, GEO, Schema.org &amp; CRO rules with zero dependencies." />
-  <meta name="twitter:image" content="https://codesphere-u.github.io/growthpilot/og-image.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="GrowthPilot — Autonomous SEO, GEO/AEO &amp; CRO Engine" />
+    <meta
+      name="twitter:description"
+      content="Zero-dependency CLI, MCP server &amp; CI gate for SEO, llms.txt (GEO/AEO), JSON-LD schema, and high-converting copy."
+    />
+    <meta name="twitter:image" content="https://codesphere-u.github.io/growthpilot/og-image.svg" />
 
-  <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="./styles.css" />
 
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@graph": [
+    <script type="application/ld+json">
       {
-        "@type": "Organization",
-        "@id": "https://codesphere-u.github.io/growthpilot/#org",
-        "name": "codesphere-u",
-        "url": "https://github.com/codesphere-u/growthpilot",
-        "logo": "https://codesphere-u.github.io/growthpilot/favicon.svg"
-      },
-      {
-        "@type": "WebSite",
-        "@id": "https://codesphere-u.github.io/growthpilot/#website",
-        "url": "https://codesphere-u.github.io/growthpilot/",
-        "name": "GrowthPilot",
-        "publisher": { "@id": "https://codesphere-u.github.io/growthpilot/#org" }
-      },
-      {
-        "@type": "SoftwareApplication",
-        "@id": "https://codesphere-u.github.io/growthpilot/#app",
-        "name": "GrowthPilot",
-        "softwareVersion": "1.4.0",
-        "applicationCategory": "DeveloperApplication",
-        "operatingSystem": "macOS, Linux, Windows",
-        "url": "https://codesphere-u.github.io/growthpilot/",
-        "downloadUrl": "https://github.com/codesphere-u/growthpilot/releases/tag/v1.4.0",
-        "license": "https://opensource.org/licenses/MIT",
-        "description": "Zero-dependency Python CLI, MCP server, Agent Skill, and GitHub Action for 18-rule Technical SEO, GEO (llms.txt), Schema.org JSON-LD, CRO copywriting, and launch kits.",
-        "offers": {
-          "@type": "Offer",
-          "price": "0",
-          "priceCurrency": "USD"
-        }
-      },
-      {
-        "@type": "FAQPage",
-        "@id": "https://codesphere-u.github.io/growthpilot/#faq",
-        "mainEntity": [
+        "@context": "https://schema.org",
+        "@graph": [
           {
-            "@type": "Question",
-            "name": "What does GrowthPilot generate?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Every audit generates 12 ready-to-deploy files in --output-dir: AUDIT_REPORT.md, growthpilot-report.html, HEAD_TAGS.html, SEO_SCHEMA.jsonld, llms.txt, llms-full.txt, robots.txt, sitemap.xml, manifest.webmanifest, LAUNCH_PLAYBOOK.md, PROGRAMMATIC_SEO.md, and growth-summary.json, plus optional SARIF 2.1.0 output."
+            "@type": "Organization",
+            "@id": "https://codesphere-u.github.io/growthpilot/#org",
+            "name": "GrowthPilot",
+            "url": "https://codesphere-u.github.io/growthpilot/",
+            "sameAs": [
+              "https://github.com/codesphere-u/growthpilot"
+            ]
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://codesphere-u.github.io/growthpilot/#website",
+            "url": "https://codesphere-u.github.io/growthpilot/",
+            "name": "GrowthPilot",
+            "publisher": {
+              "@id": "https://codesphere-u.github.io/growthpilot/#org"
             }
           },
           {
-            "@type": "Question",
-            "name": "Does GrowthPilot require an API key or upload my source code?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "No. Local repository audits run 100% offline in pure Python 3.10+ standard library with zero third-party packages, zero API keys, and zero telemetry. Explicit live-URL scans fetch only the public target with a 10-second timeout and 2 MB cap."
+            "@type": "SoftwareApplication",
+            "@id": "https://codesphere-u.github.io/growthpilot/#software",
+            "name": "GrowthPilot",
+            "applicationCategory": "DeveloperApplication",
+            "operatingSystem": "macOS, Linux, Windows",
+            "softwareVersion": "1.4.1",
+            "license": "https://opensource.org/licenses/MIT",
+            "url": "https://codesphere-u.github.io/growthpilot/",
+            "downloadUrl": "https://github.com/codesphere-u/growthpilot",
+            "description": "Zero-dependency autonomous marketing, technical SEO, GEO/AEO (llms.txt), Schema.org JSON-LD, and CRO engine with CLI, MCP server, and GitHub Action support.",
+            "publisher": {
+              "@id": "https://codesphere-u.github.io/growthpilot/#org"
+            },
+            "offers": {
+              "@type": "Offer",
+              "price": "0",
+              "priceCurrency": "USD"
             }
           },
           {
-            "@type": "Question",
-            "name": "How does the Next.js client-bundle FAQ inspector work?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "During live URL scans, GrowthPilot inspects same-origin Next.js client chunks (/_next/static/chunks/app/page*.js) and flags an SSR Content Visibility Defect whenever FAQ answers exist inside hydrated JavaScript bundles without being present in initial server HTML."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "Can AI coding agents run GrowthPilot directly?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Yes. Install the universal Agent Skill via npx skills add codesphere-u/growthpilot or connect the built-in stdio MCP server via growthpilot --mcp, exposing 6 native tools including audit_project, analyze_copy_cro, and apply_marketing_fixes."
-            }
+            "@type": "FAQPage",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "What does GrowthPilot audit and generate?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "GrowthPilot scores any local repository or live URL against 18 deterministic rules across Technical SEO, GEO & AI Search, Structured Data, Social & Viral Graph, CRO & Copy Clarity, and Launch & Growth, then outputs 12 ready-to-deploy files including llms.txt, robots.txt, sitemap.xml, SEO_SCHEMA.jsonld, HEAD_TAGS.html, and SARIF 2.1.0 reports."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Does GrowthPilot require API keys or paid SaaS subscriptions?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "No. The engine runs 100% locally on Python 3.10+ using only the standard library with zero external runtime dependencies and zero telemetry."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "How do I use GrowthPilot inside AI coding agents and CI?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Install it as an AI skill in Claude Code, Cursor, Codex, or Antigravity, start its built-in MCP server with growthpilot --mcp, or add the codesphere-u/growthpilot GitHub Action with SARIF 2.1.0 upload to gate every pull request."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Can GrowthPilot audit live deployed URLs as well as source code?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yes. Pass any production or staging URL to growthpilot --live URL (or pass a URL directly) to inspect HTTP headers, canonical tags, JSON-LD, OpenGraph, robots.txt, sitemap.xml, and llms.txt in one pass."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Which privacy-first analytics tools does GrowthPilot detect?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "GrowthPilot checks for clean analytics hooks including Plausible, Umami, PostHog, Fathom, Google Analytics, Vercel Analytics, and Microsoft Clarity so teams can ship measurable funnels without invasive bloat."
+                }
+              }
+            ]
           }
         ]
       }
-    ]
-  }
-  </script>
-</head>
-<body>
-  <div class="bg-ambient" aria-hidden="true"></div>
-  <div class="bg-grid" aria-hidden="true"></div>
+    </script>
+  </head>
+  <body>
+    <div class="page-col">
+      <header class="site-header">
+        <a class="brand-link" href="./" aria-label="GrowthPilot home">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <rect x="2" y="2" width="20" height="20" rx="6" fill="#faa2ca" stroke="#382731" stroke-width="2" />
+            <path d="M12 6.5L15.2 14.5L12 12.8L8.8 14.5L12 6.5Z" fill="#382731" />
+            <circle cx="12" cy="17.2" r="1.4" fill="#61052f" />
+          </svg>
+          <span>growthpilot</span>
+        </a>
 
-  <header class="site-header">
-    <div class="container nav-wrap">
-      <a class="brand" href="#">
-        <svg width="30" height="30" viewBox="0 0 64 64" aria-hidden="true">
-          <rect width="64" height="64" rx="16" fill="#0f172a" />
-          <path d="M18 44L30 20L36 30L46 18" fill="none" stroke="#38bdf8" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
-          <circle cx="46" cy="18" r="4.5" fill="#10b981" />
-        </svg>
-        <span>GrowthPilot</span>
-        <span class="brand-badge">v1.4.0</span>
-      </a>
+        <nav class="header-nav" aria-label="Primary navigation">
+          <a href="#studio">studio</a>
+          <a href="#proof">proof</a>
+          <a href="#rules">rules</a>
+          <a href="#faq">faq</a>
+          <a
+            class="icon-link"
+            href="https://github.com/codesphere-u/growthpilot"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="GrowthPilot on GitHub"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path
+                d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
+              />
+            </svg>
+          </a>
+          <a
+            class="nav-pill"
+            href="https://github.com/codesphere-u/growthpilot/releases"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            v1.4.1
+          </a>
+        </nav>
+      </header>
 
-      <nav class="nav-links" id="nav-links" aria-label="Primary navigation">
-        <a href="#why">Why GrowthPilot</a>
-        <a href="#case-study">Live Proof</a>
-        <a href="#studio">Interactive Studio</a>
-        <a href="#outputs">12 Outputs</a>
-        <a href="#faq">FAQ</a>
-        <a class="nav-mobile-only" href="https://github.com/codesphere-u/growthpilot/releases/tag/v1.4.0" target="_blank" rel="noopener">v1.4.0 Release</a>
-      </nav>
-
-      <div class="nav-actions">
-        <button class="icon-btn" id="theme-toggle" type="button" aria-label="Toggle light and dark theme" title="Toggle theme">
-          <span id="theme-icon" aria-hidden="true">◐</span>
-        </button>
-        <a class="btn btn-secondary btn-sm nav-desktop-only" href="https://github.com/codesphere-u/growthpilot/releases/tag/v1.4.0" target="_blank" rel="noopener">v1.4.0 Release</a>
-        <a class="btn btn-primary btn-sm nav-desktop-only" href="#studio">Launch Studio</a>
-        <button class="icon-btn mobile-menu-btn" id="mobile-menu-btn" type="button" aria-label="Open menu" aria-expanded="false">☰</button>
-      </div>
-    </div>
-  </header>
-
-  <main>
-    <section class="hero">
-      <div class="container hero-grid">
-        <div>
-          <div class="eyebrow">
-            <span class="pulse-dot" aria-hidden="true"></span>
-            <span>CLI • MCP SERVER • AGENT SKILL • GITHUB ACTION</span>
-          </div>
-          <h1>Turn any codebase or URL into <span class="gradient-text">100/100 SEO, GEO &amp; CRO.</span></h1>
-          <p class="hero-lead">
-            Stop shipping invisible products. GrowthPilot audits any local repository or live production URL across
-            <strong>6 weighted pillars and 18 deterministic rules</strong>, catches client-bundle FAQ bugs, and generates
-            <code>llms.txt</code>, <code>Schema.org</code>, head tags, copy rewrites, and launch kits in seconds.
-          </p>
-          <div class="hero-ctas">
-            <a class="btn btn-primary" href="#studio">Open Interactive Studio</a>
-            <a class="btn btn-secondary" href="https://github.com/codesphere-u/growthpilot" target="_blank" rel="noopener">View on GitHub</a>
-            <a class="btn btn-secondary" href="https://github.com/marketplace/actions/growthpilot-autonomous-seo-geo-aeo-cro-marketing-auditor" target="_blank" rel="noopener">Marketplace Action</a>
-          </div>
-          <div class="metrics-strip" aria-label="Key product benchmarks">
-            <div class="metric-chip">
-              <strong>18 Rules</strong>
-              <span>MKT001–MKT018 Rubric</span>
-            </div>
-            <div class="metric-chip">
-              <strong>0 Deps</strong>
-              <span>Pure Python 3.10+ Stdlib</span>
-            </div>
-            <div class="metric-chip">
-              <strong>12 Files</strong>
-              <span>Deploy-Ready Output Pack</span>
-            </div>
-            <div class="metric-chip">
-              <strong>100/100</strong>
-              <span>BillShock Spend Safety</span>
-            </div>
-          </div>
-        </div>
-
-        <aside class="hero-card" aria-label="Quickstart & Live Score Preview">
-          <div class="score-header">
-            <div class="ring-wrap">
-              <svg viewBox="0 0 100 100" aria-hidden="true">
-                <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(148,163,184,0.18)" stroke-width="10" />
-                <circle cx="50" cy="50" r="42" fill="none" stroke="#10b981" stroke-width="10" stroke-dasharray="264" stroke-dashoffset="0" stroke-linecap="round" />
-              </svg>
-              <div class="ring-value">
-                <strong>100</strong>
-                <small>GRADE A+</small>
-              </div>
-            </div>
-            <div class="score-meta">
-              <h2>6-Pillar Audit Telemetry</h2>
-              <p>Audited in &lt;150ms offline or live via multi-page crawler — zero API keys or telemetry.</p>
-            </div>
+      <main>
+        <section class="hero-duo" aria-labelledby="hero-title">
+          <div class="mascot-wrap">
+            <!-- Original GrowthPilot vintage-editorial mascot SVG: compass scout character -->
+            <svg
+              width="132"
+              height="132"
+              viewBox="0 0 180 180"
+              fill="none"
+              role="img"
+              aria-label="GrowthPilot compass scout mascot inspecting signals with a magnifying glass"
+            >
+              <!-- Soft paper shadow -->
+              <ellipse cx="90" cy="158" rx="46" ry="8" fill="#382731" fill-opacity="0.1" />
+              <!-- Left shoe & leg -->
+              <path d="M68 128L62 146" stroke="#382731" stroke-width="4" stroke-linecap="round" />
+              <ellipse cx="56" cy="148" rx="12" ry="7" fill="#61052f" stroke="#382731" stroke-width="3.5" />
+              <!-- Right shoe & leg -->
+              <path d="M110 128L116 146" stroke="#382731" stroke-width="4" stroke-linecap="round" />
+              <ellipse cx="122" cy="148" rx="12" ry="7" fill="#61052f" stroke="#382731" stroke-width="3.5" />
+              <!-- Antenna spark -->
+              <path d="M90 28L90 16" stroke="#382731" stroke-width="3.5" stroke-linecap="round" />
+              <circle cx="90" cy="13" r="6" fill="#faa2ca" stroke="#382731" stroke-width="3.2" />
+              <path d="M74 17L68 12M106 17L112 12" stroke="#61052f" stroke-width="2.5" stroke-linecap="round" />
+              <!-- Compass Scout Body -->
+              <circle cx="90" cy="82" r="46" fill="#faa2ca" stroke="#382731" stroke-width="4" />
+              <!-- Inner cream dial face -->
+              <circle cx="90" cy="84" r="35" fill="#fffce5" stroke="#382731" stroke-width="3" />
+              <!-- Compass cardinal ticks -->
+              <path d="M90 52V56M90 112V116M58 84H62M118 84H122" stroke="#61052f" stroke-width="2.5" stroke-linecap="round" />
+              <!-- Expressive pie-cut eyes -->
+              <circle cx="77" cy="79" r="6.5" fill="#382731" />
+              <circle cx="79" cy="77" r="2" fill="#fffce5" />
+              <circle cx="103" cy="79" r="6.5" fill="#382731" />
+              <circle cx="105" cy="77" r="2" fill="#fffce5" />
+              <!-- Rosy cheeks & cheerful smile -->
+              <ellipse cx="67" cy="88" rx="4.5" ry="2.5" fill="#faa2ca" />
+              <ellipse cx="113" cy="88" rx="4.5" ry="2.5" fill="#faa2ca" />
+              <path d="M81 92C85 98 95 98 99 92" stroke="#382731" stroke-width="3.2" stroke-linecap="round" />
+              <!-- Little wing arm left waving -->
+              <path d="M44 82C32 76 28 64 34 58C40 52 46 66 47 72" fill="#fffce5" stroke="#382731" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" />
+              <!-- Right arm holding magnifying glass -->
+              <path d="M135 84C146 86 151 94 146 102" stroke="#382731" stroke-width="4" stroke-linecap="round" />
+              <circle cx="145" cy="72" r="14" fill="#fffce5" fill-opacity="0.85" stroke="#382731" stroke-width="3.5" />
+              <circle cx="145" cy="72" r="9" fill="#faa2ca" fill-opacity="0.35" />
+              <path d="M140 68C142 65 145 64 148 65" stroke="#61052f" stroke-width="2.2" stroke-linecap="round" />
+              <path d="M138 84L146 98" stroke="#61052f" stroke-width="4.5" stroke-linecap="round" />
+            </svg>
           </div>
 
-          <div class="pillar-mini-list">
-            <div class="pillar-mini"><span>Technical SEO</span><div class="bar-track"><div class="bar-fill" style="width:100%"></div></div><span>20/20</span></div>
-            <div class="pillar-mini"><span>GEO &amp; AI Search</span><div class="bar-track"><div class="bar-fill" style="width:100%"></div></div><span>20/20</span></div>
-            <div class="pillar-mini"><span>Structured Data</span><div class="bar-track"><div class="bar-fill" style="width:100%"></div></div><span>15/15</span></div>
-            <div class="pillar-mini"><span>Social &amp; Graph</span><div class="bar-track"><div class="bar-fill" style="width:100%"></div></div><span>15/15</span></div>
-            <div class="pillar-mini"><span>CRO &amp; Copy Clarity</span><div class="bar-track"><div class="bar-fill" style="width:100%"></div></div><span>15/15</span></div>
-            <div class="pillar-mini"><span>Launch &amp; Growth</span><div class="bar-track"><div class="bar-fill" style="width:100%"></div></div><span>15/15</span></div>
-          </div>
-
-          <div class="terminal-box">
-            <div class="persona-tabs" role="tablist" aria-label="Quickstart Persona Selector">
-              <button class="tab-btn active" type="button" data-persona="founder">Live URL</button>
-              <button class="tab-btn" type="button" data-persona="dev">Local Repo</button>
-              <button class="tab-btn" type="button" data-persona="agent">AI Agent / MCP</button>
-              <button class="tab-btn" type="button" data-persona="ci">CI / SARIF</button>
-            </div>
-            <div class="cmd-row">
-              <code id="persona-cmd">uvx --from git+https://github.com/codesphere-u/growthpilot@v1 growthpilot https://yoursite.com --output-dir ./growth-kit --open</code>
-              <button class="copy-btn" id="copy-persona-btn" type="button">Copy</button>
-            </div>
-          </div>
-        </aside>
-      </div>
-    </section>
-
-    <section class="section" id="why">
-      <div class="container">
-        <div class="section-head">
-          <div>
-            <h2>Why GrowthPilot Is Worth Adopting</h2>
-            <p>Replace manual spreadsheets, generic AI prompts, and $299/month view-only SEO dashboards with deterministic local engineering.</p>
-          </div>
-          <a class="btn btn-secondary btn-sm" href="https://github.com/codesphere-u/growthpilot/blob/main/docs/GETTING_STARTED.md" target="_blank" rel="noopener">Read Getting Started</a>
-        </div>
-
-        <div class="table-card">
-          <table>
-            <thead>
-              <tr>
-                <th>Capability</th>
-                <th>Monthly SEO Suites</th>
-                <th>Generic LLM Chat</th>
-                <th class="col-gp">GrowthPilot v1.4.0</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><strong>Deterministic 0–100 Grading</strong></td>
-                <td>Vague health scores <span class="pill pill-warn">Opaque</span></td>
-                <td>Non-reproducible <span class="pill pill-bad">Drifts</span></td>
-                <td class="col-gp"><strong>6 weighted pillars &amp; 18 rules</strong> <span class="pill pill-good">MKT001–MKT018</span></td>
-              </tr>
-              <tr>
-                <td><strong>Local Codebase + Live Crawl</strong></td>
-                <td>Live URLs only (paid quota)</td>
-                <td>Manual copy-paste</td>
-                <td class="col-gp"><strong>Local AST/file scan + 7-subpage live crawler</strong></td>
-              </tr>
-              <tr>
-                <td><strong>Client JS Bundle FAQ Detection</strong></td>
-                <td>Missed on client accordions</td>
-                <td>Blind to runtime chunks</td>
-                <td class="col-gp"><strong>Inspects Next.js chunks</strong> to catch hidden SSR FAQ bugs</td>
-              </tr>
-              <tr>
-                <td><strong>AI Search / GEO Readiness</strong></td>
-                <td>Rarely checks AI crawlers</td>
-                <td>Invents stale formats</td>
-                <td class="col-gp">Generates <code>llms.txt</code>, <code>llms-full.txt</code> &amp; <code>AI_BOTS</code> rules</td>
-              </tr>
-              <tr>
-                <td><strong>Deployable Artifacts &amp; Attribution</strong></td>
-                <td>Checklist warnings only</td>
-                <td>Generic placeholders</td>
-                <td class="col-gp">Writes <strong>12 ready files</strong> + checks Plausible / PostHog / Umami hooks</td>
-              </tr>
-              <tr>
-                <td><strong>Privacy, Cost &amp; CI Integration</strong></td>
-                <td>$99–$499/mo SaaS subscription</td>
-                <td>Sends IP to third parties</td>
-                <td class="col-gp"><strong>$0 MIT • 0 deps • SARIF 2.1.0 PR Gate</strong></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" id="case-study">
-      <div class="container">
-        <div class="section-head">
-          <div>
-            <h2>Live Benchmark: <code>funagigs.com</code> Case Study</h2>
-            <p>Verified against a real production two-sided marketplace. Inspect what GrowthPilot uncovered on a single live crawl — and the score after fixes.</p>
-          </div>
-          <div class="toggle-group" role="tablist" aria-label="Case study stage toggle">
-            <button class="toggle-pill active" id="cs-before-btn" type="button" data-stage="before">Before (53/100 Grade D)</button>
-            <button class="toggle-pill" id="cs-after-btn" type="button" data-stage="after">After Pack (100/100 Grade A+)</button>
-          </div>
-        </div>
-
-        <div class="split-grid">
-          <div class="card">
-            <div style="display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;">
-              <div>
-                <span class="pill pill-warn" id="cs-badge">INITIAL LIVE SCAN</span>
-                <h3 id="cs-title" style="margin:0.5rem 0 0.25rem;font-size:1.35rem;">53 / 100 — Grade D</h3>
-              </div>
-              <span class="pill pill-info">Archetype: marketplace_app</span>
-            </div>
-            <ul class="defect-list" id="cs-list">
-              <li><span class="pill pill-bad">SSR BUG</span><span><strong>6 FAQ answers</strong> were embedded solely in client JS chunks, invisible to non-JS search &amp; AI crawlers.</span></li>
-              <li><span class="pill pill-warn">SEO</span><span><strong>4 duplicate title suffixes</strong> found across <code>/features</code>, <code>/post-a-job</code>, <code>/contact</code>, and <code>/waitlist</code>.</span></li>
-              <li><span class="pill pill-warn">A11Y</span><span><strong>50 images missing descriptive <code>alt</code> text</strong> plus duplicate <code>"Funa Vault"</code> keyword entries.</span></li>
-              <li><span class="pill pill-bad">GEO</span><span>Missing <code>/llms.txt</code>, <code>/llms-full.txt</code>, and structured <code>FAQPage</code> JSON-LD graph.</span></li>
-            </ul>
-          </div>
-
-          <div class="card">
-            <img src="og-image.svg" alt="GrowthPilot visual social share and telemetry preview showing 100/100 Grade A+" style="width:100%;height:auto;border-radius:12px;border:1px solid var(--border);" />
-            <p style="margin:0.9rem 0 0;color:var(--text-soft);font-size:0.9rem;">
-              Tailored marketplace positioning switched playbooks automatically from CLI install templates to
-              <strong>Escrow + Instant Hire + Mobile Money liquidity loops</strong> and Google Play ASO checklists.
+          <div class="hero-copy">
+            <h1 id="hero-title">ship software people &amp; AI can find.</h1>
+            <p class="hero-sub">
+              The free, zero-dependency growth engine that audits codebases and live URLs across <strong>18 rules</strong> — and writes <strong>12 ready-to-deploy files</strong> from <code>llms.txt</code> to Schema.org in milliseconds.
             </p>
           </div>
-        </div>
-      </div>
-    </section>
+        </section>
 
-    <section class="section" id="studio">
-      <div class="container">
-        <div class="section-head">
-          <div>
-            <h2>Interactive GrowthPilot Web Studio</h2>
-            <p>Test GrowthPilot's scoring engine, AI-slop filter, and GEO/Schema asset generator directly in your browser — 100% locally with zero API calls.</p>
+        <section class="cta-area" aria-label="Install GrowthPilot">
+          <div class="split-btn-group">
+            <button type="button" class="split-main" id="cta-main-btn">Copy install command</button>
+            <button
+              type="button"
+              class="split-caret"
+              id="cta-caret-btn"
+              aria-expanded="false"
+              aria-controls="cta-popover"
+              aria-label="Choose installation target"
+            >
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path
+                  d="M4 6L8 10L12 6"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </button>
           </div>
-        </div>
 
-        <div class="studio-shell">
-          <div class="studio-tabs" role="tablist" aria-label="Web Studio Modes">
-            <button class="studio-tab active" type="button" data-studio="cro">1. Live CRO &amp; AI-Slop Grader</button>
-            <button class="studio-tab" type="button" data-studio="gen">2. GEO &amp; Schema Asset Builder</button>
-            <button class="studio-tab" type="button" data-studio="rubric">3. 18-Rule Rubric Explorer</button>
+          <code class="cmd-caption" id="hero-cmd">uv tool install git+https://github.com/codesphere-u/growthpilot</code>
+
+          <div class="cta-popover" id="cta-popover" role="region" aria-label="Installation options" hidden>
+            <div class="pop-tabs" role="tablist" aria-label="Runtime mode">
+              <button type="button" class="pop-tab active" role="tab" aria-selected="true" data-persona="cli">
+                CLI (uv)
+              </button>
+              <button type="button" class="pop-tab" role="tab" aria-selected="false" data-persona="agent">
+                AI Skill
+              </button>
+              <button type="button" class="pop-tab" role="tab" aria-selected="false" data-persona="mcp">
+                MCP Server
+              </button>
+              <button type="button" class="pop-tab" role="tab" aria-selected="false" data-persona="ci">
+                GitHub Action
+              </button>
+            </div>
+
+            <div class="pop-cmd">
+              <code id="pop-cmd-code">uv tool install git+https://github.com/codesphere-u/growthpilot &amp;&amp; growthpilot .</code>
+              <button type="button" class="action-mini" id="pop-copy-btn">Copy</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="studio-frame" id="studio" aria-labelledby="studio-heading">
+          <div class="frame-bar">
+            <div class="dots" aria-hidden="true">
+              <span></span><span></span><span></span>
+            </div>
+            <div class="frame-tabs" role="tablist" aria-label="Interactive GrowthPilot Studio">
+              <button
+                type="button"
+                class="frame-tab active"
+                role="tab"
+                aria-selected="true"
+                data-studio="cro"
+              >
+                CRO Copy Grader
+              </button>
+              <button
+                type="button"
+                class="frame-tab"
+                role="tab"
+                aria-selected="false"
+                data-studio="gen"
+              >
+                GEO &amp; Schema Builder
+              </button>
+              <button
+                type="button"
+                class="frame-tab"
+                role="tab"
+                aria-selected="false"
+                data-studio="outputs"
+              >
+                12 Outputs Explorer
+              </button>
+            </div>
           </div>
 
-          <div class="studio-panel active" id="panel-cro">
-            <div class="field-grid">
+          <h2 id="studio-heading" style="position:absolute;left:-9999px;">Interactive GrowthPilot Studio</h2>
+
+          <!-- Tab 1: CRO Copy Grader -->
+          <div class="studio-panel active" id="panel-cro" role="tabpanel">
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin-bottom:10px;">
               <div>
-                <label class="field-label" for="cro-product">Product / Brand Name</label>
-                <input class="input" id="cro-product" type="text" value="OrbitDB" />
+                <label for="cro-product" style="display:block;font-size:12px;font-weight:600;margin-bottom:4px;">Product name</label>
+                <input
+                  id="cro-product"
+                  class="input"
+                  type="text"
+                  value="GrowthPilot"
+                  placeholder="Your product name"
+                />
               </div>
               <div>
-                <label class="field-label" for="cro-archetype">Product Archetype</label>
-                <select class="select" id="cro-archetype">
-                  <option value="devtools">devtools (CLI / SDK / API / MCP)</option>
-                  <option value="b2b_saas">b2b_saas (Web SaaS / Workflow App)</option>
-                  <option value="marketplace_app">marketplace_app (Two-Sided Marketplace / Mobile)</option>
-                  <option value="ecommerce">ecommerce (Online Store / D2C Brand)</option>
+                <label for="cro-archetype" style="display:block;font-size:12px;font-weight:600;margin-bottom:4px;">Product archetype</label>
+                <select id="cro-archetype" class="select">
+                  <option value="devtools">Developer Tool / CLI</option>
+                  <option value="saas">B2B SaaS Platform</option>
+                  <option value="marketplace">Marketplace / Gig Network</option>
+                  <option value="editorial">Editorial / Open Source</option>
                 </select>
               </div>
             </div>
 
-            <div class="preset-row" aria-label="Sample copy presets">
-              <button class="btn btn-secondary btn-sm" type="button" data-preset="strong">Load Strong DevTool Copy</button>
-              <button class="btn btn-secondary btn-sm" type="button" data-preset="weak">Load Weak AI-Hype Copy</button>
-              <button class="btn btn-secondary btn-sm" type="button" data-preset="marketplace">Load Marketplace Example</button>
-              <button class="btn btn-secondary btn-sm" type="button" data-preset="ecommerce">Load Storefront Example</button>
+            <div class="preset-pills" style="margin-bottom:10px;" aria-label="Sample hero copy presets">
+              <button type="button" class="chip-btn active" data-preset="devtools">Clear CLI pitch</button>
+              <button type="button" class="chip-btn" data-preset="weak">Weak buzzword draft</button>
+              <button type="button" class="chip-btn" data-preset="funagigs">funagigs.com draft</button>
+              <button type="button" class="chip-btn" data-preset="saas">B2B workflow</button>
             </div>
 
-            <label class="field-label" for="cro-input">Hero Copy / Headline / README Intro</label>
-            <textarea class="textarea" id="cro-input">Cut Postgres query latency by 65% in 2 minutes. Trusted by 1,200 engineering teams under MIT License. Install now: pip install orbitdb</textarea>
+            <label for="cro-input" style="display:block;font-size:12px;font-weight:600;margin-bottom:4px;">
+              Paste your hero headline, subheadline &amp; primary CTA
+            </label>
+            <textarea id="cro-input" class="textarea" rows="3">Audit any codebase or live URL across 18 SEO, GEO (llms.txt) &amp; CRO rules in under 1 second. Generates 12 deploy-ready files with zero dependencies. Run growthpilot .</textarea>
 
-            <div class="score-bars-4">
-              <div class="mini-stat"><small>OVERALL CRO</small><strong id="stat-overall">93/100</strong></div>
-              <div class="mini-stat"><small>CLARITY</small><strong id="stat-clarity">85/100</strong></div>
-              <div class="mini-stat"><small>CTA STRENGTH</small><strong id="stat-cta">92/100</strong></div>
-              <div class="mini-stat"><small>PROOF DENSITY</small><strong id="stat-proof">95/100</strong></div>
-              <div class="mini-stat"><small>ANTI-SLOP</small><strong id="stat-slop">100/100</strong></div>
+            <div class="score-row" style="margin-top:12px;">
+              <div class="score-cell">
+                <span>Overall</span>
+                <strong id="stat-overall">95/100</strong>
+              </div>
+              <div class="score-cell">
+                <span>Clarity</span>
+                <strong id="stat-clarity">30/35</strong>
+              </div>
+              <div class="score-cell">
+                <span>CTA</span>
+                <strong id="stat-cta">25/25</strong>
+              </div>
+              <div class="score-cell">
+                <span>Proof</span>
+                <strong id="stat-proof">20/20</strong>
+              </div>
+              <div class="score-cell">
+                <span>Slop Words</span>
+                <strong id="stat-slop">0</strong>
+              </div>
             </div>
 
-            <div id="cro-diagnostics" style="margin-bottom:1rem;font-size:0.88rem;color:var(--text-soft);"></div>
+            <p class="diag-note" id="cro-diagnostics" style="margin-top:10px;">
+              Strong clarity, active CTA, quantified proof, and zero filler words. Click "Weak buzzword draft" to test fluff detection live.
+            </p>
 
-            <div class="rewrite-grid">
-              <div class="rewrite-card">
-                <h3>PAS FRAMEWORK</h3>
+            <div class="rw-list" style="margin-top:10px;">
+              <div class="rw-item">
+                <span>PAS (Problem -> Agitate -> Solve)</span>
                 <p id="rw-pas"></p>
               </div>
-              <div class="rewrite-card">
-                <h3>JTBD FRAMEWORK</h3>
+              <div class="rw-item">
+                <span>JTBD (Outcome without bloat)</span>
                 <p id="rw-jtbd"></p>
               </div>
-              <div class="rewrite-card">
-                <h3>DIRECT METRIC HERO</h3>
+              <div class="rw-item">
+                <span>Metric-first Developer Hook</span>
                 <p id="rw-metric"></p>
               </div>
             </div>
           </div>
 
-          <div class="studio-panel" id="panel-gen">
-            <div class="field-grid">
+          <!-- Tab 2: GEO & Schema Builder -->
+          <div class="studio-panel" id="panel-gen" role="tabpanel">
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin-bottom:10px;">
               <div>
-                <label class="field-label" for="gen-name">Product Name</label>
-                <input class="input" id="gen-name" type="text" value="PulseForge" />
+                <label for="gen-name" style="display:block;font-size:12px;font-weight:600;margin-bottom:4px;">Site / Product name</label>
+                <input id="gen-name" class="input" type="text" value="AcmeDocs" />
               </div>
               <div>
-                <label class="field-label" for="gen-url">Canonical Website URL</label>
-                <input class="input" id="gen-url" type="url" value="https://pulseforge.dev" />
+                <label for="gen-url" style="display:block;font-size:12px;font-weight:600;margin-bottom:4px;">Canonical HTTPS URL</label>
+                <input id="gen-url" class="input" type="url" value="https://acmedocs.dev" />
               </div>
               <div>
-                <label class="field-label" for="gen-desc">Concise Meta Description (110–155 chars)</label>
-                <input class="input" id="gen-desc" type="text" value="Automated release gating and canary telemetry in 10 seconds with zero external config." />
+                <label for="gen-desc" style="display:block;font-size:12px;font-weight:600;margin-bottom:4px;">One-line description</label>
+                <input id="gen-desc" class="input" type="text" value="Fast zero-config API docs built from OpenAPI specs in seconds." />
               </div>
               <div>
-                <label class="field-label" for="gen-arch">Archetype</label>
-                <select class="select" id="gen-arch">
-                  <option value="devtools">devtools</option>
-                  <option value="b2b_saas">b2b_saas</option>
-                  <option value="marketplace_app">marketplace_app</option>
-                  <option value="ecommerce">ecommerce</option>
+                <label for="gen-arch" style="display:block;font-size:12px;font-weight:600;margin-bottom:4px;">Schema archetype</label>
+                <select id="gen-arch" class="select">
+                  <option value="SoftwareApplication">SoftwareApplication</option>
+                  <option value="WebSite">WebSite + Organization</option>
+                  <option value="Product">Product / Commerce</option>
                 </select>
               </div>
             </div>
 
-            <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:0.75rem;margin-bottom:0.75rem;">
-              <div class="toggle-group" role="tablist" aria-label="Generated asset file selector">
-                <button class="toggle-pill active" type="button" data-genfile="llms.txt">llms.txt</button>
-                <button class="toggle-pill" type="button" data-genfile="SEO_SCHEMA.jsonld">SEO_SCHEMA.jsonld</button>
-                <button class="toggle-pill" type="button" data-genfile="HEAD_TAGS.html">HEAD_TAGS.html</button>
-                <button class="toggle-pill" type="button" data-genfile="robots.txt">robots.txt</button>
-                <button class="toggle-pill" type="button" data-genfile="sitemap.xml">sitemap.xml</button>
+            <div class="toolbar-between" style="margin:10px 0;">
+              <div class="preset-pills">
+                <button type="button" class="chip-btn active" data-genfile="llms">llms.txt</button>
+                <button type="button" class="chip-btn" data-genfile="schema">SEO_SCHEMA.jsonld</button>
+                <button type="button" class="chip-btn" data-genfile="robots">robots.txt</button>
+                <button type="button" class="chip-btn" data-genfile="head">HEAD_TAGS.html</button>
               </div>
-              <div style="display:flex;gap:0.5rem;">
-                <button class="btn btn-secondary btn-sm" id="copy-gen-btn" type="button">Copy File</button>
-                <button class="btn btn-primary btn-sm" id="download-gen-btn" type="button">Download</button>
+              <div style="display:flex;gap:6px;">
+                <button type="button" class="action-mini" id="copy-gen-btn">Copy</button>
+                <button type="button" class="action-mini" id="download-gen-btn">Download</button>
               </div>
             </div>
 
-            <pre class="code-preview" id="gen-preview"></pre>
+            <pre class="code-block" id="gen-preview"></pre>
           </div>
 
-          <div class="studio-panel" id="panel-rubric">
-            <div class="filter-row">
-              <input class="input" id="rubric-search" type="search" placeholder="Search MKT001, llms.txt, canonical..." aria-label="Filter rubric rules" />
-              <select class="select" id="rubric-pillar" style="max-width:240px;" aria-label="Filter by pillar">
-                <option value="ALL">All 6 Pillars (100 pts)</option>
-                <option value="Technical SEO">Technical SEO (20 pts)</option>
-                <option value="GEO & AI Search">GEO &amp; AI Search (20 pts)</option>
-                <option value="Structured Data">Structured Data (15 pts)</option>
-                <option value="Social & Viral Graph">Social &amp; Viral Graph (15 pts)</option>
-                <option value="CRO & Copy Clarity">CRO &amp; Copy Clarity (15 pts)</option>
-                <option value="Launch & Growth">Launch &amp; Growth (15 pts)</option>
-              </select>
+          <!-- Tab 3: 12 Outputs Explorer -->
+          <div class="studio-panel" id="panel-outputs" role="tabpanel">
+            <div class="preset-pills" id="output-nav" style="margin-bottom:10px;">
+              <button type="button" class="chip-btn active" data-outfile="llms">llms.txt</button>
+              <button type="button" class="chip-btn" data-outfile="schema">SEO_SCHEMA.jsonld</button>
+              <button type="button" class="chip-btn" data-outfile="head">HEAD_TAGS.html</button>
+              <button type="button" class="chip-btn" data-outfile="robots">robots.txt</button>
+              <button type="button" class="chip-btn" data-outfile="sitemap">sitemap.xml</button>
+              <button type="button" class="chip-btn" data-outfile="audit">GROWTH_AUDIT.md</button>
+              <button type="button" class="chip-btn" data-outfile="summary">growth-summary.json</button>
+              <button type="button" class="chip-btn" data-outfile="manifest">manifest.webmanifest</button>
+              <button type="button" class="chip-btn" data-outfile="playbook">LAUNCH_PLAYBOOK.md</button>
+              <button type="button" class="chip-btn" data-outfile="pseo">PROGRAMMATIC_SEO.md</button>
+              <button type="button" class="chip-btn" data-outfile="llmsfull">llms-full.txt</button>
+              <button type="button" class="chip-btn" data-outfile="sarif">growthpilot.sarif</button>
             </div>
 
-            <div class="table-card" style="box-shadow:none;">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Rule</th>
-                    <th>Pillar</th>
-                    <th>Severity</th>
-                    <th>Pts</th>
-                    <th>Check &amp; Remediation</th>
-                  </tr>
-                </thead>
-                <tbody id="rubric-tbody"></tbody>
-              </table>
+            <div class="toolbar-between" style="margin-bottom:8px;">
+              <strong id="out-title">llms.txt — AI Answer-Engine Index</strong>
+              <span class="pill pill-pink" id="out-badge">GEO / AEO</span>
+            </div>
+
+            <pre class="code-block" id="out-code"></pre>
+          </div>
+        </section>
+
+        <hr class="hairline" />
+
+        <section class="editorial-grid" aria-label="Core design principles">
+          <div>
+            <h2>zero lock-in</h2>
+            <p>
+              Runs locally with Python 3.10+ stdlib only — zero pip bloat, zero API keys, zero runtime telemetry, and MIT licensed forever.
+            </p>
+          </div>
+
+          <div>
+            <h2>people &amp; AI ready</h2>
+            <p>
+              Verifies classic search signals alongside modern GEO/AEO files so ChatGPT, Claude, Perplexity, and Google read accurate facts.
+            </p>
+          </div>
+
+          <div>
+            <h2>shipping artifacts, not memos</h2>
+            <p>
+              Instead of handing you generic advice, GrowthPilot generates 12 drop-in files: HTML head tags, JSON-LD graphs, sitemaps, and SARIF alerts.
+            </p>
+          </div>
+
+          <div>
+            <h2>quiet by default</h2>
+            <p>
+              Works gracefully in terminal scripts, pre-commit hooks, GitHub Actions, and MCP agent sessions. Pair with Plausible, Umami, or PostHog when deployed.
+            </p>
+          </div>
+        </section>
+
+        <hr class="hairline" />
+
+        <section id="proof" aria-labelledby="proof-title">
+          <div class="toolbar-between" style="margin-bottom:14px;">
+            <div>
+              <h2 id="proof-title" class="sec-title">verified proof on funagigs.com</h2>
+              <p class="sec-sub" style="margin:0;">
+                Real production audit &amp; remediation output before and after applying generated fixes.
+              </p>
+            </div>
+            <div class="preset-pills" role="group" aria-label="Before and after toggle">
+              <button type="button" class="chip-btn active" data-stage="before">Before (40/100)</button>
+              <button type="button" class="chip-btn" data-stage="after">After (100/100)</button>
             </div>
           </div>
-        </div>
-      </div>
-    </section>
 
-    <section class="section" id="outputs">
-      <div class="container">
-        <div class="section-head">
-          <div>
-            <h2>Every Run Writes 12 Deploy-Ready Files</h2>
-            <p>Click any artifact generated inside <code>--output-dir</code> to inspect what ships to your repository and stakeholders.</p>
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap;">
+            <span class="pill pill-pink" id="cs-badge">Grade F • 9 issues found</span>
+            <strong id="cs-title">Missing GEO index, empty JSON-LD graph, and broken canonical tags</strong>
           </div>
-        </div>
 
-        <div class="explorer-grid card">
-          <div class="file-nav" id="output-nav" role="tablist" aria-label="Generated artifact files">
-            <button class="file-btn active" type="button" data-outfile="AUDIT_REPORT.md"><span>AUDIT_REPORT.md</span><small>MD</small></button>
-            <button class="file-btn" type="button" data-outfile="HEAD_TAGS.html"><span>HEAD_TAGS.html</span><small>HTML</small></button>
-            <button class="file-btn" type="button" data-outfile="SEO_SCHEMA.jsonld"><span>SEO_SCHEMA.jsonld</span><small>JSON-LD</small></button>
-            <button class="file-btn" type="button" data-outfile="llms.txt"><span>llms.txt</span><small>GEO</small></button>
-            <button class="file-btn" type="button" data-outfile="llms-full.txt"><span>llms-full.txt</span><small>GEO</small></button>
-            <button class="file-btn" type="button" data-outfile="robots.txt"><span>robots.txt</span><small>BOTS</small></button>
-            <button class="file-btn" type="button" data-outfile="sitemap.xml"><span>sitemap.xml</span><small>XML</small></button>
-            <button class="file-btn" type="button" data-outfile="manifest.webmanifest"><span>manifest.webmanifest</span><small>PWA</small></button>
-            <button class="file-btn" type="button" data-outfile="LAUNCH_PLAYBOOK.md"><span>LAUNCH_PLAYBOOK.md</span><small>GTM</small></button>
-            <button class="file-btn" type="button" data-outfile="PROGRAMMATIC_SEO.md"><span>PROGRAMMATIC_SEO.md</span><small>pSEO</small></button>
-            <button class="file-btn" type="button" data-outfile="growthpilot-report.html"><span>growthpilot-report.html</span><small>UI</small></button>
-            <button class="file-btn" type="button" data-outfile="growth-summary.json"><span>growth-summary.json</span><small>CI</small></button>
+          <ul class="flat-list" id="cs-list">
+            <li>No <code>/llms.txt</code> or <code>/llms-full.txt</code> for AI answer engines to parse service offerings.</li>
+            <li>Missing <code>Organization</code>, <code>WebSite</code>, and <code>FAQPage</code> Schema.org structured data.</li>
+            <li>Empty OpenGraph/Twitter card metadata reduced link previews to bare URLs on Slack and X.</li>
+            <li>Generic headline &amp; "Get Started" CTA lacked buyer proof or time-to-value specificity.</li>
+          </ul>
+
+          <div class="table-scroll" style="margin-top:22px;">
+            <table>
+              <thead>
+                <tr>
+                  <th>Capability</th>
+                  <th class="col-gp">GrowthPilot CLI</th>
+                  <th>SaaS SEO Suites</th>
+                  <th>Manual Checklists</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Audit speed (repo or <code>--live</code> URL)</td>
+                  <td class="col-gp">&lt; 1 second offline</td>
+                  <td>15–45 min cloud crawl</td>
+                  <td>Hours per release</td>
+                </tr>
+                <tr>
+                  <td>Outputs <code>llms.txt</code> + 11 ready files</td>
+                  <td class="col-gp">Yes (12 artifacts)</td>
+                  <td>No code generation</td>
+                  <td>Copy-paste by hand</td>
+                </tr>
+                <tr>
+                  <td>CI quality gate + SARIF 2.1.0</td>
+                  <td class="col-gp"><code>--min-score 100</code></td>
+                  <td>Paid webhook tiers</td>
+                  <td>Not automatable</td>
+                </tr>
+                <tr>
+                  <td>MCP tools + AI coding skills</td>
+                  <td class="col-gp">Built-in <code>--mcp</code></td>
+                  <td>None</td>
+                  <td>None</td>
+                </tr>
+                <tr>
+                  <td>Cost &amp; vendor lock-in</td>
+                  <td class="col-gp">0 deps · MIT · Free</td>
+                  <td>$99–$499 / month</td>
+                  <td>High team overhead</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
-          <div>
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.65rem;">
-              <strong id="out-title" style="font-family:var(--font-mono);color:var(--cyan);">AUDIT_REPORT.md</strong>
-              <span class="pill pill-info" id="out-badge">Impact-Sorted Checklist</span>
-            </div>
-            <pre class="code-preview" id="out-code"></pre>
+        </section>
+
+        <hr class="hairline" />
+
+        <section id="rules" aria-labelledby="rules-title">
+          <div style="margin-bottom:14px;">
+            <h2 id="rules-title" class="sec-title">18 deterministic rules</h2>
+            <p class="sec-sub">
+              Transparent 100-point rubric across 6 pillars — inspect every check the engine runs before you deploy.
+            </p>
           </div>
-        </div>
-      </div>
-    </section>
 
-    <section class="section" id="faq">
-      <div class="container">
-        <div class="section-head">
-          <div>
-            <h2>Frequently Asked Questions</h2>
-            <p>Rendered directly in static HTML and paired 1:1 with <code>FAQPage</code> Schema.org JSON-LD so search and AI crawlers extract answers cleanly.</p>
+          <div class="rules-filter">
+            <input
+              id="rubric-search"
+              class="input"
+              type="search"
+              placeholder="Search rule ID, title, or check (e.g. MKT007, llms, schema)..."
+              aria-label="Filter rubric rules"
+            />
+            <select id="rubric-pillar" class="select" aria-label="Filter by pillar">
+              <option value="all">All 6 pillars (18 rules)</option>
+              <option value="Technical SEO">Technical SEO (20 pts)</option>
+              <option value="GEO & AI Search">GEO &amp; AI Search (20 pts)</option>
+              <option value="Structured Data">Structured Data (15 pts)</option>
+              <option value="Social & Viral Graph">Social &amp; Viral Graph (15 pts)</option>
+              <option value="CRO & Copy Clarity">CRO &amp; Copy Clarity (15 pts)</option>
+              <option value="Launch & Growth">Launch &amp; Growth (15 pts)</option>
+            </select>
           </div>
-        </div>
 
-        <div class="faq-list">
-          <details class="faq-item" open>
-            <summary>What does GrowthPilot generate?</summary>
-            <p>Every audit generates 12 ready-to-deploy files in <code>--output-dir</code>: <code>AUDIT_REPORT.md</code>, <code>growthpilot-report.html</code>, <code>HEAD_TAGS.html</code>, <code>SEO_SCHEMA.jsonld</code>, <code>llms.txt</code>, <code>llms-full.txt</code>, <code>robots.txt</code>, <code>sitemap.xml</code>, <code>manifest.webmanifest</code>, <code>LAUNCH_PLAYBOOK.md</code>, <code>PROGRAMMATIC_SEO.md</code>, and <code>growth-summary.json</code>, plus optional SARIF 2.1.0 output.</p>
-          </details>
-          <details class="faq-item">
-            <summary>Does GrowthPilot require an API key or upload my source code?</summary>
-            <p>No. Local repository audits run 100% offline in pure Python 3.10+ standard library with zero third-party packages, zero API keys, and zero telemetry. Explicit live-URL scans fetch only the public target with a 10-second timeout and 2 MB cap.</p>
-          </details>
-          <details class="faq-item">
-            <summary>How does the Next.js client-bundle FAQ inspector work?</summary>
-            <p>During live URL scans, GrowthPilot inspects same-origin Next.js client chunks (<code>/_next/static/chunks/app/page*.js</code>) and flags an SSR Content Visibility Defect whenever FAQ answers exist inside hydrated JavaScript bundles without being present in initial server HTML.</p>
-          </details>
-          <details class="faq-item">
-            <summary>Can AI coding agents run GrowthPilot directly?</summary>
-            <p>Yes. Install the universal Agent Skill via <code>npx skills add codesphere-u/growthpilot</code> or connect the built-in stdio MCP server via <code>growthpilot --mcp</code>, exposing 6 native tools including <code>audit_project</code>, <code>analyze_copy_cro</code>, and <code>apply_marketing_fixes</code>.</p>
-          </details>
-        </div>
-      </div>
-    </section>
-  </main>
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>Rule</th>
+                  <th>Pillar</th>
+                  <th>Check</th>
+                  <th>Severity</th>
+                </tr>
+              </thead>
+              <tbody id="rubric-tbody"></tbody>
+            </table>
+          </div>
+        </section>
 
-  <footer class="site-footer">
-    <div class="container footer-grid">
-      <div>
-        <strong>GrowthPilot v1.4.0</strong> • Built by <a href="https://github.com/codesphere-u" target="_blank" rel="noopener">codesphere-u</a> • MIT License
-      </div>
-      <div class="footer-links">
-        <a href="https://github.com/codesphere-u/growthpilot" target="_blank" rel="noopener">GitHub</a>
-        <a href="https://github.com/codesphere-u/growthpilot/releases" target="_blank" rel="noopener">Releases</a>
-        <a href="llms.txt">llms.txt</a>
-        <a href="llms-full.txt">llms-full.txt</a>
-        <a href="robots.txt">robots.txt</a>
-        <a href="sitemap.xml">sitemap.xml</a>
-      </div>
+        <hr class="hairline" />
+
+        <section id="faq" aria-labelledby="faq-title">
+          <h2 id="faq-title" style="margin-bottom:14px;">questions</h2>
+          <div class="faq-stack">
+            <details class="faq-item" open>
+              <summary>What does GrowthPilot audit and generate?</summary>
+              <p>
+                GrowthPilot scores any local repository or live URL against 18 deterministic rules across Technical SEO, GEO &amp; AI Search, Structured Data, Social &amp; Viral Graph, CRO &amp; Copy Clarity, and Launch &amp; Growth, then outputs 12 ready-to-deploy files including <code>llms.txt</code>, <code>robots.txt</code>, <code>sitemap.xml</code>, <code>SEO_SCHEMA.jsonld</code>, <code>HEAD_TAGS.html</code>, and SARIF 2.1.0 reports.
+              </p>
+            </details>
+
+            <details class="faq-item">
+              <summary>Does GrowthPilot require API keys or paid SaaS subscriptions?</summary>
+              <p>
+                No. The engine runs 100% locally on Python 3.10+ using only the standard library with zero external runtime dependencies and zero telemetry.
+              </p>
+            </details>
+
+            <details class="faq-item">
+              <summary>How do I use GrowthPilot inside AI coding agents and CI?</summary>
+              <p>
+                Install it as an AI skill in Claude Code, Cursor, Codex, or Antigravity, start its built-in MCP server with <code>growthpilot --mcp</code>, or add the <code>codesphere-u/growthpilot</code> GitHub Action with SARIF 2.1.0 upload to gate every pull request.
+              </p>
+            </details>
+
+            <details class="faq-item">
+              <summary>Can GrowthPilot audit live deployed URLs as well as source code?</summary>
+              <p>
+                Yes. Pass any production or staging URL to <code>growthpilot --live URL</code> (or pass a URL directly) to inspect HTTP headers, canonical tags, JSON-LD, OpenGraph, <code>robots.txt</code>, <code>sitemap.xml</code>, and <code>llms.txt</code> in one pass.
+              </p>
+            </details>
+
+            <details class="faq-item">
+              <summary>Which privacy-first analytics tools does GrowthPilot detect?</summary>
+              <p>
+                GrowthPilot checks for clean analytics hooks including Plausible, Umami, PostHog, Fathom, Google Analytics, Vercel Analytics, and Microsoft Clarity so teams can ship measurable funnels without invasive bloat.
+              </p>
+            </details>
+          </div>
+        </section>
+      </main>
+
+      <footer class="site-footer">
+        <div>
+          Built with zero external dependencies · Audited to 100/100 (Grade A+) by GrowthPilot itself · Works cleanly alongside Plausible or Umami
+        </div>
+        <div class="footer-links">
+          <a href="https://github.com/codesphere-u/growthpilot" target="_blank" rel="noopener noreferrer">GitHub</a>
+          <span>·</span>
+          <a href="https://github.com/codesphere-u/growthpilot/blob/main/README.md" target="_blank" rel="noopener noreferrer">README</a>
+          <span>·</span>
+          <a href="https://github.com/codesphere-u/growthpilot/blob/main/docs/GETTING_STARTED.md" target="_blank" rel="noopener noreferrer">Docs</a>
+          <span>·</span>
+          <a href="./llms.txt">llms.txt</a>
+          <span>·</span>
+          <a href="./sitemap.xml">sitemap.xml</a>
+          <span>·</span>
+          <a href="./robots.txt">robots.txt</a>
+          <span>·</span>
+          <span>MIT License</span>
+        </div>
+      </footer>
     </div>
-  </footer>
 
-  <div class="toast" id="toast" role="status" aria-live="polite">Copied to clipboard</div>
-  <script src="app.js"></script>
-</body>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="./app.js" defer></script>
+  </body>
 </html>

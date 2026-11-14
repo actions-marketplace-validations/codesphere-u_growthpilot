@@ -1,477 +1,682 @@
 (() => {
   "use strict";
 
-  const ROOT = document.documentElement;
-  const TOAST = document.getElementById("toast");
-  let toastTimer = null;
-
-  function showToast(msg) {
-    if (!TOAST) return;
-    TOAST.textContent = msg;
-    TOAST.classList.add("visible");
-    window.clearTimeout(toastTimer);
-    toastTimer = window.setTimeout(() => TOAST.classList.remove("visible"), 2200);
-  }
-
-  function copyText(text, label = "Copied to clipboard") {
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(text).then(() => showToast(label)).catch(() => fallbackCopy(text, label));
-    } else {
-      fallbackCopy(text, label);
-    }
-  }
-
-  function fallbackCopy(text, label) {
-    const el = document.createElement("textarea");
-    el.value = text;
-    el.setAttribute("readonly", "");
-    el.style.position = "fixed";
-    el.style.opacity = "0";
-    document.body.appendChild(el);
-    el.select();
-    try {
-      document.execCommand("copy");
-      showToast(label);
-    } finally {
-      document.body.removeChild(el);
-    }
-  }
-
-  // Theme Toggle
-  const themeBtn = document.getElementById("theme-toggle");
-  const savedTheme = localStorage.getItem("gp-theme") || "dark";
-  ROOT.setAttribute("data-theme", savedTheme);
-  if (themeBtn) {
-    themeBtn.addEventListener("click", () => {
-      const next = ROOT.getAttribute("data-theme") === "light" ? "dark" : "light";
-      ROOT.setAttribute("data-theme", next);
-      localStorage.setItem("gp-theme", next);
-    });
-  }
-
-  // Mobile Menu
-  const mobileBtn = document.getElementById("mobile-menu-btn");
-  const navLinks = document.getElementById("nav-links");
-  if (mobileBtn && navLinks) {
-    mobileBtn.addEventListener("click", () => {
-      const open = navLinks.classList.toggle("open");
-      mobileBtn.setAttribute("aria-expanded", String(open));
-    });
-    navLinks.querySelectorAll("a").forEach((a) => {
-      a.addEventListener("click", () => {
-        navLinks.classList.remove("open");
-        mobileBtn.setAttribute("aria-expanded", "false");
-      });
-    });
-  }
-
-  // Hero Persona Terminal
-  const PERSONA_CMDS = {
-    founder: "uvx --from git+https://github.com/codesphere-u/growthpilot@v1 growthpilot https://yoursite.com --output-dir ./growth-kit --open",
-    dev: "uv tool install git+https://github.com/codesphere-u/growthpilot@v1 && growthpilot . --fix --site-url https://yoursite.com",
-    agent: "npx skills add codesphere-u/growthpilot && growthpilot --mcp",
-    ci: "growthpilot . --min-score 80 --fail-on high --sarif growthpilot.sarif",
+  const PERSONAS = {
+    cli: {
+      caption: "uv tool install git+https://github.com/codesphere-u/growthpilot",
+      command: "uv tool install git+https://github.com/codesphere-u/growthpilot && growthpilot .",
+    },
+    agent: {
+      caption: "npx skills add codesphere-u/growthpilot",
+      command: "npx skills add codesphere-u/growthpilot",
+    },
+    mcp: {
+      caption: "growthpilot --mcp",
+      command: "growthpilot --mcp --path /path/to/repo",
+    },
+    ci: {
+      caption: "uses: codesphere-u/growthpilot@v1",
+      command: "uses: codesphere-u/growthpilot@v1\nwith:\n  target: .\n  min-score: 85\n  sarif-file: growthpilot.sarif",
+    },
   };
 
-  const personaCmdEl = document.getElementById("persona-cmd");
-  document.querySelectorAll("[data-persona]").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      document.querySelectorAll("[data-persona]").forEach((b) => b.classList.remove("active"));
-      btn.classList.add("active");
-      const key = btn.getAttribute("data-persona") || "founder";
-      if (personaCmdEl) personaCmdEl.textContent = PERSONA_CMDS[key] || PERSONA_CMDS.founder;
-    });
-  });
+  const CRO_PRESETS = {
+    weak: {
+      product: "GrowthPilot",
+      archetype: "devtools",
+      text: "The next-generation AI-powered platform that seamlessly revolutionizes and supercharges how modern teams unlock synergy and elevate workflows. Learn more.",
+    },
+    funagigs: {
+      product: "FunaGigs",
+      archetype: "marketplace",
+      text: "Connect vetted freelancers with local and remote buyers in 60 seconds. Compare transparent pricing across 140+ gig categories with milestone escrow. Post a gig free.",
+    },
+    devtools: {
+      product: "GrowthPilot",
+      archetype: "devtools",
+      text: "Audit any codebase or live URL across 18 SEO, GEO (llms.txt) & CRO rules in under 1 second. Generates 12 deploy-ready files with zero dependencies. Run growthpilot .",
+    },
+    saas: {
+      product: "LedgerPulse",
+      archetype: "saas",
+      text: "Close month-end SaaS books 4x faster with deterministic invoice reconciliation across Stripe and QuickBooks. Start 14-day sandbox.",
+    },
+  };
 
-  const copyPersonaBtn = document.getElementById("copy-persona-btn");
-  if (copyPersonaBtn && personaCmdEl) {
-    copyPersonaBtn.addEventListener("click", () => copyText(personaCmdEl.textContent || "", "Command copied"));
-  }
+  const SLOP_LIST = [
+    "next-generation",
+    "seamlessly",
+    "seamless",
+    "revolutionizes",
+    "revolutionize",
+    "supercharges",
+    "supercharge",
+    "unlock",
+    "synergy",
+    "elevate",
+    "empower",
+    "leverage",
+    "cutting-edge",
+    "game-changer",
+    "transform",
+    "delve",
+    "holistic",
+    "robust",
+    "effortless",
+    "streamline",
+    "skyrocket",
+    "unleash",
+  ];
 
-  // Case Study Toggle
-  const csBadge = document.getElementById("cs-badge");
-  const csTitle = document.getElementById("cs-title");
-  const csList = document.getElementById("cs-list");
-  const CS_STATES = {
+  const CTA_VERBS = [
+    "start",
+    "run",
+    "install",
+    "post",
+    "try",
+    "book",
+    "audit",
+    "compare",
+    "download",
+    "ship",
+    "create",
+    "build",
+    "deploy",
+    "open",
+    "check",
+  ];
+
+  const OUTPUT_SAMPLES = {
+    llms: {
+      title: "llms.txt — AI Answer-Engine Index",
+      badge: "GEO / AEO",
+      code: `# GrowthPilot\n> Zero-dependency engine auditing codebases & live URLs across 18 SEO, GEO (llms.txt), Schema.org & CRO rules.\n\n## Core Capabilities\n- [CLI & Scanner](https://codesphere-u.github.io/growthpilot/#studio): Deterministic 100-point rubric + 12 deployable assets.\n- [18 Rules Spec](https://codesphere-u.github.io/growthpilot/#rules): Technical SEO, GEO/AEO, Schema, Social, CRO & Launch.\n- [MCP Server](https://github.com/codesphere-u/growthpilot): Run locally via growthpilot --mcp with stdio transport.`,
+    },
+    schema: {
+      title: "SEO_SCHEMA.jsonld — Schema.org @graph",
+      badge: "Structured Data",
+      code: JSON.stringify(
+        {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "SoftwareApplication",
+              name: "GrowthPilot",
+              applicationCategory: "DeveloperApplication",
+              operatingSystem: "macOS, Linux, Windows",
+              offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+            },
+            {
+              "@type": "FAQPage",
+              mainEntity: [
+                {
+                  "@type": "Question",
+                  name: "Does GrowthPilot require API keys?",
+                  acceptedAnswer: {
+                    "@type": "Answer",
+                    text: "No. Pure Python 3.10+ stdlib with zero telemetry.",
+                  },
+                },
+              ],
+            },
+          ],
+        },
+        null,
+        2
+      ),
+    },
+    head: {
+      title: "HEAD_TAGS.html — Drop-in Social & Meta snippet",
+      badge: "Social & Meta",
+      code: `<title>GrowthPilot — Autonomous SEO, GEO/AEO & CRO Engine</title>\n<meta name="description" content="Audit any codebase or live URL across 18 SEO, GEO & CRO rules in under 1 second." />\n<link rel="canonical" href="https://codesphere-u.github.io/growthpilot/" />\n<meta property="og:type" content="website" />\n<meta property="og:title" content="GrowthPilot — Autonomous SEO, GEO/AEO & CRO Engine" />\n<meta name="twitter:card" content="summary_large_image" />`,
+    },
+    robots: {
+      title: "robots.txt — Search & AI Bot Directives",
+      badge: "Technical SEO",
+      code: `User-agent: *\nAllow: /\n\nUser-agent: GPTBot\nAllow: /\n\nUser-agent: ClaudeBot\nAllow: /\n\nUser-agent: PerplexityBot\nAllow: /\n\nSitemap: https://codesphere-u.github.io/growthpilot/sitemap.xml`,
+    },
+    sitemap: {
+      title: "sitemap.xml — Canonical URL Inventory",
+      badge: "Technical SEO",
+      code: `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n  <url>\n    <loc>https://codesphere-u.github.io/growthpilot/</loc>\n    <changefreq>weekly</changefreq>\n    <priority>1.0</priority>\n  </url>\n</urlset>`,
+    },
+    audit: {
+      title: "GROWTH_AUDIT.md — Prioritized Fix Report",
+      badge: "Audit Report",
+      code: `# GrowthPilot Audit — 100/100 (Grade A+)\n- Technical SEO: 20/20\n- GEO & AI Search: 20/20\n- Structured Data: 15/15\n- Social & Viral Graph: 15/15\n- CRO & Copy Clarity: 15/15\n- Launch & Growth: 15/15\n\nAll 18 deterministic checks passed with zero findings.`,
+    },
+    summary: {
+      title: "growth-summary.json — CI-Readable Telemetry",
+      badge: "JSON Output",
+      code: JSON.stringify(
+        {
+          tool: "growthpilot",
+          score: 100,
+          grade: "A+",
+          findings_count: 0,
+          pillars: {
+            technical_seo: 20,
+            geo_ai_search: 20,
+            structured_data: 15,
+            social_viral_graph: 15,
+            cro_copy_clarity: 15,
+            launch_growth: 15,
+          },
+        },
+        null,
+        2
+      ),
+    },
+    manifest: {
+      title: "manifest.webmanifest — PWA Metadata",
+      badge: "App Manifest",
+      code: JSON.stringify(
+        {
+          name: "GrowthPilot — Autonomous SEO, GEO/AEO & CRO Engine",
+          short_name: "GrowthPilot",
+          start_url: "./",
+          display: "standalone",
+          background_color: "#fffce5",
+          theme_color: "#faa2ca",
+        },
+        null,
+        2
+      ),
+    },
+    playbook: {
+      title: "LAUNCH_PLAYBOOK.md — Channel Distribution Plan",
+      badge: "Launch & Growth",
+      code: `# 7-Day Launch Playbook\n1. Day 1: Deploy llms.txt, robots.txt, sitemap.xml & JSON-LD @graph.\n2. Day 2: Validate OpenGraph card via Slack & X previewers.\n3. Day 3: Wire Plausible/Umami funnel events + SARIF CI gate.\n4. Day 4: Publish comparison landing pages from PROGRAMMATIC_SEO.md.`,
+    },
+    pseo: {
+      title: "PROGRAMMATIC_SEO.md — High-Intent Page Matrix",
+      badge: "Programmatic SEO",
+      code: `# Programmatic SEO Opportunities\n- /compare/{competitor}-alternative — buyer switch intent\n- /tools/{framework}-llms-txt-generator — developer utility intent\n- /guides/{vertical}-seo-checklist — practitioner reference`,
+    },
+    llmsfull: {
+      title: "llms-full.txt — Complete Machine-Readable Brief",
+      badge: "GEO / AEO",
+      code: `# GrowthPilot Complete Context\nCLI Flags: --live URL, --site-url, --min-score, --sarif-file, --mcp, --json\nDependencies: None (Python 3.10+ stdlib only)\nLicense: MIT\nOutputs: 12 deployable assets under growthpilot-out/ or website root.`,
+    },
+    sarif: {
+      title: "growthpilot.sarif — GitHub Code Scanning 2.1.0",
+      badge: "CI Security Gate",
+      code: JSON.stringify(
+        {
+          version: "2.1.0",
+          $schema: "https://json.schemastore.org/sarif-2.1.0.json",
+          runs: [
+            {
+              tool: { driver: { name: "GrowthPilot", rules: [] } },
+              results: [],
+            },
+          ],
+        },
+        null,
+        2
+      ),
+    },
+  };
+
+  const PROOF_STAGES = {
     before: {
-      badgeClass: "pill pill-warn",
-      badgeText: "INITIAL LIVE SCAN",
-      title: "53 / 100 — Grade D",
+      badge: "Grade F • 9 issues found",
+      title: "Missing GEO index, empty JSON-LD graph, and missing social cards",
       items: [
-        ["pill-bad", "SSR BUG", "6 FAQ answers were embedded solely in client JS chunks, invisible to non-JS search & AI crawlers."],
-        ["pill-warn", "SEO", "4 duplicate title suffixes found across /features, /post-a-job, /contact, and /waitlist."],
-        ["pill-warn", "A11Y", "50 images missing descriptive alt text plus duplicate 'Funa Vault' keyword entries."],
-        ["pill-bad", "GEO", "Missing /llms.txt, /llms-full.txt, and structured FAQPage JSON-LD graph."],
+        "No /llms.txt or /llms-full.txt for AI answer engines to parse service offerings.",
+        "Missing Organization, WebSite, and FAQPage Schema.org structured data.",
+        "Empty OpenGraph/Twitter card metadata reduced link previews to bare URLs.",
+        "Generic headline & CTA lacked buyer proof or time-to-value specificity.",
       ],
     },
     after: {
-      badgeClass: "pill pill-good",
-      badgeText: "POST-FIX VERIFIED",
-      title: "100 / 100 — Grade A+",
+      badge: "100/100 • Grade A+ (Verified)",
+      title: "All 18 rules green across live HTML & deployed asset endpoints",
       items: [
-        ["pill-good", "GEO PASS", "Deployed llms.txt, llms-full.txt, and explicit OAI-SearchBot / GPTBot / ClaudeBot allowlist."],
-        ["pill-good", "SCHEMA", "Embedded @graph JSON-LD covering Organization, WebSite, and SSR-backed FAQPage."],
-        ["pill-good", "SSR FIX", "Promoted FAQ answers & unique route metadata directly into server-rendered layout files."],
-        ["pill-good", "PLAYBOOK", "Tailored Escrow + Instant Hire + Mobile Money CRO rewrites & two-sided liquidity launch kit."],
+        "Added /llms.txt, /llms-full.txt, and permissive AI bot directives in robots.txt.",
+        "Embedded validated Schema.org @graph (Organization, WebSite, Service, FAQPage).",
+        "Added crisp og:image (1200x630), canonical tag, and Twitter summary_large_image.",
+        "Rewrote hero copy around quantified time-to-hire and transparent escrow proof.",
       ],
     },
   };
 
-  function renderCaseStudy(stage) {
-    const data = CS_STATES[stage] || CS_STATES.before;
-    if (csBadge) {
-      csBadge.className = data.badgeClass;
-      csBadge.textContent = data.badgeText;
+  const RUBRIC_RULES = [
+    { id: "MKT001", pillar: "Technical SEO", check: "Page <title> present & optimal length (35–60 chars)", severity: "High" },
+    { id: "MKT002", pillar: "Technical SEO", check: "Meta description present & descriptive (50–165 chars)", severity: "High" },
+    { id: "MKT003", pillar: "Technical SEO", check: "Canonical URL link element set to HTTPS root", severity: "Medium" },
+    { id: "MKT004", pillar: "Technical SEO", check: "sitemap.xml present with valid canonical URL entries", severity: "High" },
+    { id: "MKT005", pillar: "Technical SEO", check: "Single H1 hierarchy & zero missing image alt attributes", severity: "Medium" },
+    { id: "MKT006", pillar: "GEO & AI Search", check: "llms.txt concise index adhering to llmstxt.org spec", severity: "High" },
+    { id: "MKT007", pillar: "GEO & AI Search", check: "llms-full.txt complete machine-readable technical context", severity: "Medium" },
+    { id: "MKT008", pillar: "GEO & AI Search", check: "robots.txt allows GPTBot, ClaudeBot & PerplexityBot", severity: "High" },
+    { id: "MKT009", pillar: "GEO & AI Search", check: "Factual citability density & SSR FAQ visibility (no JS-hidden answers)", severity: "High" },
+    { id: "MKT010", pillar: "Structured Data", check: "Schema.org JSON-LD @graph matching detected product archetype", severity: "High" },
+    { id: "MKT011", pillar: "Structured Data", check: "Web app manifest (manifest.webmanifest) & icon metadata", severity: "Low" },
+    { id: "MKT012", pillar: "Social & Viral Graph", check: "OpenGraph tags (og:title, og:description, og:image)", severity: "High" },
+    { id: "MKT013", pillar: "Social & Viral Graph", check: "X / Twitter summary_large_image card metadata", severity: "Medium" },
+    { id: "MKT014", pillar: "CRO & Copy Clarity", check: "Action-oriented primary CTA copy above the fold", severity: "High" },
+    { id: "MKT015", pillar: "CRO & Copy Clarity", check: "Zero AI-slop filler or vague buzzword inflation in copy", severity: "Medium" },
+    { id: "MKT016", pillar: "CRO & Copy Clarity", check: "Concrete quantified proof numbers & validation signals", severity: "Medium" },
+    { id: "MKT017", pillar: "Launch & Growth", check: "Archetype launch playbook & programmatic SEO matrix ready", severity: "Medium" },
+    { id: "MKT018", pillar: "Launch & Growth", check: "Privacy-friendly analytics or attribution hook (Plausible/Umami/PostHog)", severity: "Low" },
+  ];
+
+  let activePersona = "cli";
+  let activeGenFile = "llms";
+  let toastTimer = null;
+
+  const $ = (sel) => document.querySelector(sel);
+  const $$ = (sel) => Array.from(document.querySelectorAll(sel));
+
+  function showToast(msg) {
+    const toast = $("#toast");
+    if (!toast) return;
+    toast.textContent = msg;
+    toast.classList.add("visible", "show");
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove("visible", "show"), 2200);
+  }
+
+  async function copyText(text, label) {
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(text);
+      } else {
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        ta.setAttribute("readonly", "");
+        ta.style.position = "fixed";
+        ta.style.opacity = "0";
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        document.body.removeChild(ta);
+      }
+      showToast(label ? `Copied ${label}` : "Copied to clipboard");
+    } catch {
+      showToast("Copy ready — select and press Cmd/Ctrl+C");
     }
-    if (csTitle) csTitle.textContent = data.title;
-    if (csList) {
-      csList.textContent = "";
-      data.items.forEach(([cls, tag, msg]) => {
-        const li = document.createElement("li");
-        const pill = document.createElement("span");
-        pill.className = `pill ${cls}`;
-        pill.textContent = tag;
-        const txt = document.createElement("span");
-        txt.textContent = msg;
-        li.append(pill, txt);
-        csList.appendChild(li);
+  }
+
+  function setPopoverOpen(isOpen) {
+    const pop = $("#cta-popover");
+    const caret = $("#cta-caret-btn");
+    if (!pop || !caret) return;
+    if (isOpen) {
+      pop.removeAttribute("hidden");
+      pop.classList.add("open");
+      caret.setAttribute("aria-expanded", "true");
+    } else {
+      pop.setAttribute("hidden", "");
+      pop.classList.remove("open");
+      caret.setAttribute("aria-expanded", "false");
+    }
+  }
+
+  function initCTA() {
+    const mainBtn = $("#cta-main-btn");
+    const caretBtn = $("#cta-caret-btn");
+    const popCopyBtn = $("#pop-copy-btn");
+    const heroCmd = $("#hero-cmd");
+    const popCmdCode = $("#pop-cmd-code");
+
+    function updatePersona(key) {
+      const data = PERSONAS[key] || PERSONAS.cli;
+      activePersona = key;
+      if (heroCmd) heroCmd.textContent = data.caption;
+      if (popCmdCode) popCmdCode.textContent = data.command;
+      $$(".pop-tab").forEach((btn) => {
+        const match = btn.dataset.persona === key;
+        btn.classList.toggle("active", match);
+        btn.setAttribute("aria-selected", String(match));
       });
     }
+
+    if (mainBtn) {
+      mainBtn.addEventListener("click", () => {
+        copyText(PERSONAS[activePersona].command, "install command");
+      });
+    }
+
+    if (popCopyBtn) {
+      popCopyBtn.addEventListener("click", () => {
+        copyText(PERSONAS[activePersona].command, "command");
+      });
+    }
+
+    if (caretBtn) {
+      caretBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const pop = $("#cta-popover");
+        const isOpen = pop ? !pop.hasAttribute("hidden") : false;
+        setPopoverOpen(!isOpen);
+      });
+    }
+
+    $$(".pop-tab").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        updatePersona(btn.dataset.persona);
+      });
+    });
+
+    document.addEventListener("click", (e) => {
+      const area = $(".cta-area");
+      if (area && !area.contains(e.target)) {
+        setPopoverOpen(false);
+      }
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") setPopoverOpen(false);
+    });
+
+    updatePersona("cli");
   }
 
-  document.querySelectorAll("[data-stage]").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      document.querySelectorAll("[data-stage]").forEach((b) => b.classList.remove("active"));
-      btn.classList.add("active");
-      renderCaseStudy(btn.getAttribute("data-stage") || "before");
+  function initStudioTabs() {
+    const tabs = $$(".frame-tab");
+    const panels = {
+      cro: $("#panel-cro"),
+      gen: $("#panel-gen"),
+      outputs: $("#panel-outputs"),
+    };
+
+    tabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        const target = tab.dataset.studio;
+        tabs.forEach((t) => {
+          const isMatch = t === tab;
+          t.classList.toggle("active", isMatch);
+          t.setAttribute("aria-selected", String(isMatch));
+        });
+        Object.entries(panels).forEach(([k, el]) => {
+          if (el) el.classList.toggle("active", k === target);
+        });
+      });
     });
-  });
+  }
 
-  // Studio Tab Navigation
-  document.querySelectorAll("[data-studio]").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const target = btn.getAttribute("data-studio");
-      document.querySelectorAll("[data-studio]").forEach((b) => b.classList.remove("active"));
-      document.querySelectorAll(".studio-panel").forEach((p) => p.classList.remove("active"));
-      btn.classList.add("active");
-      const panel = document.getElementById(`panel-${target}`);
-      if (panel) panel.classList.add("active");
+  function analyzeCRO() {
+    const productEl = $("#cro-product");
+    const archEl = $("#cro-archetype");
+    const inputEl = $("#cro-input");
+    if (!inputEl) return;
+
+    const product = (productEl && productEl.value.trim()) || "YourProduct";
+    const arch = (archEl && archEl.value) || "devtools";
+    const raw = inputEl.value.trim();
+    const lower = raw.toLowerCase();
+    const words = raw.split(/\s+/).filter(Boolean);
+
+    const foundSlop = SLOP_LIST.filter((w) => new RegExp(`\\b${w}\\b`, "i").test(lower));
+    const hasCta = CTA_VERBS.some((v) => new RegExp(`\\b${v}\\b`, "i").test(lower));
+    const hasNumber = /\d+/.test(raw);
+    const sweetLength = words.length >= 10 && words.length <= 38;
+
+    const clarity = Math.max(4, Math.min(35, (sweetLength ? 30 : 20) - foundSlop.length * 4));
+    const ctaScore = hasCta ? 25 : lower.includes("learn more") ? 4 : 10;
+    const proofScore = hasNumber ? 20 : 0;
+    const slopBonus = foundSlop.length === 0 ? 20 : Math.max(0, 20 - foundSlop.length * 4);
+    const overall = Math.max(5, Math.min(100, clarity + ctaScore + proofScore + slopBonus));
+
+    $("#stat-overall").textContent = `${overall}/100`;
+    $("#stat-clarity").textContent = `${clarity}/35`;
+    $("#stat-cta").textContent = `${ctaScore}/25`;
+    $("#stat-proof").textContent = `${proofScore}/20`;
+    $("#stat-slop").textContent = String(foundSlop.length);
+
+    const diag = $("#cro-diagnostics");
+    if (diag) {
+      if (overall >= 85 && foundSlop.length === 0) {
+        diag.textContent = "Strong clarity, active CTA, quantified proof, and zero AI buzzword bloat.";
+      } else {
+        const notes = [];
+        if (foundSlop.length > 0) notes.push(`Remove buzzwords (${foundSlop.join(", ")})`);
+        if (!hasCta) notes.push('Replace weak links like "Learn more" with an active verb');
+        if (!hasNumber) notes.push("Add one real number (time saved, rule count, or customer figure)");
+        diag.textContent = notes.join(". ") + ".";
+      }
+    }
+
+    const archOutcome = {
+      devtools: "catch regressions & ship clean configs in under 1 second",
+      saas: "cut repetitive manual work by 4x without changing tools",
+      marketplace: "match verified buyers & providers in 60 seconds with transparent escrow",
+      editorial: "publish fast, plain-English docs that search and AI read cleanly",
+    }[arch] || "deliver measurable results cleanly";
+
+    $("#rw-pas").textContent =
+      `Stop losing traffic to silent technical bugs. ${product} scans your stack and lets you ${archOutcome}. Run ${product} free today.`;
+    $("#rw-jtbd").textContent =
+      `When you need to ${archOutcome}, ${product} outputs verified files in one step — zero vendor lock-in. Start in 10 seconds.`;
+    $("#rw-metric").textContent =
+      `${product}: audit 18 rules, fix metadata gaps, and ship 12 production assets locally with 0 external dependencies. Install CLI.`;
+  }
+
+  function initCRO() {
+    const inputEl = $("#cro-input");
+    const prodEl = $("#cro-product");
+    const archEl = $("#cro-archetype");
+
+    $$("[data-preset]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const preset = CRO_PRESETS[btn.dataset.preset];
+        if (!preset) return;
+        $$("[data-preset]").forEach((b) => b.classList.toggle("active", b === btn));
+        if (prodEl) prodEl.value = preset.product;
+        if (archEl) archEl.value = preset.archetype;
+        if (inputEl) inputEl.value = preset.text;
+        analyzeCRO();
+      });
     });
-  });
 
-  // 1. Live CRO & AI-Slop Analyzer (mirrors Python analyze_copy_cro)
-  const SLOP_WORDS = [
-    "revolutionary", "game-changing", "game changing", "unleash", "unlock the power",
-    "seamlessly", "next-generation", "next-gen", "cutting-edge", "synergy",
-    "delve", "tapestry", "elevate", "supercharge", "paradigm shift",
-    "world-class", "all-in-one magic", "transformative"
-  ];
-  const CTA_RE = /\b(?:get started|start free|try free|book a demo|install|pip install|npx |uvx |brew install|sign up|launch|download|deploy now|join waitlist)\b/i;
-  const PROOF_RE = /(?:\b\d+(?:\.\d+)?%|\b\d+x\b|\b\d+\s*(?:ms|seconds|minutes|users|teams|stars|tests|rules|checks)\b|\b(?:benchmark|case study|testimonial|trusted by|open-source|mit license|soc2|gdpr|zero-dependency)\b)/gi;
+    [inputEl, prodEl, archEl].forEach((el) => {
+      if (el) el.addEventListener("input", analyzeCRO);
+    });
 
-  const PRESETS = {
-    strong: {
-      name: "OrbitDB",
-      arch: "devtools",
-      text: "Cut Postgres query latency by 65% in 2 minutes. Trusted by 1,200 engineering teams under MIT License. Install now: pip install orbitdb",
-    },
-    weak: {
-      name: "CloudNova",
-      arch: "b2b_saas",
-      text: "Our revolutionary next-generation platform seamlessly unleashes cutting-edge synergy to elevate and transform workflows.",
-    },
-    marketplace: {
-      name: "Funa Gigs",
-      arch: "marketplace_app",
-      text: "Hire verified local taskers in minutes and fund jobs safely through escrow protection. Download the app or get started free today.",
-    },
-    ecommerce: {
-      name: "RoastCart",
-      arch: "ecommerce",
-      text: "Single-origin coffee roasted daily with 24-hour dispatch, verified buyer ratings, and free shipping over $35. Try free sample pack now.",
-    },
-  };
+    analyzeCRO();
+  }
 
-  const croProduct = document.getElementById("cro-product");
-  const croArch = document.getElementById("cro-archetype");
-  const croInput = document.getElementById("cro-input");
+  function renderGenerator() {
+    const name = ($("#gen-name") && $("#gen-name").value.trim()) || "AcmeDocs";
+    let url = ($("#gen-url") && $("#gen-url").value.trim()) || "https://acmedocs.dev";
+    if (!/^https?:\/\//i.test(url)) url = `https://${url}`;
+    url = url.replace(/\/+$/, "");
+    const desc =
+      ($("#gen-desc") && $("#gen-desc").value.trim()) ||
+      "Fast zero-config product documentation from source files.";
+    const arch = ($("#gen-arch") && $("#gen-arch").value) || "SoftwareApplication";
 
-  function buildRewrites(name, arch) {
-    if (arch === "marketplace_app") {
-      return {
-        pas: `Stop risking cash on unverified word-of-mouth referrals. ${name} matches you with ID-verified local taskers in minutes and holds every payment in escrow until the job is done.`,
-        jtbd: `${name}: Post a job for free, compare transparent bids or use Instant Hire, and release payment only when both sides confirm completion.`,
-        metric: `Hire verified help or find paid local gigs in minutes with ${name} — 100% escrow-protected payouts and live map matching.`,
+    let content = "";
+    if (activeGenFile === "llms") {
+      content = `# ${name}\n> ${desc}\n\n## Canonical Links\n- [Homepage](${url}/)\n- [Sitemap](${url}/sitemap.xml)\n- [Machine Context](${url}/llms-full.txt)\n`;
+    } else if (activeGenFile === "schema") {
+      const schemaObj = {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": arch,
+            name,
+            url: `${url}/`,
+            description: desc,
+            offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+          },
+        ],
       };
+      content = JSON.stringify(schemaObj, null, 2);
+    } else if (activeGenFile === "robots") {
+      content = `User-agent: *\nAllow: /\n\nUser-agent: GPTBot\nAllow: /\n\nUser-agent: ClaudeBot\nAllow: /\n\nSitemap: ${url}/sitemap.xml\n`;
+    } else {
+      content = `<title>${name} — ${desc.slice(0, 48)}</title>\n<meta name="description" content="${desc}" />\n<link rel="canonical" href="${url}/" />\n<meta property="og:type" content="website" />\n<meta property="og:title" content="${name}" />\n<meta property="og:description" content="${desc}" />\n<meta name="twitter:card" content="summary_large_image" />`;
     }
-    if (arch === "ecommerce") {
-      return {
-        pas: `Tired of slow shipping and guessing quality online? ${name} delivers vetted products to your door with transparent pricing and hassle-free returns.`,
-        jtbd: `${name}: Compare exact specs, check real-time stock, and check out in 30 seconds with tracked delivery and a 30-day satisfaction guarantee.`,
-        metric: `Shop ${name} with confidence — 24-hour dispatch, verified buyer ratings, and 30-second one-click checkout.`,
-      };
-    }
-    if (arch === "b2b_saas") {
-      return {
-        pas: `Manual bottlenecks cost teams hours every week. ${name} automates your core workflow in 60 seconds with measurable time savings — start free today.`,
-        jtbd: `${name}: Give operators an auditable, high-leverage workflow built for teams that measure ROI in minutes saved, not quarters spent.`,
-        metric: `Ship twice as fast with ${name} — save 8+ hours per team weekly with zero complex onboarding.`,
-      };
-    }
-    return {
-      pas: `Stop losing hours to fragmented scripts and setup drift. ${name} automates the entire pipeline in under 60 seconds with zero config — install free in one command.`,
-      jtbd: `${name}: The deterministic CLI & workflow engine for teams that need verified results in minutes instead of weeks.`,
-      metric: `Ship faster with ${name} — cut setup time by 90%, verify every check locally, and go live in 1 command.`,
-    };
+
+    const preview = $("#gen-preview");
+    if (preview) preview.textContent = content;
+    return content;
   }
 
-  function evaluateCro() {
-    if (!croInput || !croProduct || !croArch) return;
-    const raw = croInput.value.trim();
-    const cleaned = raw.replace(/```[\s\S]*?```/g, " ").replace(/`[^`\n]+`/g, " ");
-    const low = cleaned.toLowerCase();
-    const slopFound = SLOP_WORDS.filter((w) => new RegExp(`\\b${w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`, "i").test(low));
-    const words = cleaned.match(/[A-Za-z0-9']+/g) || [];
-    const sentences = cleaned.split(/[.!?]+/).map((s) => s.trim()).filter(Boolean);
-    const avgLen = words.length / Math.max(1, sentences.length);
-    const hasCta = CTA_RE.test(cleaned);
-    const proofMatches = cleaned.match(PROOF_RE) || [];
-    const hasNumbers = /\b\d+/.test(cleaned);
-
-    let clarity = 85;
-    if (avgLen > 26) clarity -= 20;
-    if (words.length < 6) clarity -= 25;
-    clarity -= Math.min(35, slopFound.length * 12);
-    clarity = Math.max(15, Math.min(100, clarity));
-
-    const cta = hasCta ? 92 : 35;
-    const proof = Math.min(100, 40 + proofMatches.length * 20 + (hasNumbers ? 15 : 0));
-    const antiSlop = Math.max(0, 100 - slopFound.length * 22);
-    const overall = Math.round(clarity * 0.3 + cta * 0.25 + proof * 0.25 + antiSlop * 0.2);
-
-    const setStat = (id, val) => {
-      const el = document.getElementById(id);
-      if (el) el.textContent = `${val}/100`;
+  function initGenerator() {
+    const filenameMap = {
+      llms: "llms.txt",
+      schema: "SEO_SCHEMA.jsonld",
+      robots: "robots.txt",
+      head: "HEAD_TAGS.html",
     };
-    setStat("stat-overall", overall);
-    setStat("stat-clarity", clarity);
-    setStat("stat-cta", cta);
-    setStat("stat-proof", proof);
-    setStat("stat-slop", antiSlop);
 
-    const diagEl = document.getElementById("cro-diagnostics");
-    if (diagEl) {
-      const notes = [];
-      if (slopFound.length) notes.push(`Flagged hype terms: ${slopFound.join(", ")}`);
-      if (!hasCta) notes.push("Missing explicit CTA ('Get Started', 'Try Free', or CLI install command)");
-      if (!proofMatches.length) notes.push("Add quantified metrics (latency, %, customer count, SLA, or license)");
-      if (avgLen > 26) notes.push(`Average sentence is ${avgLen.toFixed(1)} words (target 12-20 words)`);
-      diagEl.textContent = notes.length ? `Diagnostics: ${notes.join(" • ")}` : "All CRO clarity, CTA, proof, and anti-slop checks look crisp.";
-    }
-
-    const name = croProduct.value.trim() || "Your Product";
-    const rw = buildRewrites(name, croArch.value);
-    const setText = (id, t) => {
-      const el = document.getElementById(id);
-      if (el) el.textContent = t;
-    };
-    setText("rw-pas", rw.pas);
-    setText("rw-jtbd", rw.jtbd);
-    setText("rw-metric", rw.metric);
-  }
-
-  document.querySelectorAll("[data-preset]").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const p = PRESETS[btn.getAttribute("data-preset") || "strong"];
-      if (!p || !croProduct || !croArch || !croInput) return;
-      croProduct.value = p.name;
-      croArch.value = p.arch;
-      croInput.value = p.text;
-      evaluateCro();
+    $$("[data-genfile]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        activeGenFile = btn.dataset.genfile;
+        $$("[data-genfile]").forEach((b) => b.classList.toggle("active", b === btn));
+        renderGenerator();
+      });
     });
-  });
 
-  [croProduct, croArch, croInput].forEach((el) => {
-    if (el) el.addEventListener("input", evaluateCro);
-  });
-  evaluateCro();
-
-  // 2. GEO & Schema Asset Builder
-  const genName = document.getElementById("gen-name");
-  const genUrl = document.getElementById("gen-url");
-  const genDesc = document.getElementById("gen-desc");
-  const genArch = document.getElementById("gen-arch");
-  const genPreview = document.getElementById("gen-preview");
-  let activeGenFile = "llms.txt";
-
-  function buildGeneratedAssets() {
-    const name = (genName?.value || "PulseForge").trim();
-    const url = (genUrl?.value || "https://pulseforge.dev").trim().replace(/\/+$/, "");
-    const desc = (genDesc?.value || "Automated workflow execution with zero external configuration.").trim();
-    const arch = genArch?.value || "devtools";
-    const schemaType = arch === "ecommerce" ? "Product" : arch === "marketplace_app" ? "Organization" : "SoftwareApplication";
-
-    const schemaObj = {
-      "@context": "https://schema.org",
-      "@graph": [
-        { "@type": "WebSite", name, url, description: desc },
-        {
-          "@type": schemaType,
-          name,
-          url,
-          description: desc,
-          ...(schemaType === "SoftwareApplication" ? { applicationCategory: "DeveloperApplication", operatingSystem: "macOS, Linux, Windows" } : {}),
-        },
-      ],
-    };
-
-    const jsonLd = JSON.stringify(schemaObj, null, 2);
-
-    return {
-      "llms.txt": `# ${name}\n\n> ${desc}\n\n## Core Documentation\n\n- [Homepage](${url}/): Product overview, interactive demo, and primary workflow.\n- [Full AI Context](${url}/llms-full.txt): Complete documentation, architecture notes, and FAQs.\n\n## Key Capabilities\n\n- Archetype: ${arch}\n- Canonical Domain: ${url}\n- Automated verification and deterministic outputs.\n`,
-      "SEO_SCHEMA.jsonld": jsonLd,
-      "HEAD_TAGS.html": `<title>${name} — Verified Production Platform</title>\n<meta name="description" content="${desc}" />\n<link rel="canonical" href="${url}/" />\n<meta property="og:type" content="website" />\n<meta property="og:title" content="${name}" />\n<meta property="og:description" content="${desc}" />\n<meta property="og:url" content="${url}/" />\n<meta property="og:image" content="${url}/og-image.png" />\n<meta name="twitter:card" content="summary_large_image" />\n<meta name="twitter:title" content="${name}" />\n<meta name="twitter:description" content="${desc}" />\n<script type="application/ld+json">\n${jsonLd}\n</script>`,
-      "robots.txt": `User-agent: *\nAllow: /\n\nUser-agent: OAI-SearchBot\nAllow: /\n\nUser-agent: GPTBot\nAllow: /\n\nUser-agent: ClaudeBot\nAllow: /\n\nUser-agent: PerplexityBot\nAllow: /\n\nUser-agent: Google-Extended\nAllow: /\n\nSitemap: ${url}/sitemap.xml\n`,
-      "sitemap.xml": `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n  <url>\n    <loc>${url}/</loc>\n    <priority>1.0</priority>\n  </url>\n  <url>\n    <loc>${url}/llms.txt</loc>\n    <priority>0.8</priority>\n  </url>\n</urlset>\n`,
-    };
-  }
-
-  function renderGenPreview() {
-    if (!genPreview) return;
-    const files = buildGeneratedAssets();
-    genPreview.textContent = files[activeGenFile] || "";
-  }
-
-  document.querySelectorAll("[data-genfile]").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      document.querySelectorAll("[data-genfile]").forEach((b) => b.classList.remove("active"));
-      btn.classList.add("active");
-      activeGenFile = btn.getAttribute("data-genfile") || "llms.txt";
-      renderGenPreview();
+    ["#gen-name", "#gen-url", "#gen-desc", "#gen-arch"].forEach((sel) => {
+      const el = $(sel);
+      if (el) el.addEventListener("input", renderGenerator);
     });
-  });
 
-  [genName, genUrl, genDesc, genArch].forEach((el) => {
-    if (el) el.addEventListener("input", renderGenPreview);
-  });
+    const copyBtn = $("#copy-gen-btn");
+    if (copyBtn) {
+      copyBtn.addEventListener("click", () => {
+        copyText(renderGenerator(), filenameMap[activeGenFile]);
+      });
+    }
 
-  document.getElementById("copy-gen-btn")?.addEventListener("click", () => {
-    copyText(genPreview?.textContent || "", `${activeGenFile} copied`);
-  });
+    const dlBtn = $("#download-gen-btn");
+    if (dlBtn) {
+      dlBtn.addEventListener("click", () => {
+        const blob = new Blob([renderGenerator()], { type: "text/plain;charset=utf-8" });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = filenameMap[activeGenFile] || "growthpilot-asset.txt";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+        showToast(`Downloaded ${link.download}`);
+      });
+    }
 
-  document.getElementById("download-gen-btn")?.addEventListener("click", () => {
-    const content = genPreview?.textContent || "";
-    const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = activeGenFile;
-    link.click();
-    URL.revokeObjectURL(link.href);
-    showToast(`Downloaded ${activeGenFile}`);
-  });
-  renderGenPreview();
+    renderGenerator();
+  }
 
-  // 3. 18-Rule Rubric Explorer
-  const RULES = [
-    ["MKT001", "Technical SEO", "high", 7, "Missing page <title> or framework metadata.title — add 35-60 char keyword + brand title."],
-    ["MKT002", "Technical SEO", "high", 6, "Missing or weak meta description — add 110-155 char outcome summary."],
-    ["MKT003", "Technical SEO", "medium", 3, "Missing canonical link declaration — set rel=\"canonical\" or alternates.canonical."],
-    ["MKT004", "Technical SEO", "medium", 2, "Missing sitemap.xml or dynamic sitemap route (app/sitemap.ts)."],
-    ["MKT005", "Technical SEO", "low", 2, "Missing primary <h1> or <img> elements missing descriptive alt text."],
-    ["MKT006", "GEO & AI Search", "high", 8, "Missing /llms.txt index following llmstxt.org Markdown hierarchy."],
-    ["MKT007", "GEO & AI Search", "medium", 4, "Missing /llms-full.txt deep retrieval pack for AI answer engines."],
-    ["MKT008", "GEO & AI Search", "medium", 5, "Missing robots.txt or AI crawler Allow rules (GPTBot, ClaudeBot, PerplexityBot)."],
-    ["MKT009", "GEO & AI Search", "low", 3, "Low factual citability density or client-only FAQ answers unmounted in SSR HTML."],
-    ["MKT010", "Structured Data", "high", 11, "Missing Schema.org JSON-LD graph (SoftwareApplication, Organization, Product, FAQPage)."],
-    ["MKT011", "Structured Data", "low", 4, "Missing manifest.webmanifest or manifest.json metadata."],
-    ["MKT012", "Social & Viral Graph", "high", 10, "Missing OpenGraph metadata (og:title, og:description, og:image)."],
-    ["MKT013", "Social & Viral Graph", "medium", 5, "Missing X / Twitter summary_large_image card metadata."],
-    ["MKT014", "CRO & Copy Clarity", "high", 7, "Missing clear above-the-fold Call-to-Action or quickstart command."],
-    ["MKT015", "CRO & Copy Clarity", "medium", 4, "AI-slop filler terms detected in visible marketing copy (code blocks excluded)."],
-    ["MKT016", "CRO & Copy Clarity", "medium", 4, "Low social proof density (missing benchmarks, numbers, test counts, or license)."],
-    ["MKT017", "Launch & Growth", "medium", 10, "Missing LAUNCH_PLAYBOOK.md & PROGRAMMATIC_SEO.md growth positioning."],
-    ["MKT018", "Launch & Growth", "low", 5, "No analytics or privacy-friendly attribution hook (Plausible, PostHog, Umami, Fathom)."],
-  ];
+  function initOutputs() {
+    const titleEl = $("#out-title");
+    const badgeEl = $("#out-badge");
+    const codeEl = $("#out-code");
 
-  const rubricSearch = document.getElementById("rubric-search");
-  const rubricPillar = document.getElementById("rubric-pillar");
-  const rubricTbody = document.getElementById("rubric-tbody");
+    function showOutput(key) {
+      const item = OUTPUT_SAMPLES[key] || OUTPUT_SAMPLES.llms;
+      if (titleEl) titleEl.textContent = item.title;
+      if (badgeEl) badgeEl.textContent = item.badge;
+      if (codeEl) codeEl.textContent = item.code;
+      $$("[data-outfile]").forEach((b) => b.classList.toggle("active", b.dataset.outfile === key));
+    }
 
-  function renderRubric() {
-    if (!rubricTbody) return;
-    const q = (rubricSearch?.value || "").trim().toLowerCase();
-    const p = rubricPillar?.value || "ALL";
-    rubricTbody.textContent = "";
+    $$("[data-outfile]").forEach((btn) => {
+      btn.addEventListener("click", () => showOutput(btn.dataset.outfile));
+    });
 
-    RULES.filter(([id, pillar, , , desc]) => {
-      if (p !== "ALL" && pillar !== p) return false;
-      if (q && !`${id} ${pillar} ${desc}`.toLowerCase().includes(q)) return false;
-      return true;
-    }).forEach(([id, pillar, sev, pts, desc]) => {
-      const tr = document.createElement("tr");
-      const tdId = document.createElement("td");
-      const code = document.createElement("code");
-      code.textContent = id;
-      tdId.appendChild(code);
+    showOutput("llms");
+  }
 
-      const tdPillar = document.createElement("td");
-      tdPillar.textContent = pillar;
+  function initProof() {
+    const badgeEl = $("#cs-badge");
+    const titleEl = $("#cs-title");
+    const listEl = $("#cs-list");
 
-      const tdSev = document.createElement("td");
-      const badge = document.createElement("span");
-      badge.className = `pill ${sev === "high" ? "pill-bad" : sev === "medium" ? "pill-warn" : "pill-info"}`;
-      badge.textContent = sev.toUpperCase();
-      tdSev.appendChild(badge);
+    function setStage(stage) {
+      const data = PROOF_STAGES[stage] || PROOF_STAGES.before;
+      if (badgeEl) badgeEl.textContent = data.badge;
+      if (titleEl) titleEl.textContent = data.title;
+      if (listEl) {
+        const nodes = data.items.map((text) => {
+          const li = document.createElement("li");
+          li.textContent = text;
+          return li;
+        });
+        listEl.replaceChildren(...nodes);
+      }
+      $$("[data-stage]").forEach((b) => b.classList.toggle("active", b.dataset.stage === stage));
+    }
 
-      const tdPts = document.createElement("td");
-      tdPts.textContent = `+${pts}`;
-
-      const tdDesc = document.createElement("td");
-      tdDesc.textContent = desc;
-
-      tr.append(tdId, tdPillar, tdSev, tdPts, tdDesc);
-      rubricTbody.appendChild(tr);
+    $$("[data-stage]").forEach((btn) => {
+      btn.addEventListener("click", () => setStage(btn.dataset.stage));
     });
   }
 
-  [rubricSearch, rubricPillar].forEach((el) => {
-    if (el) el.addEventListener("input", renderRubric);
-  });
-  renderRubric();
+  function initRubric() {
+    const searchEl = $("#rubric-search");
+    const pillarEl = $("#rubric-pillar");
+    const tbody = $("#rubric-tbody");
 
-  // 12 Output Artifacts Explorer
-  const OUTPUT_SAMPLES = {
-    "AUDIT_REPORT.md": ["Impact-Sorted Checklist", `# GrowthPilot Audit Report — PulseForge\n- Score: 84/100 (Grade B)\n\n## Prioritized Action Plan (Sorted by Score Impact)\n| Rule | Potential Gain | Finding |\n| MKT010 | +11 pts | Missing Schema.org JSON-LD |\n| MKT012 | +10 pts | Missing OpenGraph social cards |`],
-    "HEAD_TAGS.html": ["Drop-In <head> Block", `<title>PulseForge — Automated Release Telemetry</title>\n<meta name="description" content="Catch deploy regressions in 10 seconds with zero config." />\n<link rel="canonical" href="https://pulseforge.dev/" />\n<meta property="og:image" content="https://pulseforge.dev/og-image.png" />`],
-    "SEO_SCHEMA.jsonld": ["Validated Schema Graph", `{\n  "@context": "https://schema.org",\n  "@graph": [\n    { "@type": "WebSite", "name": "PulseForge", "url": "https://pulseforge.dev" },\n    { "@type": "SoftwareApplication", "name": "PulseForge", "applicationCategory": "DeveloperApplication" }\n  ]\n}`],
-    "llms.txt": ["AI Search Index", `# PulseForge\n\n> Automated canary gating and release telemetry in 10 seconds.\n\n## Core Documentation\n- [Quickstart](https://pulseforge.dev/docs): 1-command CLI installation.\n- [Full Context](https://pulseforge.dev/llms-full.txt): Architecture & FAQs.`],
-    "llms-full.txt": ["Extended LLM Knowledge", `# PulseForge — Full AI Knowledge Pack\n\n- Zero config overhead\n- SARIF 2.1.0 native CI export\n- Supports GitHub Actions, Vercel, and Docker`],
-    "robots.txt": ["Crawler Allowlist", `User-agent: *\nAllow: /\n\nUser-agent: OAI-SearchBot\nAllow: /\nUser-agent: GPTBot\nAllow: /\nUser-agent: ClaudeBot\nAllow: /\nUser-agent: PerplexityBot\nAllow: /\nSitemap: https://pulseforge.dev/sitemap.xml`],
-    "sitemap.xml": ["XML Route Index", `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n  <url><loc>https://pulseforge.dev/</loc></url>\n  <url><loc>https://pulseforge.dev/pricing</loc></url>\n</urlset>`],
-    "manifest.webmanifest": ["PWA Web Manifest", `{\n  "name": "PulseForge",\n  "short_name": "PulseForge",\n  "start_url": "/",\n  "display": "standalone",\n  "theme_color": "#38bdf8"\n}`],
-    "LAUNCH_PLAYBOOK.md": ["14-Day Distribution Plan", `# PulseForge Zero-to-One Launch Playbook\n- Day 1: Show HN & GitHub Release\n- Day 2: Dev.to Architecture Deep Dive\n- Day 3-7: Programmatic Comparison Pages & Outreach`],
-    "PROGRAMMATIC_SEO.md": ["High-Intent Keyword Matrix", `# Programmatic SEO Blueprint\n- Keyword Cluster: [Tool] alternative with SARIF CI support\n- Hub Page: /integrations/*\n- Internal Link Pattern: Hub -> Spokes -> Docs`],
-    "growthpilot-report.html": ["Offline HTML Dashboard", `<!DOCTYPE html> Self-contained interactive HTML Command Center with 6-pillar gauge, multi-page route scorecard, copyable assets, and PDF print export.`],
-    "growth-summary.json": ["CI/CD JSON Scorecard", `{\n  "tool": "growthpilot",\n  "version": "1.4.0",\n  "score": 100,\n  "grade": "A+",\n  "findings": []\n}`],
-  };
+    function renderRules() {
+      if (!tbody) return;
+      const q = (searchEl ? searchEl.value : "").trim().toLowerCase();
+      const pillar = pillarEl ? pillarEl.value : "all";
 
-  const outTitle = document.getElementById("out-title");
-  const outBadge = document.getElementById("out-badge");
-  const outCode = document.getElementById("out-code");
+      const matches = RUBRIC_RULES.filter((r) => {
+        if (pillar !== "all" && r.pillar !== pillar) return false;
+        if (!q) return true;
+        return (
+          r.id.toLowerCase().includes(q) ||
+          r.pillar.toLowerCase().includes(q) ||
+          r.check.toLowerCase().includes(q) ||
+          r.severity.toLowerCase().includes(q)
+        );
+      });
 
-  function showOutputFile(key) {
-    const entry = OUTPUT_SAMPLES[key] || OUTPUT_SAMPLES["AUDIT_REPORT.md"];
-    if (outTitle) outTitle.textContent = key;
-    if (outBadge) outBadge.textContent = entry[0];
-    if (outCode) outCode.textContent = entry[1];
+      if (matches.length === 0) {
+        const tr = document.createElement("tr");
+        const td = document.createElement("td");
+        td.colSpan = 4;
+        td.textContent = "No matching rules found — clear filter to view all 18 rules.";
+        tr.appendChild(td);
+        tbody.replaceChildren(tr);
+        return;
+      }
+
+      const rows = matches.map((r) => {
+        const tr = document.createElement("tr");
+
+        const tdId = document.createElement("td");
+        const code = document.createElement("code");
+        code.textContent = r.id;
+        tdId.appendChild(code);
+
+        const tdPillar = document.createElement("td");
+        tdPillar.textContent = r.pillar;
+
+        const tdCheck = document.createElement("td");
+        tdCheck.textContent = r.check;
+
+        const tdSev = document.createElement("td");
+        const span = document.createElement("span");
+        span.className = "pill";
+        span.textContent = r.severity;
+        tdSev.appendChild(span);
+
+        tr.append(tdId, tdPillar, tdCheck, tdSev);
+        return tr;
+      });
+
+      tbody.replaceChildren(...rows);
+    }
+
+    if (searchEl) searchEl.addEventListener("input", renderRules);
+    if (pillarEl) pillarEl.addEventListener("change", renderRules);
+    renderRules();
   }
 
-  document.querySelectorAll("[data-outfile]").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      document.querySelectorAll("[data-outfile]").forEach((b) => b.classList.remove("active"));
-      btn.classList.add("active");
-      showOutputFile(btn.getAttribute("data-outfile") || "AUDIT_REPORT.md");
-    });
+  document.addEventListener("DOMContentLoaded", () => {
+    initCTA();
+    initStudioTabs();
+    initCRO();
+    initGenerator();
+    initOutputs();
+    initProof();
+    initRubric();
   });
-  showOutputFile("AUDIT_REPORT.md");
 })();
