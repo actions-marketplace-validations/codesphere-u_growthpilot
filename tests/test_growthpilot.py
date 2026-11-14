@@ -228,3 +228,85 @@ def test_marketplace_archetype_and_page_audit_diagnostics() -> None:
     assert any("Duplicate brand suffix" in i for i in pa["issues"])
     assert any("empty heading" in i for i in pa["issues"])
 
+
+def test_slop_extractor_ignores_code_and_detects_prose() -> None:
+    sample = (
+        "Here is an example list: `revolutionary`, `seamlessly`.\n"
+        "```bash\necho 'unleash synergy tapestry'\n```\n"
+        "Actual marketing copy: Delve into our game-changing workflow.\n"
+    )
+    slop = growthpilot._extract_slop_words(sample)
+    assert "delve" in slop
+    assert "game-changing" in slop
+    assert "revolutionary" not in slop
+    assert "seamlessly" not in slop
+    assert "unleash" not in slop
+    assert "tapestry" not in slop
+
+
+def test_pyproject_urls_and_ecommerce_archetype(tmp_path: Path) -> None:
+    repo = tmp_path / "roastcart"
+    repo.mkdir()
+    (repo / "pyproject.toml").write_text(
+        '[project]\nname = "roastcart"\nversion = "0.1.0"\n'
+        'description = "Specialty online store and e-commerce storefront with free shipping."\n\n'
+        '[project.urls]\nHomepage = "https://roastcart.shop"\n',
+        encoding="utf-8",
+    )
+    (repo / "README.md").write_text(
+        "# RoastCart — Online Store & E-Commerce\n\nShop now with free shipping and fast dispatch.\n",
+        encoding="utf-8",
+    )
+
+    prof = growthpilot.scan_directory(repo)
+    assert prof.site_url == "https://roastcart.shop"
+    assert prof.archetype == "ecommerce"
+
+    cro = growthpilot.analyze_copy_cro(
+        "Shop fresh beans online with free shipping.",
+        product_name="RoastCart",
+        archetype="ecommerce",
+    )
+    assert "30-day satisfaction guarantee" in cro["rewrites"]["jtbd_framework"]
+
+    launch_md = growthpilot.generate_launch_kit(prof)
+    assert "E-Commerce" in launch_md or "Merchant" in launch_md or "RoastCart" in launch_md
+
+
+def test_findings_sorted_by_impact_and_audit_report_written(tmp_path: Path) -> None:
+    empty_repo = tmp_path / "blank-app"
+    empty_repo.mkdir()
+    prof = growthpilot.scan_directory(empty_repo)
+    audit = growthpilot.evaluate_profile(prof)
+    pts = [f["points_lost"] for f in audit["findings"]]
+    assert pts == sorted(pts, reverse=True)
+    assert len(pts) > 5
+
+    out_dir = tmp_path / "demo-out"
+    rc = growthpilot.main(["--demo", "--output-dir", str(out_dir)])
+    assert rc == 0
+    md_path = out_dir / "AUDIT_REPORT.md"
+    assert md_path.is_file()
+    md_text = md_path.read_text(encoding="utf-8")
+    assert "Prioritized Action Plan (Sorted by Score Impact)" in md_text
+    assert "## 6-Pillar Breakdown" in md_text
+
+
+def test_docs_and_contributing_bash_blocks_are_zsh_safe() -> None:
+    root = Path(__file__).resolve().parent.parent
+    md_files = [
+        root / "README.md",
+        root / "CONTRIBUTING.md",
+        root / "skills" / "growthpilot" / "SKILL.md",
+        *sorted((root / "docs").glob("*.md")),
+    ]
+    for md_file in md_files:
+        text = md_file.read_text(encoding="utf-8")
+        for block in re.findall(r"```bash\n(.*?)```", text, flags=re.DOTALL):
+            for raw_line in block.splitlines():
+                stripped = raw_line.strip()
+                assert not stripped.startswith("#"), (
+                    f"Zsh-unsafe `#` comment in {md_file.name} bash block: {raw_line!r}"
+                )
+
+

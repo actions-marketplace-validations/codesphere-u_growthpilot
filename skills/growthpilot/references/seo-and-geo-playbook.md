@@ -1,39 +1,38 @@
-# Technical SEO, GEO/AEO & `llms.txt` Playbook
+# Technical SEO & GEO (AI Search) Playbook (`v1.3.0`)
 
-## 1. The 6-Pillar GrowthReadiness Rubric (`MKT001`–`MKT018`)
+GrowthPilot grades every local codebase and live site out of **100 points** across **6 weighted pillars** and **18 deterministic rules** (`MKT001`–`MKT018`). Findings in reports are sorted by impact (`(-points_lost, -severity, rule_id)`) so the highest-leverage fixes appear first.
 
-| Rule ID | Pillar | Severity | Signal Checked | Auto-Fix / Remedy |
-| :--- | :--- | :--- | :--- | :--- |
-| `MKT001` | Technical SEO | High | Missing `<title>` or framework `metadata.title` | Add 35–60 char primary keyword + brand title |
-| `MKT002` | Technical SEO | High | Missing or out-of-range meta description (<50 or >165 chars) | Add 110–155 char outcome-focused meta description |
-| `MKT003` | Technical SEO | Medium | Missing canonical URL (`rel="canonical"` / `alternates.canonical`) | Declare self-referencing canonical URL |
-| `MKT004` | Technical SEO | Medium | Missing `sitemap.xml` or dynamic sitemap route | Generate `public/sitemap.xml` or `app/sitemap.ts` |
-| `MKT005` | Technical SEO | Low | Missing `<h1>` or `<img>` tags without `alt` text | Ensure exactly one clear `<h1>` and descriptive `alt` text |
-| `MKT006` | GEO / AEO | High | Missing `/llms.txt` machine-readable index for AI answer engines | Generate `llms.txt` with summary, core docs, and canonical links |
-| `MKT007` | GEO / AEO | Medium | Missing `/llms-full.txt` comprehensive AI retrieval corpus | Generate `llms-full.txt` with architecture, CLI/API, and FAQs |
-| `MKT008` | GEO / AEO | Medium | Missing `robots.txt` or missing AI search crawler rules | Allow `OAI-SearchBot`, `PerplexityBot`, `ClaudeBot`, `GPTBot` + `Sitemap:` |
-| `MKT009` | GEO / AEO | Low | Low factual citability (no numbers, benchmarks, or FAQ blocks) | Add concrete metrics, comparison tables, and direct Q&A blocks |
-| `MKT010` | Structured Data | High | Missing Schema.org JSON-LD (`application/ld+json`) | Embed `SoftwareApplication`, `WebSite`, or `FAQPage` JSON-LD |
-| `MKT011` | Structured Data | Low | Missing web app manifest (`manifest.webmanifest`) | Add `manifest.webmanifest` with name, icons, and theme colors |
-| `MKT012` | Social Graph | High | Missing OpenGraph tags (`og:title`, `og:description`, `og:image`) | Add complete OpenGraph tags and 1200x630 social preview card |
-| `MKT013` | Social Graph | Medium | Missing X/Twitter card tags (`twitter:card`, `twitter:image`) | Set `twitter:card` to `summary_large_image` |
-| `MKT014` | CRO & Copy | High | Missing primary Call-to-Action (CTA) or quickstart trigger | Add high-contrast primary CTA or 1-line install command above fold |
-| `MKT015` | CRO & Copy | Medium | AI-slop buzzwords (`revolutionary`, `unleash`, `seamlessly`, `delve`) | Replace vague hype with specific mechanisms and quantified outcomes |
-| `MKT016` | CRO & Copy | Medium | Missing trust & proof signals (benchmarks, tests, security, badges) | Surface measurable benchmarks, test status, or customer proof |
-| `MKT017` | Launch & Growth | Medium | Missing competitive positioning (`vs` alternatives) or launch kit | Generate `LAUNCH_PLAYBOOK.md` and `PROGRAMMATIC_SEO.md` |
-| `MKT018` | Launch & Growth | Low | Missing privacy-friendly analytics or conversion event hooks | Wire Plausible, PostHog, Vercel Analytics, or UTM attribution |
+## Complete 6-Pillar, 18-Rule Rubric
 
----
+| Rule | Pillar | Severity | Pts | Pass Criteria & Automated Fixes |
+| :--- | :--- | :--- | :---: | :--- |
+| `MKT001` | Technical SEO (20) | High | 7 | Page `<title>` or framework `metadata.title` present (35–60 chars recommended). |
+| `MKT002` | Technical SEO (20) | High | 6 | Meta description present and substantial (50–165 chars). |
+| `MKT003` | Technical SEO (20) | Medium | 3 | Canonical URL (`<link rel="canonical">` or framework `alternates.canonical`) declared. |
+| `MKT004` | Technical SEO (20) | Medium | 2 | `sitemap.xml` or dynamic sitemap route (`app/sitemap.ts`) present. |
+| `MKT005` | Technical SEO (20) | Low | 2 | Primary `<h1>` heading present and zero `<img>` elements missing `alt` attributes. |
+| `MKT006` | GEO & AI Search (20) | High | 8 | Root `/llms.txt` index present for ChatGPT Search, Claude, and Perplexity. |
+| `MKT007` | GEO & AI Search (20) | Medium | 4 | Extended `/llms-full.txt` deep retrieval context file present. |
+| `MKT008` | GEO & AI Search (20) | Medium | 5 | `robots.txt` present with explicit AI search crawler allow rules (`OAI-SearchBot`, `GPTBot`, `ClaudeBot`, `PerplexityBot`, `Google-Extended`). |
+| `MKT009` | GEO & AI Search (20) | Low | 3 | Factual citability density (`citability_count >= 2`: tables, stats, definitions, `<details>`/FAQ blocks). Live scanner flags client-bundle FAQs missing from SSR HTML. |
+| `MKT010` | Structured Data (15) | High | 11 | Valid `Schema.org` JSON-LD (`application/ld+json`) matching archetype (`SoftwareApplication`, `Organization`, `Product`, `FAQPage`, `WebSite`). |
+| `MKT011` | Structured Data (15) | Low | 4 | Web App Manifest (`manifest.webmanifest` / `manifest.json`) present. |
+| `MKT012` | Social & Viral Graph (15) | High | 10 | Open Graph metadata (`og:title`, `og:description`, `og:image`). |
+| `MKT013` | Social & Viral Graph (15) | Medium | 5 | X / Twitter summary card metadata (`twitter:card="summary_large_image"`). |
+| `MKT014` | CRO & Copy Clarity (15) | High | 7 | Clear above-the-fold CTA (`Get Started`, `Start Free`, `Book a Demo`, install command). |
+| `MKT015` | CRO & Copy Clarity (15) | Medium | 4 | Zero AI-slop filler terms (`revolutionary`, `seamlessly`, `unleash`, `delve`, `tapestry`, etc.) outside code blocks. |
+| `MKT016` | CRO & Copy Clarity (15) | Medium | 4 | Social proof & trust markers (`proof_count >= 2`: numbers, latency benchmarks, test counts, licenses, security assurances). |
+| `MKT017` | Launch & Growth (15) | Medium | 10 | Launch playbook (`LAUNCH_PLAYBOOK.md`) & programmatic SEO positioning (`PROGRAMMATIC_SEO.md`) present. |
+| `MKT018` | Launch & Growth (15) | Low | 5 | Privacy-friendly analytics or attribution hook (`Plausible`, `PostHog`, `Umami`, `Fathom`, `@vercel/analytics`, `gtag`, etc.). |
 
-## 2. Generative Engine Optimization (GEO / AEO) Standard
+## Grade Scale
 
-Modern discovery happens inside **ChatGPT Search (`OAI-SearchBot`)**, **Perplexity (`PerplexityBot`)**, **Claude (`ClaudeBot`)**, and **Google AI Overviews**. To rank and get cited:
+`A+` (`95–100`) • `A` (`88–94`) • `B` (`78–87`) • `C` (`65–77`) • `D` (`50–64`) • `F` (`0–49`)
 
-1. **Publish `/llms.txt` and `/llms-full.txt`** at the site root (`public/llms.txt` in Next.js/Vite/Astro) following the standard markdown index structure:
-   - `# Product Name`
-   - `> One-sentence factual summary stating exact category, audience, and core differentiator.`
-   - Bulleted sections (`## Core Capabilities`, `## Quickstart`, `## Documentation & URLs`, `## Comparison & Benchmarks`).
-2. **Explicitly permit AI Search Crawlers in `robots.txt`**:
-   - Blocking `OAI-SearchBot` or `PerplexityBot` removes your product from AI search citations.
-3. **Write "Quotable Fact Blocks"**:
-   - LLMs cite pages that answer questions in the first sentence (`"X is an open-source Y that reduces Z by 40%..."`) followed by a Markdown/HTML comparison table.
+## GEO / `llmstxt.org` Format Checklist
+
+1. Start with `# Product Name`.
+2. Add a concise blockquote `> Summary sentence` describing who it serves and what it produces.
+3. Group canonical links under H2 sections (`## Core Documentation`, `## Product & Features`, `## Guides & Policies`) using `[Title](https://absolute-url): One-line summary`.
+4. Mirror deeper documentation, FAQs, benchmarks, and integration snippets inside `llms-full.txt`.
+5. Render FAQ answers in SSR/static HTML alongside `FAQPage` JSON-LD — never trap Q&A content solely inside client-side JS bundles.

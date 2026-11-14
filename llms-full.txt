@@ -1,0 +1,71 @@
+# GrowthPilot — Full AI Knowledge Pack (`v1.3.0`)
+
+> Repository: https://github.com/codesphere-u/growthpilot
+> License: MIT
+> Runtime: Python 3.10+ standard library only (0 third-party dependencies)
+
+## What GrowthPilot Does
+
+GrowthPilot (`codesphere-u/growthpilot`) is a deterministic marketing, Technical SEO, Generative Engine Optimization (GEO / AEO), Schema.org, and Conversion Rate Optimization (CRO) engine shipped as a single-file Python CLI, an Agent Skill (`SKILL.md`), a Model Context Protocol (`--mcp`) server, and a GitHub Action (`codesphere-u/growthpilot@v1`).
+
+Unlike paid SEO dashboards that charge monthly subscriptions for vague warnings, or generic LLM prompts that fabricate schema markup, GrowthPilot executes reproducible static analysis and live HTML/JS crawling to:
+
+1. Grade any repository or live `http(s)://` URL out of **100 points** (`A+` through `F`) across **6 pillars and 18 rules (`MKT001`–`MKT018`)**:
+   - Technical SEO (20 pts): `MKT001`–`MKT005`
+   - GEO & AI Search (20 pts): `MKT006`–`MKT009`
+   - Structured Data (15 pts): `MKT010`–`MKT011`
+   - Social & Viral Graph (15 pts): `MKT012`–`MKT013`
+   - CRO & Copy Clarity (15 pts): `MKT014`–`MKT016`
+   - Launch & Growth (15 pts): `MKT017`–`MKT018`
+2. Classify the project automatically into one of four archetypes (`devtools`, `b2b_saas`, `marketplace_app`, `ecommerce`) so generated metadata and launch advice fit the actual business model.
+3. Extract hidden crawler gaps — including unmounted FAQ answers trapped inside Next.js client JavaScript chunks, duplicate `<title>` brand suffixes across subpages, empty headings, missing canonicals, and AI-slop filler copy (with fenced code blocks and inline backticks excluded).
+4. Generate 12 ready-to-deploy marketing artifacts into `--output-dir`:
+   - `AUDIT_REPORT.md` — Executive Markdown audit sorted by point impact, detected JSON-LD entities, hero copy before/after rewrite, and fix checklist
+   - `growthpilot-report.html` — Offline interactive HTML Command Center
+   - `HEAD_TAGS.html` — Complete HTML `<head>` metadata + JSON-LD block
+   - `SEO_SCHEMA.jsonld` — Archetype-matched Schema.org `@graph` JSON-LD
+   - `llms.txt` & `llms-full.txt` — Spec-compliant AI search documentation files
+   - `robots.txt` — Search & AI crawler allowlist (`OAI-SearchBot`, `GPTBot`, `ClaudeBot`, `PerplexityBot`, `Google-Extended`)
+   - `sitemap.xml` & `manifest.webmanifest` — Route sitemap and web app manifest
+   - `LAUNCH_PLAYBOOK.md` & `PROGRAMMATIC_SEO.md` — Launch channels and pSEO templates
+   - `growth-summary.json` — Structured scorecard (plus `--sarif <path>` for SARIF 2.1.0 output)
+
+## Live-Site Benchmark Summary (`https://funagigs.com/`)
+
+Auditing `funagigs.com` with GrowthPilot caught concrete production defects missed by manual checks:
+- Initial live crawl scored `53/100` (Grade D).
+- Flagged 6 FAQ answers trapped inside client-side JS bundles instead of SSR HTML.
+- Flagged 4 duplicate route title suffixes across `/features`, `/post-a-job`, `/contact`, and `/waitlist`, duplicate `"Funa Vault"` keyword cannibalization, missing `FAQPage` JSON-LD, missing `llms.txt`, and 50 images missing `alt` attributes.
+- Applying GrowthPilot's generated pack brought the fixed project audit score to `100/100` (Grade A+).
+
+## CLI Usage
+
+```bash
+uvx --from git+https://github.com/codesphere-u/growthpilot@v1 growthpilot https://yoursite.com --output-dir ./growth-kit
+uv tool install git+https://github.com/codesphere-u/growthpilot@v1
+growthpilot . --site-url https://yoursite.com --fix
+growthpilot --analyze-copy "Our fast engine ships reliable workflows cleanly"
+growthpilot --demo --output-dir /tmp/growthpilot-demo
+growthpilot . --min-score 80 --fail-on high --sarif growthpilot.sarif
+growthpilot --mcp
+```
+
+## MCP Tools (JSON-RPC 2.0 over `stdio`)
+
+- `audit_project(target=".", site_url=None)`
+- `analyze_copy_cro(text, product_name=None)`
+- `generate_geo_seo_pack(target=".", site_url=None)`
+- `generate_launch_kit(target=".", site_url=None)`
+- `generate_programmatic_seo(target=".", site_url=None)`
+- `apply_marketing_fixes(target, site_url=None)`
+
+## Frequently Asked Questions
+
+### How does GrowthPilot differ from paid SEO suites or Lighthouse?
+Traditional SEO suites charge monthly fees and audit live HTML without writing code assets, `llms.txt`, or launch playbooks. Lighthouse checks generic accessibility/performance heuristics without generating Schema.org JSON-LD graphs, auditing CRO AI-slop copywriting, inspecting client JS chunks for hidden FAQ answers, or exposing an MCP server for AI agents. GrowthPilot audits both source code and live sites offline/locally at zero cost and writes deployable files.
+
+### Does GrowthPilot require API keys or send code to external LLMs?
+No. GrowthPilot uses only the Python 3.10+ standard library with zero external packages, zero API keys, and zero telemetry. Local repository audits make zero network calls; only explicit live-URL scans fetch the user-supplied URL with `timeout=10`, 2 MB response size caps, and a max 7-subpage crawl depth.
+
+### How do I integrate GrowthPilot into CI/CD?
+Add `codesphere-u/growthpilot@v1` to your GitHub Actions workflow with `min-score: "80"`, `fail-on: "high"`, and `sarif-file: "growthpilot.sarif"`, then upload the SARIF file via `github/codeql-action/upload-sarif@v3`.

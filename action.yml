@@ -10,6 +10,14 @@ inputs:
     description: "Directory path or live URL to audit"
     required: false
     default: "."
+  site-url:
+    description: "Optional canonical site URL override (e.g. https://yourproduct.com)"
+    required: false
+    default: ""
+  fix:
+    description: "Set to 'true' to auto-generate missing llms.txt, robots.txt, sitemap.xml, JSON-LD & Launch Playbooks"
+    required: false
+    default: "false"
   min-score:
     description: "Minimum GrowthReadiness score (0-100) required to pass"
     required: false
@@ -30,6 +38,9 @@ outputs:
   grade:
     description: "Overall GrowthPilot letter grade"
     value: ${{ steps.run-audit.outputs.grade }}
+  critical_high_count:
+    description: "Total critical + high findings detected"
+    value: ${{ steps.run-audit.outputs.critical_high_count }}
 
 runs:
   using: "composite"
@@ -44,17 +55,24 @@ runs:
       shell: bash
       env:
         INPUT_TARGET: ${{ inputs.target }}
+        INPUT_SITE_URL: ${{ inputs.site-url }}
+        INPUT_FIX: ${{ inputs.fix }}
         INPUT_MIN_SCORE: ${{ inputs.min-score }}
         INPUT_FAIL_ON: ${{ inputs.fail-on }}
         INPUT_SARIF: ${{ inputs.sarif-file }}
       run: |
         set -euo pipefail
-        python3 "${{ github.action_path }}/skills/growthpilot/scripts/growthpilot.py" "$INPUT_TARGET" \
-          --output-dir growthpilot-out \
-          --sarif "$INPUT_SARIF" \
-          --min-score "$INPUT_MIN_SCORE" \
-          --fail-on "$INPUT_FAIL_ON"
+        ARGS=("$INPUT_TARGET" --output-dir growthpilot-out --sarif "$INPUT_SARIF" --min-score "$INPUT_MIN_SCORE" --fail-on "$INPUT_FAIL_ON")
+        if [ -n "$INPUT_SITE_URL" ]; then
+          ARGS+=(--site-url "$INPUT_SITE_URL")
+        fi
+        if [ "$INPUT_FIX" = "true" ]; then
+          ARGS+=(--fix)
+        fi
+        python3 "${{ github.action_path }}/skills/growthpilot/scripts/growthpilot.py" "${ARGS[@]}"
         SCORE=$(python3 -c 'import json; d=json.load(open("growthpilot-out/growth-summary.json")); print(d["score"])')
         GRADE=$(python3 -c 'import json; d=json.load(open("growthpilot-out/growth-summary.json")); print(d["grade"])')
+        CRIT_HIGH=$(python3 -c 'import json; s=json.load(open("growthpilot-out/growth-summary.json"))["severity_counts"]; print(s["critical"] + s["high"])')
         echo "score=$SCORE" >> "$GITHUB_OUTPUT"
         echo "grade=$GRADE" >> "$GITHUB_OUTPUT"
+        echo "critical_high_count=$CRIT_HIGH" >> "$GITHUB_OUTPUT"

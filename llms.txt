@@ -1,0 +1,24 @@
+# GrowthPilot
+
+> Zero-dependency autonomous CLI, MCP server, Agent Skill, and GitHub Action that audits any local codebase or live website URL across 18 deterministic SEO, GEO/AI Search (`llms.txt`), Schema.org JSON-LD, and CRO copywriting rules and generates ready-to-deploy marketing assets.
+
+## Core Documentation
+
+- [README & Overview](https://github.com/codesphere-u/growthpilot/blob/main/README.md): Executive overview, comparison matrix, live URL proof (`funagigs.com`), quickstarts, CLI flags, and MCP reference.
+- [Getting Started Guide](https://github.com/codesphere-u/growthpilot/blob/main/docs/GETTING_STARTED.md): Persona workflows for founders, marketers, and developers, plus framework deployment guides.
+- [MCP & AI Agents Guide](https://github.com/codesphere-u/growthpilot/blob/main/docs/MCP_AND_AGENTS.md): Setup for Claude Code, Cursor, Antigravity, Codex, GitHub Actions SARIF gating, and Docker.
+- [Architecture & Rubric](https://github.com/codesphere-u/growthpilot/blob/main/docs/ARCHITECTURE.md): Pipeline architecture, 100-point rubric breakdown (`MKT001`–`MKT018`), SSR vs. JS bundle scanner, and SSRF guardrails.
+
+## Agent Skill & Playbooks
+
+- [GrowthPilot Skill (`SKILL.md`)](https://github.com/codesphere-u/growthpilot/blob/main/skills/growthpilot/SKILL.md): Agent skill instructions (`npx skills add codesphere-u/growthpilot`) covering local repos, live URLs, copy analysis, and MCP mode.
+- [SEO & GEO Playbook](https://github.com/codesphere-u/growthpilot/blob/main/skills/growthpilot/references/seo-and-geo-playbook.md): Complete 18-rule grading rubric and `llmstxt.org` specification checklist.
+- [CRO & Zero-Slop Copywriting](https://github.com/codesphere-u/growthpilot/blob/main/skills/growthpilot/references/cro-and-copywriting.md): Above-the-fold conversion formulas and banned AI cliché detection rules.
+- [Zero-to-One Launch Playbook](https://github.com/codesphere-u/growthpilot/blob/main/skills/growthpilot/references/zero-to-one-launch.md): Archetype-specific launch tactics and programmatic SEO blueprint.
+- [MCP & CI Setup](https://github.com/codesphere-u/growthpilot/blob/main/skills/growthpilot/references/mcp-and-ci-setup.md): Tool schemas for all 6 MCP tools and GitHub Action inputs/outputs.
+
+## Releases & Governance
+
+- [Changelog](https://github.com/codesphere-u/growthpilot/blob/main/CHANGELOG.md): Version history (`v1.0.0` through `v1.3.0`).
+- [Contributing](https://github.com/codesphere-u/growthpilot/blob/main/CONTRIBUTING.md): Contributor checklist, static checks (`ruff`, `mypy`, `pytest`, `billshock`), and rule authoring standards.
+- [Security Policy](https://github.com/codesphere-u/growthpilot/blob/main/SECURITY.md): Responsible disclosure, SSRF protections, broad-root guardrails, and zero-dependency guarantees.

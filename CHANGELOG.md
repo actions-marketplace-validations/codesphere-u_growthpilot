@@ -5,6 +5,20 @@ All notable changes to **GrowthPilot** are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - 2026-11-14
+
+### Added
+- **Executive Markdown Audit Report (`AUDIT_REPORT.md`):** Impact-sorted findings (`points_lost` descending), detected Schema.org `@type` inventory, concrete before/after hero rewrite preview, and actionable fix checklist generated on every audit run.
+- **`ecommerce` Archetype Support:** Dedicated D2C storefront CRO rewrites, `Product` schema emphasis, and merchant launch playbooks alongside `devtools`, `b2b_saas`, and `marketplace_app`.
+- **Enhanced Framework & Schema Detection:** Detects Shopify, Webflow, WordPress, Framer, SvelteKit, Astro, and Next.js signals, extracts live JSON-LD `@type` entities, and falls back to internal `<a href="/...">` crawling when `sitemap.xml` is missing.
+- **`--site-url` Override on Live URL Audits & GitHub Action Inputs:** Added `site-url`, `fix`, and `critical_high_count` output to `action.yml`.
+- **Flagship Documentation & Hero Visual:** Custom SVG banner (`docs/assets/growthpilot-banner.svg`), Mermaid workflow diagram, value comparison matrix, `funagigs.com` live proof case study, persona quickstarts, `docs/GETTING_STARTED.md`, `docs/MCP_AND_AGENTS.md`, `docs/ARCHITECTURE.md`, `CONTRIBUTING.md`, `SECURITY.md`, and root `llms.txt` / `llms-full.txt`.
+
+### Fixed
+- **Zero False-Positive AI Slop on Technical Docs:** `_extract_slop_words()` strips fenced code blocks and inline backticks so documentation listing banned words in code examples is not penalized.
+- **Canonical URL Extraction from `pyproject.toml` / `package.json`:** `scan_directory()` reads `[project.urls]` (`Homepage` / `Repository`) and `package.json` `repository` before falling back to heuristic domains.
+- **Signal Extraction Hygiene:** Excluded `tests`, `__tests__`, `site`, and `.docusaurus` directories from repo marketing signal scans and sorted findings by highest score recovery first.
+
 ## [1.2.0] - 2026-11-14
 
 ### Added

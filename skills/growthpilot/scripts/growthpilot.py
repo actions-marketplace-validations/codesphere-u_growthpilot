@@ -31,7 +31,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Literal
 
-VERSION = "1.2.0"
+VERSION = "1.3.0"
 
 Severity = Literal["critical", "high", "medium", "low"]
 SEVERITY_ORDER: dict[str, int] = {"none": 99, "low": 1, "medium": 2, "high": 3, "critical": 4}
@@ -45,10 +45,14 @@ EXCLUDED_DIRS = {
     ".next",
     "dist",
     "build",
+    "site",
+    ".docusaurus",
     ".pytest_cache",
     ".mypy_cache",
     ".ruff_cache",
     "growthpilot-out",
+    "tests",
+    "__tests__",
     "Library",
     "AppData",
 }
@@ -151,6 +155,9 @@ class ProjectProfile:
     archetype: str = "devtools"
     service_categories: list[str] = dataclasses.field(default_factory=list)
     page_audits: list[dict[str, Any]] = dataclasses.field(default_factory=list)
+    schema_types_found: list[str] = dataclasses.field(default_factory=list)
+    http_status: int = 0
+    final_url: str = ""
 
 
 RULE_DEFINITIONS: dict[str, tuple[str, Severity, str, str, int]] = {
@@ -302,7 +309,9 @@ def _clean_line(text: str) -> str:
 
 
 def _extract_slop_words(text: str) -> list[str]:
-    low = text.lower()
+    stripped_code = re.sub(r"```.*?```", " ", text, flags=re.DOTALL)
+    stripped_code = re.sub(r"`[^`\n]+`", " ", stripped_code)
+    low = stripped_code.lower()
     found: list[str] = []
     for word in AI_SLOP_WORDS:
         if re.search(rf"\b{re.escape(word)}\b", low) and word not in found:
@@ -368,6 +377,34 @@ def analyze_copy_cro(
             "direct_metric_hero": (
                 f"Hire verified help or find paid local gigs in minutes with {product_name} — 100% escrow-protected "
                 f"payments, live map matching, and instant Mobile Money payouts."
+            ),
+        }
+    elif archetype == "ecommerce" or any(w in cleaned.lower() for w in ("add to cart", "free shipping", "shop now", "storefront")):
+        rewrites = {
+            "pas_framework": (
+                f"Tired of slow shipping and guessing quality online? {product_name} delivers vetted products directly to your door "
+                f"with transparent pricing, verified buyer reviews, and hassle-free returns."
+            ),
+            "jtbd_framework": (
+                f"{product_name}: Compare exact specs, check real-time stock, and check out in 30 seconds "
+                f"with tracked delivery and a 30-day satisfaction guarantee."
+            ),
+            "direct_metric_hero": (
+                f"Shop {product_name} with confidence — fast dispatch, verified quality, and 30-second one-click checkout."
+            ),
+        }
+    elif archetype == "b2b_saas":
+        rewrites = {
+            "pas_framework": (
+                f"Stop losing hours to spreadsheets and disconnected tools. {product_name} gives your team a single workspace "
+                f"with live visibility, automated workflows, and predictable results in minutes."
+            ),
+            "jtbd_framework": (
+                f"{product_name}: Connect your data in under 2 minutes, automate repetitive tasks, and measure real ROI "
+                f"without engineering bottlenecks or long onboarding calls."
+            ),
+            "direct_metric_hero": (
+                f"Save 10+ hours every week with {product_name} — start free in 60 seconds, zero credit card required."
             ),
         }
     else:
@@ -476,7 +513,14 @@ def _infer_market_positioning(profile: ProjectProfile) -> None:
             profile.install_cmd = f"Open {profile.web_app_url} or install on Google Play ({profile.site_url})"
         else:
             profile.install_cmd = f"Visit {profile.site_url} or install via Google Play"
-    elif any(f in profile.framework for f in ("Next.js", "Astro", "SvelteKit", "React", "Live Website")) and not any(
+    elif "shopify" in profile.framework.lower() or any(
+        k in blob for k in ("ecommerce", "e-commerce", "online store", "add to cart", "shop now", "free shipping")
+    ):
+        profile.archetype = "ecommerce"
+        profile.category = "Direct-to-Consumer E-Commerce & Storefront"
+        profile.competitors = ["Amazon / Big-Box Marketplaces", "Unverified Social Resellers", "Legacy Retail Stores"]
+        profile.install_cmd = f"Shop online at {profile.site_url}"
+    elif any(f in profile.framework for f in ("Next.js", "Astro", "SvelteKit", "React", "Webflow", "Framer", "WordPress", "Live Website")) and not any(
         cmd in profile.install_cmd for cmd in ("pip ", "uvx ", "npx ", "brew ", "cargo ")
     ):
         profile.archetype = "b2b_saas"
@@ -577,6 +621,15 @@ def _scan_html_signals(raw_html: str, profile: ProjectProfile, is_root: bool = T
 
         if re.search(r"application/ld\+json", raw_html, re.IGNORECASE):
             profile.has_json_ld = True
+            for ld_m in re.finditer(
+                r'<script[^>]+type=["\']application/ld\+json["\'][^>]*>(.*?)</script>',
+                raw_html,
+                re.IGNORECASE | re.DOTALL,
+            ):
+                for t_m in re.finditer(r'"@type"\s*:\s*"([A-Za-z0-9]+)"', ld_m.group(1)):
+                    st = t_m.group(1)
+                    if st not in profile.schema_types_found:
+                        profile.schema_types_found.append(st)
 
         if re.search(r'rel=["\']manifest["\']', raw_html, re.IGNORECASE):
             profile.has_manifest = True
@@ -589,10 +642,21 @@ def _scan_html_signals(raw_html: str, profile: ProjectProfile, is_root: bool = T
         if re.search(r'name=["\']twitter:card["\']', raw_html, re.IGNORECASE):
             profile.has_twitter_tags = True
 
-        if "/_next/" in raw_html and profile.framework == "Live Website":
-            profile.framework = "Next.js (Live Deployment)"
-        elif "_astro" in raw_html and profile.framework == "Live Website":
-            profile.framework = "Astro (Live Deployment)"
+        if profile.framework == "Live Website":
+            if "/_next/" in raw_html:
+                profile.framework = "Next.js (Live Deployment)"
+            elif "_astro" in raw_html:
+                profile.framework = "Astro (Live Deployment)"
+            elif "cdn.shopify.com" in raw_html or "Shopify.theme" in raw_html:
+                profile.framework = "Shopify Storefront (Live Deployment)"
+            elif "webflow" in raw_html.lower():
+                profile.framework = "Webflow (Live Deployment)"
+            elif "wp-content" in raw_html:
+                profile.framework = "WordPress (Live Deployment)"
+            elif "framerusercontent.com" in raw_html:
+                profile.framework = "Framer (Live Deployment)"
+            elif "__sveltekit" in raw_html:
+                profile.framework = "SvelteKit (Live Deployment)"
 
     if CTA_PATTERNS.search(raw_html):
         profile.has_clear_cta = True
@@ -651,33 +715,38 @@ def _scan_html_signals(raw_html: str, profile: ProjectProfile, is_root: bool = T
             profile.slop_words_found.append(w)
 
 
-def scan_live_url(url: str) -> ProjectProfile:
+def scan_live_url(url: str, site_url_override: str | None = None) -> ProjectProfile:
     parsed = urllib.parse.urlparse(url)
     base_url = f"{parsed.scheme}://{parsed.netloc}"
+    canonical_base = (site_url_override or base_url).rstrip("/")
     host_name = parsed.netloc.split(":")[0].replace("www.", "").split(".")[0].title() or "WebApp"
 
     profile = ProjectProfile(
         name=host_name,
         tagline=f"{host_name} — Official Website",
-        description=f"Live web application hosted at {base_url}.",
+        description=f"Live web application hosted at {canonical_base}.",
         category="Web Application / SaaS",
         framework="Live Website",
-        site_url=base_url,
+        site_url=canonical_base,
         target_label=url,
         routes=[parsed.path or "/"],
         features=[],
         keywords=[host_name.lower(), "software", "automation", "workflow"],
         competitors=["Legacy Manual Workflows", "Incumbent SaaS Suites"],
-        install_cmd=f"open {base_url}",
+        install_cmd=f"open {canonical_base}",
         primary_file=url,
+        final_url=url,
     )
 
     headers = {"User-Agent": f"GrowthPilot-Auditor/{VERSION} (+https://github.com/codesphere-u/growthpilot)"}
 
-    def _fetch(endpoint: str) -> str | None:
+    def _fetch(endpoint: str, track_root: bool = False) -> str | None:
         req = urllib.request.Request(endpoint, headers=headers)
         try:
             with urllib.request.urlopen(req, timeout=10) as resp:
+                if track_root:
+                    profile.http_status = int(resp.status)
+                    profile.final_url = str(resp.geturl())
                 if resp.status >= 400:
                     return None
                 raw_bytes: bytes = resp.read(2_000_000)
@@ -685,7 +754,7 @@ def scan_live_url(url: str) -> ProjectProfile:
         except (OSError, urllib.error.URLError, ValueError):
             return None
 
-    html_body = _fetch(url)
+    html_body = _fetch(url, track_root=True)
     if html_body:
         _scan_html_signals(html_body, profile, is_root=True, route_path=parsed.path or "/")
         if profile.title_text:
@@ -748,6 +817,20 @@ def scan_live_url(url: str) -> ProjectProfile:
                 discovered_routes.append(r_path)
         if discovered_routes:
             profile.routes = discovered_routes
+
+    # Fallback internal link discovery when sitemap.xml is missing or lists only '/'
+    if len(profile.routes) <= 1 and html_body:
+        for href_m in re.finditer(r'<a[^>]+href=["\'](/[a-zA-Z0-9/_-]{1,64})["\']', html_body, re.IGNORECASE):
+            cand = href_m.group(1).split("#")[0].split("?")[0]
+            if (
+                cand
+                and cand != "/"
+                and not cand.startswith(("/_next", "/api", "/static", "/assets"))
+                and "." not in cand.rsplit("/", 1)[-1]
+                and cand not in profile.routes
+                and len(profile.routes) < 25
+            ):
+                profile.routes.append(cand)
 
     # Crawl up to 7 priority internal subpages from sitemap to detect title duplication, canonicals & service categories
     brand_lower = profile.name.lower()
@@ -828,6 +911,12 @@ def scan_directory(target: Path, site_url_override: str | None = None) -> Projec
                     profile.tagline = pkg["description"].strip()[:90]
                 if isinstance(pkg.get("homepage"), str) and pkg["homepage"].startswith("http") and not site_url_override:
                     profile.site_url = pkg["homepage"].rstrip("/")
+                elif isinstance(pkg.get("repository"), dict) and not site_url_override:
+                    repo_u = str(pkg["repository"].get("url") or "").removeprefix("git+").removesuffix(".git")
+                    if repo_u.startswith("http"):
+                        profile.site_url = repo_u.rstrip("/")
+                elif isinstance(pkg.get("repository"), str) and pkg["repository"].startswith("http") and not site_url_override:
+                    profile.site_url = pkg["repository"].removesuffix(".git").rstrip("/")
                 if isinstance(pkg.get("keywords"), list):
                     profile.keywords.extend(str(k) for k in pkg["keywords"][:8] if isinstance(k, str))
                 deps = {
@@ -853,6 +942,7 @@ def scan_directory(target: Path, site_url_override: str | None = None) -> Projec
             raw_py = pyproject.read_text(encoding="utf-8", errors="ignore")
             m_name = re.search(r'^name\s*=\s*["\']([^"\']+)["\']', raw_py, re.M)
             m_desc = re.search(r'^description\s*=\s*["\']([^"\']+)["\']', raw_py, re.M)
+            m_home = re.search(r'^(?:Homepage|Repository|Documentation)\s*=\s*["\'](https?://[^"\']+)["\']', raw_py, re.M | re.I)
             if m_name:
                 raw_pkg_name = m_name.group(1).strip()
                 profile.name = raw_pkg_name.replace("-", " ").replace("_", " ").title()
@@ -860,6 +950,8 @@ def scan_directory(target: Path, site_url_override: str | None = None) -> Projec
             if m_desc:
                 profile.description = m_desc.group(1).strip()
                 profile.tagline = m_desc.group(1).strip()[:90]
+            if m_home and not site_url_override:
+                profile.site_url = m_home.group(1).rstrip("/")
             if profile.framework == "Generic Repository":
                 profile.framework = "Python Package / CLI"
                 profile.category = "Developer Tool / Python CLI"
@@ -1153,6 +1245,8 @@ def evaluate_profile(profile: ProjectProfile) -> dict[str, Any]:
                 points_lost=pts,
             )
         )
+
+    findings.sort(key=lambda f: (-f.points_lost, -SEVERITY_ORDER[f.severity], f.rule_id))
 
     total_score = max(0, min(100, sum(pillar_scores.values())))
     if total_score >= 95:
@@ -1537,6 +1631,38 @@ Explore the marketplace at {base}, post a job at {base}/post-a-job, or download 
   - Publish dedicated indexable landing pages for each high-intent category (`{cats_list}`) paired with neighborhood/city search intent and direct `/post-a-job?service=...` CTAs.
 - **Days 61–90 (B2B Commercial Accounts & Repeat Liquidity Loops)**:
   - Launch recurring SME & office maintenance plans and automated WhatsApp booking confirmations.
+"""
+
+    if profile.archetype == "ecommerce":
+        return f"""# {profile.name} — E-Commerce & Storefront Growth Playbook
+
+> Generated deterministically by **GrowthPilot v{VERSION}** for **{profile.name}** (`{base}`).
+
+---
+
+## 1. High-Converting Storefront Positioning & Hero Copy
+
+- **One-Line Category Anchor**: {profile.name} ({profile.category}) — {profile.description}
+- **Shopper Value Hook (PAS)**: Tired of slow shipping and guessing product quality? Order directly from {profile.name} with clear pricing, tracked delivery, and verified customer protection.
+- **Primary Storefront CTA**: `Shop Bestsellers -> {base}`
+
+---
+
+## 2. AI Shopping Search (`ChatGPT Search`, `Perplexity Shopping`, `Google AI Overviews`)
+
+- Publish complete `Product` + `Offer` + `AggregateRating` Schema.org JSON-LD across every product URL so AI shopping agents quote live price, stock availability, and shipping terms accurately.
+- Expose clean category comparisons in `/llms.txt` and `/llms-full.txt` covering top collections, materials, sizing, and delivery SLAs.
+
+---
+
+## 3. Multi-Channel Social & Creator Campaign
+
+- **Short-Form Video Hook (TikTok / Instagram Reels / Shorts)**: 15-second unboxing + real problem solved -> pin link to top collection at `{base}`.
+- **High-Trust Social Proof Post**: Pair verified customer photos with exact delivery turnaround times and return policy clarity.
+- **Abandoned Cart & Post-Purchase Email Flow**:
+  1. **Hour 1**: Gentle cart reminder + exact shipping timeline (`{base}`).
+  2. **Day 1**: Customer proof + 1 most common buyer objection answered.
+  3. **Day 7 Post-Delivery**: Review request + referral code for friends.
 """
 
     anchor_desc = profile.description[0].lower() + profile.description[1:] if profile.description else "automates your workflow"
@@ -2177,6 +2303,75 @@ def render_html_dashboard(
 """
 
 
+def render_markdown_report(
+    audit: dict[str, Any],
+    fixed_files: list[str],
+) -> str:
+    """Render a clean executive Markdown audit report suitable for Notion, Slack, or GitHub PRs."""
+    sev = audit["severity_counts"]
+    prof = audit["profile"]
+    cro = audit["cro_analysis"]
+    rewrites = cro["rewrites"]
+
+    pillar_rows = "\n".join(
+        f"| {p['name']} | {p['score']} / {p['max_score']} | {p['pct']}% |"
+        for p in audit["pillars"]
+    )
+    findings_rows = "\n".join(
+        f"| `{f['rule_id']}` | **{f['severity'].upper()}** | +{f['points_lost']} pts | {f['title']} | {f['remediation']} |"
+        for f in audit["findings"]
+    ) or "| All Pass | PASS | 0 pts | No open findings | Ready for production launch |"
+
+    sub_diag = prof.get("subpage_issues") or []
+    diag_lines = "\n".join(f"- {d}" for d in sub_diag) if sub_diag else "- No cross-page or DOM visibility defects flagged."
+    page_audits = prof.get("page_audits") or []
+    crawl_section = ""
+    if page_audits:
+        crawl_rows = "\n".join(
+            f"| `{pa['route']}` | {pa['title'][:48]} | {pa['meta_desc_len']}c | {'Yes' if pa['has_canonical'] else 'No'} | {'; '.join(pa['issues']) if pa['issues'] else 'Clean'} |"
+            for pa in page_audits
+        )
+        crawl_section = f"""
+## Multi-Page Crawl Scorecard ({len(prof.get('routes') or [])} Routes Discovered)
+
+| Route | Title | Meta Desc | Canonical | Diagnostics |
+| :--- | :--- | :--- | :--- | :--- |
+{crawl_rows}
+"""
+
+    fixed_line = f"\n**Auto-Fixed Files Generated**: {', '.join(f'`{x}`' for x in fixed_files)}\n" if fixed_files else ""
+
+    return f"""# GrowthPilot Audit Report — {prof['name']}
+
+- **Target**: `{audit['target']}`
+- **Platform / Stack**: `{prof['framework']}` (`{prof.get('archetype', 'devtools')}`)
+- **Canonical Site**: `{prof['site_url']}`
+- **Overall Score**: **{audit['score']}/100 (Grade {audit['grade']})** — Critical: {sev['critical']}, High: {sev['high']}, Medium: {sev['medium']}, Low: {sev['low']}
+{fixed_line}
+## 6-Pillar Breakdown
+
+| Pillar | Score | Coverage |
+| :--- | :--- | :--- |
+{pillar_rows}
+
+## Prioritized Action Plan (Sorted by Score Impact)
+
+| Rule | Severity | Potential Gain | Finding | Recommended Fix |
+| :--- | :--- | :--- | :--- | :--- |
+{findings_rows}
+
+## Deep DOM & Multi-Page Diagnostics
+
+{diag_lines}
+{crawl_section}
+## High-Converting Hero Copy Upgrades (CRO Score: {cro['overall_cro_score']}/100)
+
+- **PAS Framework**: {rewrites['pas_framework']}
+- **JTBD Framework**: {rewrites['jtbd_framework']}
+- **Direct Metric Hero**: {rewrites['direct_metric_hero']}
+"""
+
+
 def format_terminal_report(
     audit: dict[str, Any],
     html_path: Path,
@@ -2184,12 +2379,14 @@ def format_terminal_report(
     pseo_path: Path,
     json_path: Path,
     fixed_files: list[str],
+    md_path: Path | None = None,
 ) -> str:
     sev = audit["severity_counts"]
     prof = audit["profile"]
+    cro = audit["cro_analysis"]
     lines = [
         f"GrowthPilot v{VERSION} — Autonomous SEO, GEO/AEO, CRO & Launch Report",
-        f"Target: {audit['target']} | Stack: {prof['framework']} | Site: {prof['site_url']}",
+        f"Target: {audit['target']} | Stack: {prof['framework']} | Archetype: {prof.get('archetype', 'devtools')} | Site: {prof['site_url']}",
         f"Score:  {audit['score']}/100 (Grade {audit['grade']})  "
         f"[critical={sev['critical']} high={sev['high']} medium={sev['medium']} low={sev['low']}]",
         "Pillars:",
@@ -2199,16 +2396,21 @@ def format_terminal_report(
     if fixed_files:
         lines.append(f"Auto-Fixed ({len(fixed_files)} files generated): {', '.join(fixed_files)}")
     if audit["findings"]:
-        lines.append("Top Actionable Findings:")
+        lines.append("Priority Action Plan (sorted by highest score impact):")
         for f in audit["findings"][:8]:
-            lines.append(f"  [{f['severity'].upper():<8}] {f['rule_id']} ({f['pillar']}) — {f['title']}")
+            lines.append(f"  [{f['severity'].upper():<8}] {f['rule_id']} (+{f['points_lost']:>2} pts) — {f['title']}")
+    else:
+        lines.append("Priority Action Plan: All 18 deterministic checks passed! Zero regressions detected.")
     sub_issues = prof.get("subpage_issues") or []
     dup_kws = prof.get("duplicate_keywords") or []
     page_audits = prof.get("page_audits") or []
-    if sub_issues or dup_kws or prof.get("images_missing_alt", 0) > 0 or page_audits:
+    schemas_found = prof.get("schema_types_found") or []
+    if sub_issues or dup_kws or prof.get("images_missing_alt", 0) > 0 or page_audits or schemas_found:
         lines.append(
             f"Deep Multi-Page & DOM Diagnostics ({len(prof.get('routes') or [])} routes discovered, {len(page_audits)} crawled):"
         )
+        if schemas_found:
+            lines.append(f"  - JSON-LD Schema entities detected: {', '.join(schemas_found)}")
         if prof.get("images_missing_alt", 0) > 0:
             lines.append(f"  - Images missing descriptive alt text: {prof['images_missing_alt']}")
         if dup_kws:
@@ -2217,8 +2419,11 @@ def format_terminal_report(
             lines.append(f"  - {si}")
     lines.extend(
         [
+            f"CRO Copy Rewrite Preview (Copy Score {cro['overall_cro_score']}/100):",
+            f"  Metric Hero: {cro['rewrites']['direct_metric_hero']}",
             "Outputs:",
             f"  Command Center HTML: {html_path}",
+            f"  Markdown Audit:      {md_path or html_path.with_name('AUDIT_REPORT.md')}",
             f"  Launch Playbook:     {launch_path}",
             f"  Programmatic SEO:    {pseo_path}",
             f"  JSON Summary:        {json_path}",
@@ -2309,7 +2514,7 @@ def _resolve_profile_for_mcp(args_obj: dict[str, Any]) -> ProjectProfile:
     if target_str == "--demo":
         return build_demo_profile()
     if target_str.startswith(("http://", "https://")):
-        return scan_live_url(target_str)
+        return scan_live_url(target_str, site_url_override=site_url)
     p = Path(target_str)
     if not p.exists() or (p.is_dir() and _is_unsafe_broad_root(p)):
         return build_demo_profile()
@@ -2509,7 +2714,7 @@ def main(argv: list[str] | None = None) -> int:
         profile = build_demo_profile()
     elif args.target is not None:
         if args.target.startswith(("http://", "https://")):
-            profile = scan_live_url(args.target)
+            profile = scan_live_url(args.target, site_url_override=args.site_url)
         else:
             t_path = Path(args.target)
             if not t_path.exists():
@@ -2543,22 +2748,11 @@ def main(argv: list[str] | None = None) -> int:
     out_dir = args.output_dir.resolve()
     out_dir.mkdir(parents=True, exist_ok=True)
     html_path = out_dir / "growthpilot-report.html"
+    md_path = out_dir / "AUDIT_REPORT.md"
     launch_path = out_dir / "LAUNCH_PLAYBOOK.md"
     pseo_path = out_dir / "PROGRAMMATIC_SEO.md"
     llms_path = out_dir / "llms.txt"
     json_path = out_dir / "growth-summary.json"
-
-    html_path.write_text(render_html_dashboard(audit, profile, geo_pack, launch_md, pseo_md), encoding="utf-8")
-    launch_path.write_text(launch_md, encoding="utf-8")
-    pseo_path.write_text(pseo_md, encoding="utf-8")
-    llms_path.write_text(geo_pack["llms.txt"], encoding="utf-8")
-    (out_dir / "llms-full.txt").write_text(geo_pack["llms-full.txt"], encoding="utf-8")
-    (out_dir / "robots.txt").write_text(geo_pack["robots.txt"], encoding="utf-8")
-    (out_dir / "sitemap.xml").write_text(geo_pack["sitemap.xml"], encoding="utf-8")
-    (out_dir / "SEO_SCHEMA.jsonld").write_text(geo_pack["SEO_SCHEMA.jsonld"], encoding="utf-8")
-    (out_dir / "manifest.webmanifest").write_text(geo_pack["manifest.webmanifest"], encoding="utf-8")
-    (out_dir / "HEAD_TAGS.html").write_text(geo_pack["HEAD_TAGS.html"], encoding="utf-8")
-    json_path.write_text(json.dumps(audit, indent=2), encoding="utf-8")
 
     if args.fix and args.target and args.target.startswith(("http://", "https://")):
         fixed_files = [
@@ -2573,6 +2767,19 @@ def main(argv: list[str] | None = None) -> int:
             "PROGRAMMATIC_SEO.md",
         ]
 
+    html_path.write_text(render_html_dashboard(audit, profile, geo_pack, launch_md, pseo_md), encoding="utf-8")
+    md_path.write_text(render_markdown_report(audit, fixed_files), encoding="utf-8")
+    launch_path.write_text(launch_md, encoding="utf-8")
+    pseo_path.write_text(pseo_md, encoding="utf-8")
+    llms_path.write_text(geo_pack["llms.txt"], encoding="utf-8")
+    (out_dir / "llms-full.txt").write_text(geo_pack["llms-full.txt"], encoding="utf-8")
+    (out_dir / "robots.txt").write_text(geo_pack["robots.txt"], encoding="utf-8")
+    (out_dir / "sitemap.xml").write_text(geo_pack["sitemap.xml"], encoding="utf-8")
+    (out_dir / "SEO_SCHEMA.jsonld").write_text(geo_pack["SEO_SCHEMA.jsonld"], encoding="utf-8")
+    (out_dir / "manifest.webmanifest").write_text(geo_pack["manifest.webmanifest"], encoding="utf-8")
+    (out_dir / "HEAD_TAGS.html").write_text(geo_pack["HEAD_TAGS.html"], encoding="utf-8")
+    json_path.write_text(json.dumps(audit, indent=2), encoding="utf-8")
+
     if args.sarif is not None:
         sarif_path = args.sarif.resolve()
         sarif_path.parent.mkdir(parents=True, exist_ok=True)
@@ -2584,7 +2791,7 @@ def main(argv: list[str] | None = None) -> int:
     if args.json:
         print(json.dumps(audit, indent=2))
     else:
-        print(format_terminal_report(audit, html_path, launch_path, pseo_path, json_path, fixed_files))
+        print(format_terminal_report(audit, html_path, launch_path, pseo_path, json_path, fixed_files, md_path=md_path))
 
     if audit["score"] < args.min_score:
         return 1
