@@ -1,4 +1,4 @@
-# Technical SEO & GEO (AI Search) Playbook (`v1.4.3`)
+# Technical SEO & GEO (AI Search) Playbook (`v1.4.4`)
 
 GrowthPilot grades every local codebase and live site out of **100 points** across **6 weighted pillars** and **18 deterministic rules** (`MKT001`–`MKT018`). Findings in reports are sorted by impact (`(-points_lost, -severity, rule_id)`) so the highest-leverage fixes appear first.
 

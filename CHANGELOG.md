@@ -5,6 +5,15 @@ All notable changes to **GrowthPilot** are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.4] - 2026-11-14
+
+### Fixed
+- **Cross-Browser Docs Rendering & Clean URLs (`website/`):**
+  - Cache-busted all stylesheet, script, and icon asset URLs (`?v=1.4.4`) across all 5 pages (`index.html`, `studio.html`, `proof.html`, `docs.html`, `rules.html`) so browsers never pair updated HTML with cached CSS/JS from previous releases on GitHub Pages (`max-age=600`).
+  - Added `[hidden] { display: none !important; }` in `styles.css` and critical inline layout guards in `docs.html` and `rules.html` so inactive chapters never flash or stack simultaneously even before external stylesheet paint.
+  - Replaced `paint-order="stroke fill"` on `.brand-wordmark-svg` with explicit `width="190" height="36"` dimensions and dual-layer `<text>` elements for crisp, identical stroke rendering across Chrome and Safari.
+  - Added `normalizeCleanUrl()` in `app.js` for `https:` deployments so `/docs.html` and sibling `.html` routes cleanly normalize in the address bar without breaking static asset resolution or deep links.
+
 ## [1.4.3] - 2026-11-14
 
 ### Changed

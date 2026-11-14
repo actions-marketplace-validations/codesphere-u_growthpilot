@@ -1,4 +1,4 @@
-# GrowthPilot — Extended Website Knowledge Pack (`v1.4.3`)
+# GrowthPilot — Extended Website Knowledge Pack (`v1.4.4`)
 
 > Live Website: https://codesphere-u.github.io/growthpilot/
 > Dedicated Pages: `/studio.html`, `/proof.html`, `/docs.html`, `/rules.html`

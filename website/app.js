@@ -24,7 +24,7 @@
   const HOME_PREVIEWS = {
     term: `$ growthpilot https://funagigs.com --fix
 
-GrowthPilot v1.4.3 — Score: 100/100 (Grade A+)  [critical=0 high=0]
+GrowthPilot v1.4.4 — Score: 100/100 (Grade A+)  [critical=0 high=0]
   Technical SEO        20/20 (100%)
   GEO & AI Search      20/20 (100%)
   Structured Data      15/15 (100%)
@@ -49,7 +49,7 @@ Generated 12 deploy-ready files in 0.8s with 0 external dependencies.`,
           {
             "@type": "SoftwareApplication",
             name: "GrowthPilot",
-            softwareVersion: "1.4.3",
+            softwareVersion: "1.4.4",
             applicationCategory: "DeveloperApplication",
             operatingSystem: "macOS, Linux, Windows",
             offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
@@ -177,7 +177,7 @@ Generated 12 deploy-ready files in 0.8s with 0 external dependencies.`,
       code: JSON.stringify(
         {
           tool: "growthpilot",
-          version: "1.4.3",
+          version: "1.4.4",
           score: 100,
           grade: "A+",
           findings_count: 0,
@@ -223,7 +223,7 @@ Generated 12 deploy-ready files in 0.8s with 0 external dependencies.`,
     llmsfull: {
       title: "llms-full.txt — Complete Machine-Readable Brief",
       badge: "GEO / AEO",
-      code: `# GrowthPilot Complete Context (v1.4.3)\nCLI Flags: --live URL, --site-url, --min-score, --sarif, --mcp, --json\nDependencies: None (Python 3.10+ stdlib only)\nLicense: MIT\nOutputs: 12 deployable assets under growthpilot-out/ or website root.`,
+      code: `# GrowthPilot Complete Context (v1.4.4)\nCLI Flags: --live URL, --site-url, --min-score, --sarif, --mcp, --json\nDependencies: None (Python 3.10+ stdlib only)\nLicense: MIT\nOutputs: 12 deployable assets under growthpilot-out/ or website root.`,
     },
     sarif: {
       title: "growthpilot.sarif — GitHub Code Scanning 2.1.0",
@@ -1036,7 +1036,22 @@ Generated 12 deploy-ready files in 0.8s with 0 external dependencies.`,
     renderRules();
   }
 
+  function normalizeCleanUrl() {
+    if (window.location.protocol !== "https:") return;
+    const { pathname, search, hash } = window.location;
+    let nextPath = pathname;
+    if (pathname.endsWith("/index.html")) {
+      nextPath = pathname.slice(0, -"index.html".length);
+    } else if (pathname.endsWith(".html")) {
+      nextPath = pathname.slice(0, -".html".length);
+    }
+    if (nextPath !== pathname) {
+      history.replaceState(null, "", `${nextPath}${search}${hash}`);
+    }
+  }
+
   document.addEventListener("DOMContentLoaded", () => {
+    normalizeCleanUrl();
     initCTA();
     initHomePreview();
     initCopyButtons();

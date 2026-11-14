@@ -11,7 +11,7 @@
     <meta name="robots" content="index, follow" />
     <meta name="theme-color" content="#fffdf2" />
     <link rel="canonical" href="https://codesphere-u.github.io/growthpilot/rules.html" />
-    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg?v=1.4.4" />
     <link rel="manifest" href="./manifest.webmanifest" />
 
     <meta property="og:type" content="website" />
@@ -30,31 +30,26 @@
     />
     <meta name="twitter:image" content="https://codesphere-u.github.io/growthpilot/og-image.svg" />
 
-    <link rel="stylesheet" href="./styles.css" />
+    <style>
+      [hidden] { display: none !important; }
+      .page-col-docs { width: min(940px, 100% - 2rem); margin-inline: auto; }
+      .brand-wordmark-svg { height: 36px; width: 190px; display: block; }
+      .docs-layout { display: flex; align-items: flex-start; gap: 2.75rem; width: 100%; min-width: 0; }
+      .docs-sidebar { flex: 0 0 196px; width: 196px; position: sticky; top: 2rem; }
+      .docs-mobile-nav { display: none; }
+    </style>
+    <link rel="stylesheet" href="./styles.css?v=1.4.4" />
   </head>
   <body>
     <div class="page-col page-col-docs">
       <header class="site-header">
         <a class="brand-link" href="./" aria-label="GrowthPilot home">
-          <svg class="brand-wordmark-svg" viewBox="0 0 212 40" fill="none" role="img" aria-label="growthpilot">
+          <svg class="brand-wordmark-svg" width="190" height="36" viewBox="0 0 212 40" fill="none" role="img" aria-label="growthpilot">
             <rect x="2" y="5" width="28" height="28" rx="8" fill="#8ce9bf" stroke="#1d2e28" stroke-width="2.6" />
             <circle cx="16" cy="19" r="7.5" fill="#9dd8fb" stroke="#1d2e28" stroke-width="2" />
             <path d="M16 13.5L19.4 22.5L16 20.4L12.6 22.5L16 13.5Z" fill="#1d2e28" />
-            <text
-              x="39"
-              y="28"
-              font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
-              font-size="23"
-              font-weight="800"
-              letter-spacing="-0.6"
-              fill="#8ce9bf"
-              stroke="#1d2e28"
-              stroke-width="4"
-              stroke-linejoin="round"
-              paint-order="stroke fill"
-            >
-              growthpilot
-            </text>
+            <text x="39" y="28" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="23" font-weight="800" letter-spacing="-0.6" fill="none" stroke="#1d2e28" stroke-width="4" stroke-linejoin="round">growthpilot</text>
+            <text x="39" y="28" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="23" font-weight="800" letter-spacing="-0.6" fill="#8ce9bf">growthpilot</text>
           </svg>
         </a>
 
@@ -82,7 +77,7 @@
             target="_blank"
             rel="noopener noreferrer"
           >
-            v1.4.3
+            v1.4.4
           </a>
         </nav>
       </header>
@@ -294,11 +289,11 @@
           <span>·</span>
           <a href="https://github.com/codesphere-u/growthpilot" target="_blank" rel="noopener noreferrer">github</a>
         </div>
-        <div>MIT Licensed · Transparent 18-rule specification · v1.4.3</div>
+        <div>MIT Licensed · Transparent 18-rule specification · v1.4.4</div>
       </footer>
     </div>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
-    <script src="./app.js" defer></script>
+    <script src="./app.js?v=1.4.4" defer></script>
   </body>
 </html>

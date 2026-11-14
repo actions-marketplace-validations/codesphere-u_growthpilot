@@ -31,7 +31,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Literal
 
-VERSION = "1.4.3"
+VERSION = "1.4.4"
 
 Severity = Literal["critical", "high", "medium", "low"]
 SEVERITY_ORDER: dict[str, int] = {"none": 99, "low": 1, "medium": 2, "high": 3, "critical": 4}

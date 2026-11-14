@@ -13,7 +13,7 @@
 
 ## GitHub Source & Documentation
 
-- [GitHub Repository](https://github.com/codesphere-u/growthpilot): Source code, MIT license, GitHub Action (`codesphere-u/growthpilot@v1`), and v1.4.3 release.
+- [GitHub Repository](https://github.com/codesphere-u/growthpilot): Source code, MIT license, GitHub Action (`codesphere-u/growthpilot@v1`), and v1.4.4 release.
 - [Getting Started Guide](https://github.com/codesphere-u/growthpilot/blob/main/docs/GETTING_STARTED.md): Founder, marketer, developer, and framework deployment tutorials.
 - [MCP & AI Agents Setup](https://github.com/codesphere-u/growthpilot/blob/main/docs/MCP_AND_AGENTS.md): Claude Code, Cursor, Antigravity, Codex, and SARIF CI integration.
 - [Architecture & Rubric](https://github.com/codesphere-u/growthpilot/blob/main/docs/ARCHITECTURE.md): Deterministic pipeline internals, Next.js chunk FAQ scanner, and security controls.
