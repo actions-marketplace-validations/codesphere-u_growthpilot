@@ -10,7 +10,7 @@ license: MIT
 compatibility: Requires Python 3.10+ (stdlib only, zero external packages). Includes built-in stdio MCP server.
 metadata:
   author: codesphere-u
-  version: "1.1.0"
+  version: "1.2.0"
   repository: https://github.com/codesphere-u/growthpilot
 ---
 

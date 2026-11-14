@@ -5,6 +5,13 @@ All notable changes to **GrowthPilot** are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2026-11-14
+
+### Added
+- **Live Next.js Client Bundle FAQ & SSR Content Visibility Inspector**: When auditing a live URL (`growthpilot https://...`), automatically inspects same-origin `/_next/static/chunks/app/page-*.js` bundles to extract unmounted client-state FAQ questions & answers (`{q, a}`) for `SEO_SCHEMA.jsonld` and `llms-full.txt`, while flagging an explicit **SSR Content Visibility Defect** when FAQ answers are hidden from non-JS search and AI crawlers.
+- **Multi-Page Sitemap Crawl Scorecard (`page_audits`)**: Crawls up to 8 routes discovered in `sitemap.xml` on live URLs, recording per-page `<title>`, meta description length, canonical presence, `<h1>` count, missing image `alt` attributes, empty headings, and duplicate brand-suffix defects in both the terminal report and the interactive HTML Command Center.
+- **Archetype-Aware Marketplace & Mobile App Engine (`marketplace_app`)**: Automatically distinguishes Two-Sided Marketplaces / Mobile Apps from Developer CLIs / SaaS tools, generating bespoke Escrow + Instant Hire + Mobile Money CRO hero rewrites, a Two-Sided Supply/Demand Liquidity & Google Play ASO Launch Playbook, and a Service Category × Local Intent Programmatic SEO & Trust Comparison Matrix with zero developer-CLI template bleed.
+
 ## [1.1.0] - 2026-11-14
 
 ### Added

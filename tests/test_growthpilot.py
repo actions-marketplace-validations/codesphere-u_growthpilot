@@ -171,3 +171,60 @@ def test_broad_root_guard_thresholds_and_zsh_safe_docs(
             for raw_line in match.group(1).splitlines():
                 stripped = raw_line.strip()
                 assert not stripped.startswith("#"), f"zsh-unsafe comment in {doc_path.name}: {stripped}"
+
+
+def test_marketplace_archetype_and_page_audit_diagnostics() -> None:
+    prof = growthpilot.ProjectProfile(
+        name="Funa Gigs",
+        tagline="Funa Gigs — Hire help. Find work. Get paid.",
+        description="Uganda's marketplace for quick gigs, local jobs, and trusted taskers. Protected by Funa Vault and paid out via Mobile Money.",
+        category="Web Application / SaaS",
+        framework="Next.js (Live Deployment)",
+        site_url="https://funagigs.com",
+        target_label="https://funagigs.com/",
+        routes=["/", "/services", "/features", "/post-a-job"],
+        features=[
+            "Verified Taskers: ID and phone checks on every worker.",
+            "Funa Vault: Funds stay protected in escrow until both sides confirm completion.",
+        ],
+        keywords=["funa gigs", "gigs in uganda", "instant hire", "mobile money"],
+        competitors=[],
+        install_cmd="open https://funagigs.com",
+        play_store_url="https://play.google.com/store/apps/details?id=com.funagigs.app",
+        web_app_url="https://app.funagigs.com",
+        legal_entity="FunaGig Limited",
+        service_categories=[
+            "Care & wellness: Support, cleaning, and personal services.",
+            "Construction: Skilled labor and site-ready help.",
+        ],
+        faqs=[
+            {
+                "q": "Is Funa Gigs free to use?",
+                "a": "Yes — creating a profile, browsing gigs, and Instant Hire search are free.",
+            }
+        ],
+    )
+    growthpilot._infer_market_positioning(prof)
+    assert prof.archetype == "marketplace_app"
+
+    launch_md = growthpilot.generate_launch_kit(prof)
+    assert "Two-Sided Marketplace & Mobile App Launch Playbook" in launch_md
+    assert "YAML" not in launch_md
+    assert "CI/CD" not in launch_md
+    assert "Supply & Demand Liquidity Seeding Playbook" in launch_md
+
+    pseo_md = growthpilot.generate_programmatic_seo(prof)
+    assert "Care & wellness" in pseo_md
+    assert "Payment & Escrow Safety" in pseo_md
+    assert "Proprietary cloud" not in pseo_md
+
+    page_html = (
+        "<html><head><title>Features — Funa Gigs · Funa Gigs</title></head>"
+        "<body><h1>Features</h1><h2></h2><img src='/a.png'></body></html>"
+    )
+    pa = growthpilot._audit_single_html_page(page_html, "/features", "funa gigs")
+    assert pa["has_canonical"] is False
+    assert pa["imgs_missing_alt"] == 1
+    assert any("Duplicate brand suffix" in i for i in pa["issues"])
+    assert any("empty heading" in i for i in pa["issues"])
+
