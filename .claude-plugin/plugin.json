@@ -1,0 +1,24 @@
+{
+  "name": "growthpilot",
+  "version": "1.0.0",
+  "icon": "./.claude-plugin/icon.png",
+  "description": "Autonomous Zero-to-One Marketing, Technical SEO, GEO/AEO (llms.txt), CRO Copywriting & Multi-Channel Launch Engine with built-in MCP server.",
+  "author": {
+    "name": "codesphere-u",
+    "url": "https://github.com/codesphere-u"
+  },
+  "repository": "https://github.com/codesphere-u/growthpilot",
+  "license": "MIT",
+  "keywords": [
+    "marketing",
+    "seo",
+    "geo",
+    "aeo",
+    "llms-txt",
+    "cro",
+    "copywriting",
+    "mcp-server",
+    "agent-skills"
+  ],
+  "skills": "./skills/"
+}

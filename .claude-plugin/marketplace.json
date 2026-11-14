@@ -1,0 +1,22 @@
+{
+  "name": "growthpilot-marketplace",
+  "description": "Autonomous Zero-to-One Marketing, Technical SEO, GEO/AEO, CRO & Launch Engine with built-in MCP server.",
+  "owner": {
+    "name": "codesphere-u",
+    "url": "https://github.com/codesphere-u"
+  },
+  "plugins": [
+    {
+      "name": "growthpilot",
+      "source": "./",
+      "description": "Take any codebase or URL from zero marketing to full-stack Technical SEO, GEO/AEO (llms.txt), CRO copywriting, Schema.org, and multi-channel launch kits.",
+      "version": "1.0.0",
+      "author": {
+        "name": "codesphere-u"
+      },
+      "repository": "https://github.com/codesphere-u/growthpilot",
+      "license": "MIT",
+      "strict": false
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+.git
+.venv
+__pycache__
+.pytest_cache
+.mypy_cache
+.ruff_cache
+growthpilot-out
+*.pyc
+.DS_Store

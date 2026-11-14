@@ -1,0 +1,60 @@
+name: "GrowthPilot — Autonomous SEO, GEO/AEO, CRO & Marketing Auditor"
+description: "Audit codebases or URLs for Technical SEO, AI Search (llms.txt/GEO), OpenGraph, Schema.org, CRO copy, and generate launch kits."
+author: "codesphere-u"
+branding:
+  icon: "trending-up"
+  color: "purple"
+
+inputs:
+  target:
+    description: "Directory path or live URL to audit"
+    required: false
+    default: "."
+  min-score:
+    description: "Minimum GrowthReadiness score (0-100) required to pass"
+    required: false
+    default: "0"
+  fail-on:
+    description: "Fail when findings at or above severity appear (critical, high, medium, low, none)"
+    required: false
+    default: "none"
+  sarif-file:
+    description: "Optional output path for SARIF 2.1.0 report"
+    required: false
+    default: "growthpilot.sarif"
+
+outputs:
+  score:
+    description: "Overall GrowthPilot score (0-100)"
+    value: ${{ steps.run-audit.outputs.score }}
+  grade:
+    description: "Overall GrowthPilot letter grade"
+    value: ${{ steps.run-audit.outputs.grade }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.12"
+
+    - name: Run GrowthPilot Audit
+      id: run-audit
+      shell: bash
+      env:
+        INPUT_TARGET: ${{ inputs.target }}
+        INPUT_MIN_SCORE: ${{ inputs.min-score }}
+        INPUT_FAIL_ON: ${{ inputs.fail-on }}
+        INPUT_SARIF: ${{ inputs.sarif-file }}
+      run: |
+        set -euo pipefail
+        python3 "${{ github.action_path }}/skills/growthpilot/scripts/growthpilot.py" "$INPUT_TARGET" \
+          --output-dir growthpilot-out \
+          --sarif "$INPUT_SARIF" \
+          --min-score "$INPUT_MIN_SCORE" \
+          --fail-on "$INPUT_FAIL_ON"
+        SCORE=$(python3 -c 'import json; d=json.load(open("growthpilot-out/growth-summary.json")); print(d["score"])')
+        GRADE=$(python3 -c 'import json; d=json.load(open("growthpilot-out/growth-summary.json")); print(d["grade"])')
+        echo "score=$SCORE" >> "$GITHUB_OUTPUT"
+        echo "grade=$GRADE" >> "$GITHUB_OUTPUT"
