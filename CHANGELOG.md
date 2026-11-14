@@ -5,6 +5,14 @@ All notable changes to **GrowthPilot** are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2026-11-14
+
+### Added
+- **Deep Multi-Page Live Sitemap & Subpage Crawler**: Automatically parses `/sitemap.xml` routes on live URLs and audits internal subpages for duplicate brand-suffix `<title>` bugs (e.g., `Features — Brand · Brand`), duplicate meta keywords, and missing self-referencing canonical tags.
+- **Rich Entity, Feature, FAQ & App Store Extraction**: Extracts real `<h3>` + `<p>` features, FAQ Q&As, Google Play / Web App URLs, and legal entity names from both live HTML and Next.js/TypeScript codebases to populate `Organization`, `MobileApplication`, `WebSite` (`SearchAction`), and `FAQPage` Schema.org JSON-LD (`SEO_SCHEMA.jsonld`) plus `llms-full.txt`.
+- **Marketplace & Local Service Programmatic SEO Matrix**: Generates high-intent service × location programmatic SEO blueprints alongside competitor comparison matrices.
+- **`--open` CLI Flag & Full Output Pack**: Added `--open` to launch `growthpilot-report.html` automatically and write the full generated SEO/GEO/Schema pack into `--output-dir` for both local directories and live URLs.
+
 ## [1.0.0] - 2026-11-14
 
 ### Added
