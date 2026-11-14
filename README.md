@@ -25,7 +25,7 @@ Most developer tools, SaaS products, and marketplaces launch invisibly. Builders
 
 Paid SEO suites charge \$99–\$499/month just to list warnings without generating a single file or headline rewrite. Generic LLM prompts hallucinate schema fields, miss client-bundled FAQ bugs, and flood hero copy with empty buzzwords. **GrowthPilot fixes both problems in one zero-dependency tool:**
 
-| Capability | Traditional SEO Tools | Generic LLM Chat | **GrowthPilot `v1.4.2`** |
+| Capability | Traditional SEO Tools | Generic LLM Chat | **GrowthPilot `v1.4.3`** |
 | :--- | :--- | :--- | :--- |
 | **Deterministic 0–100 Grading** | Vague "health %" | Non-reproducible guessing | **6 weighted pillars & 18 rules (`MKT001`–`MKT018`)** with exact point weights |
 | **Audits Both Code & Live Sites** | Live URLs only (paid quota) | Manual copy-paste | **Local repo scan + multi-page live URL crawler (up to 7 subpages)** |
@@ -298,7 +298,7 @@ growthpilot [target] [options]
 | `--fail-on <SEV>` | `none` | Exit with code `1` if any finding meets or exceeds severity (`none`, `low`, `medium`, `high`, `critical`) |
 | `--allow-home` | `false` | Override broad-root protection when explicitly scanning `/` or `~` |
 | `--open` | `false` | Open `growthpilot-report.html` in the default browser after completion |
-| `--version` | — | Print `growthpilot 1.4.2` and exit |
+| `--version` | — | Print `growthpilot 1.4.3` and exit |
 
 **Exit Codes:** `0` = Passed score & severity gates • `1` = Below `--min-score` or met `--fail-on` severity threshold • `2` = Missing/invalid target or blocked broad root (`/` or `~`).
 
@@ -334,7 +334,7 @@ When started with `growthpilot --mcp`, GrowthPilot exposes **6 tools** over `std
 - **[Getting Started Guide](docs/GETTING_STARTED.md)** — Walkthroughs for founders, marketers, and developers, plus deployment guides for Next.js, Shopify, Webflow, and static hosts.
 - **[MCP & AI Agents Setup](docs/MCP_AND_AGENTS.md)** — Configure Claude Code, Cursor, Antigravity, Codex, GitHub Actions SARIF gating, and Docker containers.
 - **[Architecture & Rubric Internals](docs/ARCHITECTURE.md)** — Pipeline internals, archetype classifier, Next.js chunk FAQ extractor, and safety guarantees.
-- **[Changelog](CHANGELOG.md)** — Version history from `v1.0.0` to `v1.4.2`.
+- **[Changelog](CHANGELOG.md)** — Version history from `v1.0.0` to `v1.4.3`.
 - **[Contributing](CONTRIBUTING.md)** & **[Security Policy](SECURITY.md)** — Contributor quality bar (`ruff`, `mypy --strict`, `pytest`, `billshock`) and vulnerability disclosure.
 
 ---

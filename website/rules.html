@@ -33,15 +33,29 @@
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
-    <div class="page-col">
+    <div class="page-col page-col-docs">
       <header class="site-header">
         <a class="brand-link" href="./" aria-label="GrowthPilot home">
-          <svg width="26" height="26" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-            <rect x="2" y="2" width="24" height="24" rx="7" fill="#8ce9bf" stroke="#1d2e28" stroke-width="2.2" />
-            <circle cx="14" cy="14" r="6.5" fill="#9dd8fb" stroke="#1d2e28" stroke-width="1.8" />
-            <path d="M14 9L17.2 17L14 15.2L10.8 17L14 9Z" fill="#1d2e28" />
+          <svg class="brand-wordmark-svg" viewBox="0 0 212 40" fill="none" role="img" aria-label="growthpilot">
+            <rect x="2" y="5" width="28" height="28" rx="8" fill="#8ce9bf" stroke="#1d2e28" stroke-width="2.6" />
+            <circle cx="16" cy="19" r="7.5" fill="#9dd8fb" stroke="#1d2e28" stroke-width="2" />
+            <path d="M16 13.5L19.4 22.5L16 20.4L12.6 22.5L16 13.5Z" fill="#1d2e28" />
+            <text
+              x="39"
+              y="28"
+              font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
+              font-size="23"
+              font-weight="800"
+              letter-spacing="-0.6"
+              fill="#8ce9bf"
+              stroke="#1d2e28"
+              stroke-width="4"
+              stroke-linejoin="round"
+              paint-order="stroke fill"
+            >
+              growthpilot
+            </text>
           </svg>
-          <span>growthpilot</span>
         </a>
 
         <nav class="header-nav" aria-label="Primary navigation">
@@ -68,127 +82,202 @@
             target="_blank"
             rel="noopener noreferrer"
           >
-            v1.4.2
+            v1.4.3
           </a>
         </nav>
       </header>
 
       <main>
-        <section class="page-hero" aria-labelledby="rules-page-title">
-          <h1 id="rules-page-title">18 deterministic rules</h1>
-          <p class="hero-sub">
-            Transparent 100-point rubric across 6 weighted pillars — inspect every check the engine evaluates before deployment.
-          </p>
-        </section>
+        <div class="docs-mobile-nav" aria-label="Rule pillars filter mobile">
+          <button type="button" class="docs-mobile-chip active" data-pillarfilter="all">All (18)</button>
+          <button type="button" class="docs-mobile-chip" data-pillarfilter="Technical SEO">SEO</button>
+          <button type="button" class="docs-mobile-chip" data-pillarfilter="GEO & AI Search">GEO</button>
+          <button type="button" class="docs-mobile-chip" data-pillarfilter="Structured Data">Schema</button>
+          <button type="button" class="docs-mobile-chip" data-pillarfilter="Social & Viral Graph">Social</button>
+          <button type="button" class="docs-mobile-chip" data-pillarfilter="CRO & Copy Clarity">CRO</button>
+          <button type="button" class="docs-mobile-chip" data-pillarfilter="Launch & Growth">Launch</button>
+        </div>
 
-        <section aria-label="Pillar weights">
-          <div class="pillar-grid">
-            <div class="pillar-card">
-              <strong>Technical SEO</strong>
-              <span>20 pts · MKT001–005</span>
-            </div>
-            <div class="pillar-card">
-              <strong>GEO &amp; AI Search</strong>
-              <span>20 pts · MKT006–009</span>
-            </div>
-            <div class="pillar-card">
-              <strong>Structured Data</strong>
-              <span>15 pts · MKT010–011</span>
-            </div>
-            <div class="pillar-card">
-              <strong>Social &amp; Viral Graph</strong>
-              <span>15 pts · MKT012–013</span>
-            </div>
-            <div class="pillar-card">
-              <strong>CRO &amp; Copy Clarity</strong>
-              <span>15 pts · MKT014–016</span>
-            </div>
-            <div class="pillar-card">
-              <strong>Launch &amp; Growth</strong>
-              <span>15 pts · MKT017–018</span>
-            </div>
-          </div>
-        </section>
+        <div class="docs-layout">
+          <aside class="docs-sidebar" aria-label="Rule categories">
+            <nav>
+              <ul class="docs-rail">
+                <li class="doc-nav-item">
+                  <button type="button" class="doc-nav-link active" data-pillarfilter="all">All 18 Rules</button>
+                </li>
+                <li class="doc-nav-item">
+                  <button type="button" class="doc-nav-link" data-pillarfilter="Technical SEO">Technical SEO (20 pts)</button>
+                </li>
+                <li class="doc-nav-item">
+                  <button type="button" class="doc-nav-link" data-pillarfilter="GEO & AI Search">GEO &amp; AI Search (20 pts)</button>
+                </li>
+                <li class="doc-nav-item">
+                  <button type="button" class="doc-nav-link" data-pillarfilter="Structured Data">Structured Data (15 pts)</button>
+                </li>
+                <li class="doc-nav-item">
+                  <button type="button" class="doc-nav-link" data-pillarfilter="Social & Viral Graph">Social &amp; Viral (15 pts)</button>
+                </li>
+                <li class="doc-nav-item">
+                  <button type="button" class="doc-nav-link" data-pillarfilter="CRO & Copy Clarity">CRO &amp; Copy (15 pts)</button>
+                </li>
+                <li class="doc-nav-item">
+                  <button type="button" class="doc-nav-link" data-pillarfilter="Launch & Growth">Launch &amp; Growth (15 pts)</button>
+                </li>
+                <li class="doc-nav-item">
+                  <a class="doc-nav-link" href="#scoring">Scoring Formula</a>
+                </li>
+                <li class="doc-nav-item">
+                  <a class="doc-nav-link" href="#faq">Technical FAQ</a>
+                </li>
+              </ul>
+            </nav>
+          </aside>
 
-        <section id="rules" aria-labelledby="rubric-table-title">
-          <h2 id="rubric-table-title" class="sec-title">rule explorer</h2>
-          <p class="sec-sub">Filter by keyword, rule ID, or pillar.</p>
+          <article class="doc-content">
+            <h1 id="rules-page-title">18 Deterministic Rules</h1>
+            <p>
+              Every site starts at 100 points across 6 transparent pillars. Select a pillar on the left rail or search by keyword below to inspect individual checks, weights, and severity tiers.
+            </p>
 
-          <div class="rules-filter">
-            <input
-              id="rubric-search"
-              class="input"
-              type="search"
-              placeholder="Search rule ID or check (e.g. MKT006, llms, schema)..."
-              aria-label="Filter rubric rules"
-            />
-            <select id="rubric-pillar" class="select" aria-label="Filter by pillar">
-              <option value="all">All 6 pillars (18 rules)</option>
-              <option value="Technical SEO">Technical SEO (20 pts)</option>
-              <option value="GEO & AI Search">GEO &amp; AI Search (20 pts)</option>
-              <option value="Structured Data">Structured Data (15 pts)</option>
-              <option value="Social & Viral Graph">Social &amp; Viral Graph (15 pts)</option>
-              <option value="CRO & Copy Clarity">CRO &amp; Copy Clarity (15 pts)</option>
-              <option value="Launch & Growth">Launch &amp; Growth (15 pts)</option>
-            </select>
-          </div>
+            <section id="rules" aria-labelledby="rubric-table-title">
+              <h2 id="rubric-table-title">Rule Explorer</h2>
+              <div class="rules-filter">
+                <input
+                  id="rubric-search"
+                  class="input"
+                  type="search"
+                  placeholder="Search rule ID or check (e.g. MKT006, llms, schema)..."
+                  aria-label="Filter rubric rules"
+                />
+                <select id="rubric-pillar" class="select" aria-label="Filter by pillar">
+                  <option value="all">All 6 pillars (18 rules)</option>
+                  <option value="Technical SEO">Technical SEO (20 pts)</option>
+                  <option value="GEO & AI Search">GEO &amp; AI Search (20 pts)</option>
+                  <option value="Structured Data">Structured Data (15 pts)</option>
+                  <option value="Social & Viral Graph">Social &amp; Viral Graph (15 pts)</option>
+                  <option value="CRO & Copy Clarity">CRO &amp; Copy Clarity (15 pts)</option>
+                  <option value="Launch & Growth">Launch &amp; Growth (15 pts)</option>
+                </select>
+              </div>
 
-          <div class="table-scroll">
-            <table>
-              <thead>
-                <tr>
-                  <th>Rule</th>
-                  <th>Pillar</th>
-                  <th>Check</th>
-                  <th>Severity</th>
-                </tr>
-              </thead>
-              <tbody id="rubric-tbody"></tbody>
-            </table>
-          </div>
-        </section>
+              <div class="doc-table-wrap">
+                <table class="doc-table">
+                  <thead>
+                    <tr>
+                      <th>Rule</th>
+                      <th>Pillar</th>
+                      <th>Check</th>
+                      <th>Severity</th>
+                    </tr>
+                  </thead>
+                  <tbody id="rubric-tbody"></tbody>
+                </table>
+              </div>
+            </section>
 
-        <hr class="hairline" />
-
-        <section id="faq" aria-labelledby="rules-faq-title">
-          <h2 id="rules-faq-title" class="sec-title">technical faq</h2>
-          <div class="faq-stack">
-            <details class="faq-item" open>
-              <summary>How is the 0–100 score computed across pillars?</summary>
+            <section id="scoring" aria-labelledby="scoring-title">
+              <h2 id="scoring-title">Scoring Formula</h2>
               <p>
-                Every site starts at 100 points across the 6 pillars. Each failed rule subtracts its exact point weight from its pillar score and appears in findings sorted by highest score recovery first.
+                Each failed rule deducts its exact weight from the pillar total and ranks remediations by highest points recovered first.
               </p>
-            </details>
 
-            <details class="faq-item">
-              <summary>Can I run GrowthPilot against live deployed websites?</summary>
-              <p>
-                Yes. Pass any public URL (including subpath GitHub Pages or root domains) and GrowthPilot inspects HTML metadata, JSON-LD entities, <code>robots.txt</code>, <code>sitemap.xml</code>, <code>llms.txt</code>, <code>llms-full.txt</code>, and up to 7 internal routes.
-              </p>
-            </details>
+              <div class="doc-table-wrap">
+                <table class="doc-table">
+                  <thead>
+                    <tr>
+                      <th>Pillar</th>
+                      <th>Rules Covered</th>
+                      <th>Max Points</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><strong>Technical SEO</strong></td>
+                      <td><code>MKT001 – MKT005</code></td>
+                      <td>20 pts</td>
+                    </tr>
+                    <tr>
+                      <td><strong>GEO &amp; AI Search</strong></td>
+                      <td><code>MKT006 – MKT009</code></td>
+                      <td>20 pts</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Structured Data</strong></td>
+                      <td><code>MKT010 – MKT011</code></td>
+                      <td>15 pts</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Social &amp; Viral Graph</strong></td>
+                      <td><code>MKT012 – MKT013</code></td>
+                      <td>15 pts</td>
+                    </tr>
+                    <tr>
+                      <td><strong>CRO &amp; Copy Clarity</strong></td>
+                      <td><code>MKT014 – MKT016</code></td>
+                      <td>15 pts</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Launch &amp; Growth</strong></td>
+                      <td><code>MKT017 – MKT018</code></td>
+                      <td>15 pts</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
 
-            <details class="faq-item">
-              <summary>Why does GrowthPilot inspect Next.js JS chunks on live URLs?</summary>
-              <p>
-                Client-only accordion components often keep FAQ answers out of initial server-rendered HTML, making them invisible to search and AI crawlers. GrowthPilot extracts FAQ strings from JS chunks and warns if answers are missing in SSR HTML.
-              </p>
-            </details>
+            <section id="faq" aria-labelledby="rules-faq-title">
+              <h2 id="rules-faq-title">Technical FAQ</h2>
+              <div class="faq-stack">
+                <details class="faq-item" open>
+                  <summary>How is the 0–100 score computed across pillars?</summary>
+                  <p>
+                    Every site starts at 100 points across the 6 pillars. Each failed rule subtracts its exact point weight from its pillar score and appears in findings sorted by highest score recovery first.
+                  </p>
+                </details>
 
-            <details class="faq-item">
-              <summary>Does GrowthPilot ever overwrite existing site files when using --fix?</summary>
-              <p>
-                Never. Every scaffolding step strictly skips pre-existing files and avoids writing static <code>robots.txt</code> or <code>sitemap.xml</code> when dynamic framework generators (such as <code>app/robots.ts</code> or <code>app/sitemap.ts</code>) already exist.
-              </p>
-            </details>
+                <details class="faq-item">
+                  <summary>Can I run GrowthPilot against live deployed websites?</summary>
+                  <p>
+                    Yes. Pass any public URL (including subpath GitHub Pages or root domains) and GrowthPilot inspects HTML metadata, JSON-LD entities, <code>robots.txt</code>, <code>sitemap.xml</code>, <code>llms.txt</code>, <code>llms-full.txt</code>, and up to 7 internal routes.
+                  </p>
+                </details>
 
-            <details class="faq-item">
-              <summary>Which privacy-friendly analytics hooks satisfy MKT018?</summary>
-              <p>
-                Plausible, Umami, PostHog, Fathom, Google Analytics, Vercel Analytics, and Microsoft Clarity are detected automatically so teams can track funnel attribution cleanly.
-              </p>
-            </details>
-          </div>
-        </section>
+                <details class="faq-item">
+                  <summary>Why does GrowthPilot inspect Next.js JS chunks on live URLs?</summary>
+                  <p>
+                    Client-only accordion components often keep FAQ answers out of initial server-rendered HTML, making them invisible to search and AI crawlers. GrowthPilot extracts FAQ strings from JS chunks and warns if answers are missing in SSR HTML.
+                  </p>
+                </details>
+
+                <details class="faq-item">
+                  <summary>Does GrowthPilot ever overwrite existing site files when using --fix?</summary>
+                  <p>
+                    Never. Every scaffolding step strictly skips pre-existing files and avoids writing static <code>robots.txt</code> or <code>sitemap.xml</code> when dynamic framework generators (such as <code>app/robots.ts</code> or <code>app/sitemap.ts</code>) already exist.
+                  </p>
+                </details>
+
+                <details class="faq-item">
+                  <summary>Which privacy-friendly analytics hooks satisfy MKT018?</summary>
+                  <p>
+                    Plausible, Umami, PostHog, Fathom, Google Analytics, Vercel Analytics, and Microsoft Clarity are detected automatically so teams can track funnel attribution cleanly.
+                  </p>
+                </details>
+              </div>
+            </section>
+
+            <nav class="doc-pagination" aria-label="Cross-page navigation">
+              <a class="page-step-btn prev" href="./docs.html">
+                <small>Previous</small>
+                <strong>← Documentation</strong>
+              </a>
+              <a class="page-step-btn next" href="./studio.html">
+                <small>Next</small>
+                <strong>Interactive Studio →</strong>
+              </a>
+            </nav>
+          </article>
+        </div>
       </main>
 
       <footer class="site-footer">
@@ -205,7 +294,7 @@
           <span>·</span>
           <a href="https://github.com/codesphere-u/growthpilot" target="_blank" rel="noopener noreferrer">github</a>
         </div>
-        <div>MIT Licensed · Transparent 18-rule specification</div>
+        <div>MIT Licensed · Transparent 18-rule specification · v1.4.3</div>
       </footer>
     </div>
 

@@ -36,12 +36,26 @@
     <div class="page-col">
       <header class="site-header">
         <a class="brand-link" href="./" aria-label="GrowthPilot home">
-          <svg width="26" height="26" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-            <rect x="2" y="2" width="24" height="24" rx="7" fill="#8ce9bf" stroke="#1d2e28" stroke-width="2.2" />
-            <circle cx="14" cy="14" r="6.5" fill="#9dd8fb" stroke="#1d2e28" stroke-width="1.8" />
-            <path d="M14 9L17.2 17L14 15.2L10.8 17L14 9Z" fill="#1d2e28" />
+          <svg class="brand-wordmark-svg" viewBox="0 0 212 40" fill="none" role="img" aria-label="growthpilot">
+            <rect x="2" y="5" width="28" height="28" rx="8" fill="#8ce9bf" stroke="#1d2e28" stroke-width="2.6" />
+            <circle cx="16" cy="19" r="7.5" fill="#9dd8fb" stroke="#1d2e28" stroke-width="2" />
+            <path d="M16 13.5L19.4 22.5L16 20.4L12.6 22.5L16 13.5Z" fill="#1d2e28" />
+            <text
+              x="39"
+              y="28"
+              font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
+              font-size="23"
+              font-weight="800"
+              letter-spacing="-0.6"
+              fill="#8ce9bf"
+              stroke="#1d2e28"
+              stroke-width="4"
+              stroke-linejoin="round"
+              paint-order="stroke fill"
+            >
+              growthpilot
+            </text>
           </svg>
-          <span>growthpilot</span>
         </a>
 
         <nav class="header-nav" aria-label="Primary navigation">
@@ -68,35 +82,33 @@
             target="_blank"
             rel="noopener noreferrer"
           >
-            v1.4.2
+            v1.4.3
           </a>
         </nav>
       </header>
 
       <main>
         <section class="page-hero" aria-labelledby="studio-page-title">
-          <h1 id="studio-page-title">interactive studio</h1>
+          <h1 id="studio-page-title">Interactive Studio</h1>
           <p class="hero-sub">
             Grade hero copy, generate valid <code>llms.txt</code> and Schema.org files, and inspect all 12 outputs directly in your browser.
           </p>
         </section>
 
         <section class="studio-frame" id="studio" aria-label="Interactive GrowthPilot Studio">
-          <div class="frame-bar">
-            <div class="dots" aria-hidden="true">
-              <span></span><span></span><span></span>
-            </div>
-            <div class="frame-tabs" role="tablist" aria-label="Studio tools">
-              <button type="button" class="frame-tab active" role="tab" aria-selected="true" data-studio="cro">
+          <div class="handy-tabs-bar">
+            <div class="handy-tabs" role="tablist" aria-label="Studio tools">
+              <button type="button" class="handy-tab active" role="tab" aria-selected="true" data-studio="cro">
                 CRO Copy Grader
               </button>
-              <button type="button" class="frame-tab" role="tab" aria-selected="false" data-studio="gen">
+              <button type="button" class="handy-tab" role="tab" aria-selected="false" data-studio="gen">
                 GEO &amp; Schema Builder
               </button>
-              <button type="button" class="frame-tab" role="tab" aria-selected="false" data-studio="outputs">
+              <button type="button" class="handy-tab" role="tab" aria-selected="false" data-studio="outputs">
                 12 Outputs Explorer
               </button>
             </div>
+            <span class="version-tag">v1.4.3</span>
           </div>
 
           <!-- Tab 1: CRO Copy Grader -->
@@ -239,18 +251,89 @@
           </div>
         </section>
 
-        <section class="editorial-grid" aria-label="Next steps">
-          <div>
-            <h2>Automate in CI</h2>
-            <p>
-              Run the exact same scorer inside GitHub Actions with <code>--min-score 100</code>. See <a href="./docs.html#ci" style="text-decoration: underline;">CI setup</a>.
-            </p>
+        <hr class="hairline" />
+
+        <!-- Handy /download-Style Centered Platform Hub -->
+        <section class="download-hub" id="install" aria-labelledby="download-hub-title">
+          <div class="mascot-wrap">
+            <svg
+              width="136"
+              height="136"
+              viewBox="0 0 180 180"
+              fill="none"
+              role="img"
+              aria-label="GrowthPilot compass scout mascot"
+            >
+              <circle cx="90" cy="90" r="76" fill="#d6f9e8" />
+              <circle cx="90" cy="86" r="46" fill="#8ce9bf" stroke="#1d2e28" stroke-width="4" />
+              <circle cx="90" cy="88" r="35" fill="#fffdf2" stroke="#1d2e28" stroke-width="3" />
+              <circle cx="77" cy="83" r="6.5" fill="#1d2e28" />
+              <circle cx="79" cy="81" r="2" fill="#fffdf2" />
+              <circle cx="103" cy="83" r="6.5" fill="#1d2e28" />
+              <circle cx="105" cy="81" r="2" fill="#fffdf2" />
+              <ellipse cx="67" cy="92" rx="4.5" ry="2.5" fill="#9dd8fb" />
+              <ellipse cx="113" cy="92" rx="4.5" ry="2.5" fill="#9dd8fb" />
+              <path d="M81 96C85 102 95 102 99 96" stroke="#1d2e28" stroke-width="3.2" stroke-linecap="round" />
+            </svg>
           </div>
-          <div>
-            <h2>See Real Proof</h2>
-            <p>
-              Explore how these generated files raised <code>funagigs.com</code> from 40 to 100/100 in our <a href="./proof.html" style="text-decoration: underline;">case study</a>.
-            </p>
+
+          <h2 id="download-hub-title">Install GrowthPilot</h2>
+          <div class="download-version">v1.4.3</div>
+
+          <div class="download-stack">
+            <h3>CLI (macOS, Linux, Windows)</h3>
+            <button
+              type="button"
+              class="download-bar"
+              data-copy="uv tool install git+https://github.com/codesphere-u/growthpilot"
+            >
+              <span>uv Global CLI</span>
+              <small>.uv</small>
+            </button>
+            <button
+              type="button"
+              class="download-bar sky"
+              data-copy="uvx --from git+https://github.com/codesphere-u/growthpilot growthpilot ."
+            >
+              <span>One-Shot Runner</span>
+              <small>.uvx</small>
+            </button>
+
+            <h3>AI Coding Agents</h3>
+            <button
+              type="button"
+              class="download-bar"
+              data-copy="npx skills add codesphere-u/growthpilot"
+            >
+              <span>Cursor, Codex &amp; Antigravity</span>
+              <small>SKILL.md</small>
+            </button>
+            <button
+              type="button"
+              class="download-bar sky"
+              data-copy="/plugin install growthpilot@growthpilot-marketplace"
+            >
+              <span>Claude Code Marketplace</span>
+              <small>.plugin</small>
+            </button>
+
+            <h3>MCP Server &amp; CI Gate</h3>
+            <button
+              type="button"
+              class="download-bar"
+              data-copy="growthpilot --mcp"
+            >
+              <span>Zero-Dep MCP Server</span>
+              <small>stdio</small>
+            </button>
+            <button
+              type="button"
+              class="download-bar sky"
+              data-copy="uses: codesphere-u/growthpilot@v1"
+            >
+              <span>GitHub Actions SARIF Gate</span>
+              <small>@v1</small>
+            </button>
           </div>
         </section>
       </main>
@@ -269,7 +352,7 @@
           <span>·</span>
           <a href="https://github.com/codesphere-u/growthpilot" target="_blank" rel="noopener noreferrer">github</a>
         </div>
-        <div>MIT Licensed · 100% browser-local tools</div>
+        <div>MIT Licensed · 100% browser-local tools · v1.4.3</div>
       </footer>
     </div>
 

@@ -5,6 +5,15 @@ All notable changes to **GrowthPilot** are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.3] - 2026-11-14
+
+### Changed
+- **Handy-Aligned Documentation & Subpage Architecture (`website/`):**
+  - Rebuilt `docs.html` and `rules.html` inside `940px` (`max-w-[940px]`) two-column layouts with a sticky left `2px` border rail (`196px`), nested auto-expanding sub-heading table of contents with scroll-spy, underline-tabbed `"Download & Install"` surface card, syntax-highlighted code blocks with clipboard icon buttons, borderless data tables, and bottom `Previous / Next` chapter pagination.
+  - Redesigned `proof.html` as a clean `680px` editorial manifesto + tabbed `funagigs.com` case study and comparison table.
+  - Redesigned `studio.html` with delicate underline tabs and a centered platform install stack with full-width `.download-bar` buttons.
+  - Added a crisp bubbly outlined SVG `growthpilot` header wordmark across all 5 pages while preserving the Light Mint Green & Soft Sky Blue cream-paper palette and a `100/100 (Grade A+)` self-audit score.
+
 ## [1.4.2] - 2026-11-14
 
 ### Changed

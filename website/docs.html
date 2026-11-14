@@ -33,15 +33,29 @@
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
-    <div class="page-col">
+    <div class="page-col page-col-docs">
       <header class="site-header">
         <a class="brand-link" href="./" aria-label="GrowthPilot home">
-          <svg width="26" height="26" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-            <rect x="2" y="2" width="24" height="24" rx="7" fill="#8ce9bf" stroke="#1d2e28" stroke-width="2.2" />
-            <circle cx="14" cy="14" r="6.5" fill="#9dd8fb" stroke="#1d2e28" stroke-width="1.8" />
-            <path d="M14 9L17.2 17L14 15.2L10.8 17L14 9Z" fill="#1d2e28" />
+          <svg class="brand-wordmark-svg" viewBox="0 0 212 40" fill="none" role="img" aria-label="growthpilot">
+            <rect x="2" y="5" width="28" height="28" rx="8" fill="#8ce9bf" stroke="#1d2e28" stroke-width="2.6" />
+            <circle cx="16" cy="19" r="7.5" fill="#9dd8fb" stroke="#1d2e28" stroke-width="2" />
+            <path d="M16 13.5L19.4 22.5L16 20.4L12.6 22.5L16 13.5Z" fill="#1d2e28" />
+            <text
+              x="39"
+              y="28"
+              font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
+              font-size="23"
+              font-weight="800"
+              letter-spacing="-0.6"
+              fill="#8ce9bf"
+              stroke="#1d2e28"
+              stroke-width="4"
+              stroke-linejoin="round"
+              paint-order="stroke fill"
+            >
+              growthpilot
+            </text>
           </svg>
-          <span>growthpilot</span>
         </a>
 
         <nav class="header-nav" aria-label="Primary navigation">
@@ -68,207 +82,607 @@
             target="_blank"
             rel="noopener noreferrer"
           >
-            v1.4.2
+            v1.4.3
           </a>
         </nav>
       </header>
 
       <main>
-        <section class="page-hero" aria-labelledby="docs-page-title">
-          <h1 id="docs-page-title">documentation</h1>
-          <p class="hero-sub">
-            Everything you need to run GrowthPilot locally, wire its stdio MCP server into AI coding agents, or gate every pull request in CI.
-          </p>
-        </section>
+        <div class="docs-mobile-nav" aria-label="Documentation chapters mobile switcher">
+          <button type="button" class="docs-mobile-chip active" data-doc-target="getting-started">Getting Started</button>
+          <button type="button" class="docs-mobile-chip" data-doc-target="cli">CLI Reference</button>
+          <button type="button" class="docs-mobile-chip" data-doc-target="agents">AI Agents</button>
+          <button type="button" class="docs-mobile-chip" data-doc-target="mcp">MCP Server</button>
+          <button type="button" class="docs-mobile-chip" data-doc-target="ci">GitHub CI</button>
+          <button type="button" class="docs-mobile-chip" data-doc-target="frameworks">Frameworks</button>
+          <button type="button" class="docs-mobile-chip" data-doc-target="artifacts">12 Files</button>
+          <button type="button" class="docs-mobile-chip" data-doc-target="troubleshooting">Troubleshooting</button>
+          <button type="button" class="docs-mobile-chip" data-doc-target="about">About</button>
+        </div>
 
-        <nav class="docs-nav-pills" aria-label="Documentation sections">
-          <a href="#quickstart">Quickstart</a>
-          <a href="#agents">AI Agents &amp; MCP</a>
-          <a href="#ci">GitHub Actions</a>
-          <a href="#frameworks">Frameworks</a>
-          <a href="#flags">CLI Flags</a>
-        </nav>
+        <div class="docs-layout">
+          <aside class="docs-sidebar" aria-label="Documentation navigation">
+            <nav>
+              <ul class="docs-rail">
+                <li class="doc-nav-item">
+                  <button type="button" class="doc-nav-link active" data-doc-target="getting-started">Getting Started</button>
+                  <ul class="doc-subrail open" data-subrail="getting-started">
+                    <li><a class="doc-sub-link active" href="#quickstart" data-doc-anchor="getting-started">Download &amp; Install</a></li>
+                    <li><a class="doc-sub-link" href="#first-audit" data-doc-anchor="getting-started">First Audit</a></li>
+                    <li><a class="doc-sub-link sub-h3" href="#choosing-mode" data-doc-anchor="getting-started">Choosing a Mode</a></li>
+                    <li><a class="doc-sub-link" href="#shortcuts" data-doc-anchor="getting-started">Shortcuts</a></li>
+                    <li><a class="doc-sub-link" href="#next-steps" data-doc-anchor="getting-started">Next Steps</a></li>
+                  </ul>
+                </li>
 
-        <section id="quickstart" class="doc-section" aria-labelledby="qs-title">
-          <h2 id="qs-title" class="sec-title">1. Quickstart CLI</h2>
-          <p class="sec-sub" style="margin-bottom: 0;">Requires Python 3.10+ only — zero third-party packages installed.</p>
+                <li class="doc-nav-item">
+                  <button type="button" class="doc-nav-link" data-doc-target="cli">CLI Reference</button>
+                  <ul class="doc-subrail" data-subrail="cli">
+                    <li><a class="doc-sub-link" href="#cli-targets" data-doc-anchor="cli">1. Target &amp; Live URLs</a></li>
+                    <li><a class="doc-sub-link" href="#cli-gates" data-doc-anchor="cli">2. Quality Gates</a></li>
+                    <li><a class="doc-sub-link" href="#flags" data-doc-anchor="cli">3. All CLI Flags</a></li>
+                  </ul>
+                </li>
 
-          <div class="cmd-card">
-            <div class="toolbar-between">
-              <strong>Install globally or run once via uv</strong>
-              <button
-                type="button"
-                class="action-mini"
-                data-copy="uv tool install git+https://github.com/codesphere-u/growthpilot"
-              >
-                Copy
-              </button>
-            </div>
-            <pre class="code-block">uv tool install git+https://github.com/codesphere-u/growthpilot
-growthpilot ./my-app
-growthpilot https://yoursite.com --fix</pre>
-          </div>
+                <li class="doc-nav-item">
+                  <button type="button" class="doc-nav-link" data-doc-target="agents">AI Agents &amp; Skills</button>
+                  <ul class="doc-subrail" data-subrail="agents">
+                    <li><a class="doc-sub-link" href="#agents-install" data-doc-anchor="agents">1. Install via npx skills</a></li>
+                    <li><a class="doc-sub-link" href="#agents-claude" data-doc-anchor="agents">2. Claude Code Plugin</a></li>
+                    <li><a class="doc-sub-link" href="#agents-cursor" data-doc-anchor="agents">3. Cursor &amp; Antigravity</a></li>
+                  </ul>
+                </li>
 
-          <div class="cmd-card">
-            <div class="toolbar-between">
-              <strong>Ephemeral one-liner (uvx)</strong>
-              <button
-                type="button"
-                class="action-mini"
-                data-copy="uvx --from git+https://github.com/codesphere-u/growthpilot growthpilot ."
-              >
-                Copy
-              </button>
-            </div>
-            <pre class="code-block">uvx --from git+https://github.com/codesphere-u/growthpilot growthpilot .</pre>
-          </div>
-        </section>
+                <li class="doc-nav-item">
+                  <button type="button" class="doc-nav-link" data-doc-target="mcp">MCP Server</button>
+                  <ul class="doc-subrail" data-subrail="mcp">
+                    <li><a class="doc-sub-link" href="#mcp-config" data-doc-anchor="mcp">1. stdio Config</a></li>
+                    <li><a class="doc-sub-link" href="#mcp-tools" data-doc-anchor="mcp">2. 6 Native Tools</a></li>
+                    <li><a class="doc-sub-link" href="#mcp-payloads" data-doc-anchor="mcp">3. Tool Arguments</a></li>
+                  </ul>
+                </li>
 
-        <hr class="hairline" />
+                <li class="doc-nav-item">
+                  <button type="button" class="doc-nav-link" data-doc-target="ci">GitHub Actions</button>
+                  <ul class="doc-subrail" data-subrail="ci">
+                    <li><a class="doc-sub-link" href="#ci-workflow" data-doc-anchor="ci">1. PR Quality Gate</a></li>
+                    <li><a class="doc-sub-link" href="#ci-sarif" data-doc-anchor="ci">2. SARIF 2.1.0 Alerts</a></li>
+                    <li><a class="doc-sub-link" href="#ci-inputs" data-doc-anchor="ci">3. Action Inputs</a></li>
+                  </ul>
+                </li>
 
-        <section id="agents" class="doc-section" aria-labelledby="agents-title">
-          <h2 id="agents-title" class="sec-title">2. AI Coding Agents &amp; MCP Server</h2>
-          <p class="sec-sub" style="margin-bottom: 0;">
-            Expose 6 native tools (<code>audit_project</code>, <code>analyze_copy_cro</code>, <code>generate_geo_seo_pack</code>, <code>generate_launch_kit</code>, <code>generate_programmatic_seo</code>, <code>apply_marketing_fixes</code>) over <code>stdio</code>.
-          </p>
+                <li class="doc-nav-item">
+                  <button type="button" class="doc-nav-link" data-doc-target="frameworks">Frameworks</button>
+                  <ul class="doc-subrail" data-subrail="frameworks">
+                    <li><a class="doc-sub-link" href="#fw-nextjs" data-doc-anchor="frameworks">Next.js App Router</a></li>
+                    <li><a class="doc-sub-link" href="#fw-static" data-doc-anchor="frameworks">Static HTML &amp; Astro</a></li>
+                    <li><a class="doc-sub-link" href="#fw-backend" data-doc-anchor="frameworks">Python &amp; Node APIs</a></li>
+                  </ul>
+                </li>
 
-          <div class="cmd-card">
-            <div class="toolbar-between">
-              <strong>Install as an AI coding skill</strong>
-              <button type="button" class="action-mini" data-copy="npx skills add codesphere-u/growthpilot">Copy</button>
-            </div>
-            <pre class="code-block">npx skills add codesphere-u/growthpilot</pre>
-          </div>
+                <li class="doc-nav-item">
+                  <button type="button" class="doc-nav-link" data-doc-target="artifacts">12 Generated Files</button>
+                  <ul class="doc-subrail" data-subrail="artifacts">
+                    <li><a class="doc-sub-link" href="#art-geo" data-doc-anchor="artifacts">Discovery &amp; GEO</a></li>
+                    <li><a class="doc-sub-link" href="#art-schema" data-doc-anchor="artifacts">Schema &amp; Social</a></li>
+                    <li><a class="doc-sub-link" href="#art-reports" data-doc-anchor="artifacts">Playbooks &amp; Reports</a></li>
+                  </ul>
+                </li>
 
-          <div class="cmd-card">
-            <div class="toolbar-between">
-              <strong>mcp_config.json (Claude Code, Cursor, Antigravity, Codex)</strong>
-              <button
-                type="button"
-                class="action-mini"
-                data-copy='{"mcpServers":{"growthpilot":{"command":"growthpilot","args":["--mcp"]}}}'
-              >
-                Copy
-              </button>
-            </div>
-            <pre class="code-block">{
-  "mcpServers": {
-    "growthpilot": {
-      "command": "growthpilot",
-      "args": ["--mcp"]
+                <li class="doc-nav-item">
+                  <button type="button" class="doc-nav-link" data-doc-target="troubleshooting">Troubleshooting</button>
+                  <ul class="doc-subrail" data-subrail="troubleshooting">
+                    <li><a class="doc-sub-link" href="#ts-subpath" data-doc-anchor="troubleshooting">Subpath GitHub Pages</a></li>
+                    <li><a class="doc-sub-link" href="#ts-faq" data-doc-anchor="troubleshooting">Next.js Client FAQs</a></li>
+                    <li><a class="doc-sub-link" href="#ts-slop" data-doc-anchor="troubleshooting">Slop Word Flags</a></li>
+                  </ul>
+                </li>
+
+                <li class="doc-nav-item">
+                  <button type="button" class="doc-nav-link" data-doc-target="about">About</button>
+                  <ul class="doc-subrail" data-subrail="about">
+                    <li><a class="doc-sub-link" href="#about-story" data-doc-anchor="about">Origin Story</a></li>
+                    <li><a class="doc-sub-link" href="#about-goals" data-doc-anchor="about">Project Goals</a></li>
+                    <li><a class="doc-sub-link" href="#about-hood" data-doc-anchor="about">Under the Hood</a></li>
+                  </ul>
+                </li>
+              </ul>
+            </nav>
+          </aside>
+
+          <article class="doc-content">
+            <h1 id="doc-chapter-title">Getting Started</h1>
+
+            <!-- Chapter 1: Getting Started -->
+            <section class="doc-chapter" data-chapter="getting-started">
+              <h2 id="quickstart">Download &amp; Install</h2>
+
+              <div class="handy-card" id="install-widget">
+                <div class="handy-tabs-bar">
+                  <div class="handy-tabs" role="tablist" aria-label="Install method">
+                    <button type="button" class="handy-tab active" role="tab" aria-selected="true" data-installtab="uv">macOS / Linux</button>
+                    <button type="button" class="handy-tab" role="tab" aria-selected="false" data-installtab="claude">Claude Code</button>
+                    <button type="button" class="handy-tab" role="tab" aria-selected="false" data-installtab="cursor">Cursor &amp; Agents</button>
+                    <button type="button" class="handy-tab" role="tab" aria-selected="false" data-installtab="ci">GitHub Action</button>
+                  </div>
+                  <span class="version-tag">v1.4.3</span>
+                </div>
+
+                <p class="eyebrow-label" id="install-eyebrow">Install CLI</p>
+                <div class="handy-btn-row" id="install-btn-row">
+                  <button
+                    type="button"
+                    class="handy-pill-btn"
+                    data-copy="uv tool install git+https://github.com/codesphere-u/growthpilot"
+                  >
+                    Global CLI <span>uv tool</span>
+                  </button>
+                  <button
+                    type="button"
+                    class="handy-pill-btn sky"
+                    data-copy="uvx --from git+https://github.com/codesphere-u/growthpilot growthpilot ."
+                  >
+                    Zero-Install Run <span>.uvx</span>
+                  </button>
+                </div>
+
+                <p id="install-helper" style="margin: 0 0 0.55rem; font-size: 0.94rem;">
+                  Requires Python <code>3.10+</code> only — zero third-party packages installed.
+                </p>
+
+                <div class="doc-codeblock">
+                  <pre id="install-cmd-pre"><span class="syn-cmd">uv</span> <span class="syn-arg">tool install</span> git+https://github.com/codesphere-u/growthpilot</pre>
+                  <button
+                    type="button"
+                    class="copy-icon-btn"
+                    id="install-copy-btn"
+                    data-copy="uv tool install git+https://github.com/codesphere-u/growthpilot"
+                    aria-label="Copy install command"
+                  >
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              <h2 id="first-audit">First Audit</h2>
+              <p>Point GrowthPilot at any project directory or live URL. Both modes run locally and produce identical 100-point scoring.</p>
+
+              <ol>
+                <li><strong>Repository scan</strong> — reads routes, metadata, framework conventions, and copy without running external builds.</li>
+                <li><strong>Live URL audit</strong> — fetches HTML, subpath GEO endpoints (<code>llms.txt</code>, <code>robots.txt</code>), and client JS chunks for FAQ answers.</li>
+              </ol>
+
+              <h3 id="choosing-mode">Choosing a Mode</h3>
+              <p>On first run, choose whether to audit safely in read-only mode or write missing SEO and GEO files directly to disk.</p>
+
+              <div class="doc-codeblock">
+                <pre><span class="syn-cmd">growthpilot</span> . --site-url <span class="syn-arg">https://yoursite.com</span>
+<span class="syn-cmd">growthpilot</span> <span class="syn-arg">https://yoursite.com</span> --fix</pre>
+                <button
+                  type="button"
+                  class="copy-icon-btn"
+                  data-copy="growthpilot . --site-url https://yoursite.com&#10;growthpilot https://yoursite.com --fix"
+                  aria-label="Copy first audit commands"
+                >
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                  </svg>
+                </button>
+              </div>
+
+              <h2 id="shortcuts">Shortcuts &amp; Outputs</h2>
+              <p>Quick commands for day-to-day shipping across search engines, AI answer engines, and pull request checks.</p>
+
+              <div class="doc-table-wrap">
+                <table class="doc-table">
+                  <thead>
+                    <tr>
+                      <th>Command</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><code>growthpilot .</code></td>
+                      <td>Grade current directory across all 18 rules in &lt; 1s</td>
+                    </tr>
+                    <tr>
+                      <td><code>growthpilot URL --fix</code></td>
+                      <td>Scaffold missing <code>llms.txt</code>, <code>robots.txt</code>, and <code>sitemap.xml</code></td>
+                    </tr>
+                    <tr>
+                      <td><code>growthpilot --mcp</code></td>
+                      <td>Start stdio Model Context Protocol server with 6 tools</td>
+                    </tr>
+                    <tr>
+                      <td><code>growthpilot --min-score 100</code></td>
+                      <td>Exit with code 1 in CI if score drops below 100</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <h2 id="next-steps">Next Steps</h2>
+              <ul>
+                <li>Review the full <a class="inline-link" href="#cli" data-doc-jump="cli">CLI Reference</a> for live URL crawling and JSON/SARIF exports.</li>
+                <li>Connect GrowthPilot to <a class="inline-link" href="#mcp" data-doc-jump="mcp">MCP Server</a> clients like Claude Code, Cursor, or Antigravity.</li>
+                <li>Inspect every check in the <a class="inline-link" href="./rules.html">18-Rule Specification</a> or test your pitch in the <a class="inline-link" href="./studio.html">Interactive Studio</a>.</li>
+              </ul>
+            </section>
+
+            <!-- Chapter 2: CLI Reference -->
+            <section class="doc-chapter" data-chapter="cli" hidden>
+              <h2 id="cli-targets">1. Target &amp; Live URLs</h2>
+              <p>
+                Pass either a filesystem directory (<code>.</code>, <code>./website</code>, <code>./apps/web</code>) or an <code>https://</code> URL.
+                When scanning a local repo alongside a production deployment, combine both flags with <code>--live</code>.
+              </p>
+
+              <div class="doc-codeblock">
+                <pre><span class="syn-cmd">growthpilot</span> <span class="syn-arg">./website</span> --live <span class="syn-arg">https://codesphere-u.github.io/growthpilot</span> --sarif growthpilot.sarif</pre>
+                <button
+                  type="button"
+                  class="copy-icon-btn"
+                  data-copy="growthpilot ./website --live https://codesphere-u.github.io/growthpilot --sarif growthpilot.sarif"
+                  aria-label="Copy live command"
+                >
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                  </svg>
+                </button>
+              </div>
+
+              <h2 id="cli-gates">2. Quality Gates</h2>
+              <p>
+                Use <code>--min-score N</code> or <code>--fail-on high</code> to block deploys when canonical tags, <code>llms.txt</code>, or social previews regress.
+                Passing <code>--fix</code> writes missing static files strictly without overwriting existing files or dynamic Next.js route generators.
+              </p>
+
+              <h2 id="flags">3. All CLI Flags</h2>
+              <div class="doc-table-wrap">
+                <table class="doc-table">
+                  <thead>
+                    <tr>
+                      <th>Flag</th>
+                      <th>Default</th>
+                      <th>Behavior</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><code>target</code></td>
+                      <td><code>.</code></td>
+                      <td>Local project directory or public <code>http(s)://</code> URL</td>
+                    </tr>
+                    <tr>
+                      <td><code>--live URL</code></td>
+                      <td><code>off</code></td>
+                      <td>Fetch live HTML, subpath GEO files &amp; Next.js FAQ chunks</td>
+                    </tr>
+                    <tr>
+                      <td><code>--site-url URL</code></td>
+                      <td>auto</td>
+                      <td>Override canonical base URL when auditing codebases or staging</td>
+                    </tr>
+                    <tr>
+                      <td><code>--fix</code></td>
+                      <td><code>false</code></td>
+                      <td>Non-destructively scaffold missing SEO &amp; GEO files</td>
+                    </tr>
+                    <tr>
+                      <td><code>--output-dir DIR</code></td>
+                      <td><code>growthpilot-out</code></td>
+                      <td>Directory where all 12 generated artifacts are written</td>
+                    </tr>
+                    <tr>
+                      <td><code>--min-score N</code></td>
+                      <td><code>0</code></td>
+                      <td>Exit with code <code>1</code> if score drops below <code>N</code></td>
+                    </tr>
+                    <tr>
+                      <td><code>--sarif FILE</code></td>
+                      <td><code>off</code></td>
+                      <td>Emit SARIF 2.1.0 report for GitHub Code Scanning</td>
+                    </tr>
+                    <tr>
+                      <td><code>--mcp</code></td>
+                      <td><code>false</code></td>
+                      <td>Start zero-dependency stdio Model Context Protocol server</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+
+            <!-- Chapter 3: AI Agents & Skills -->
+            <section class="doc-chapter" data-chapter="agents" hidden>
+              <h2 id="agents-install">1. Install via npx skills</h2>
+              <p>
+                Add GrowthPilot as an agent skill across Claude Code, Codex, Cursor, Windsurf, and Antigravity in one command.
+              </p>
+
+              <div class="doc-codeblock">
+                <pre><span class="syn-cmd">npx</span> <span class="syn-arg">skills add</span> codesphere-u/growthpilot</pre>
+                <button
+                  type="button"
+                  class="copy-icon-btn"
+                  data-copy="npx skills add codesphere-u/growthpilot"
+                  aria-label="Copy npx skills command"
+                >
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                  </svg>
+                </button>
+              </div>
+
+              <h2 id="agents-claude">2. Claude Code Plugin</h2>
+              <p>
+                Install as a native plugin directly inside Claude Code using the repository marketplace manifest:
+              </p>
+              <div class="doc-codeblock">
+                <pre><span class="syn-cmd">/plugin</span> <span class="syn-arg">marketplace add</span> codesphere-u/growthpilot
+<span class="syn-cmd">/plugin</span> <span class="syn-arg">install</span> growthpilot@growthpilot-marketplace</pre>
+                <button
+                  type="button"
+                  class="copy-icon-btn"
+                  data-copy="/plugin marketplace add codesphere-u/growthpilot&#10;/plugin install growthpilot@growthpilot-marketplace"
+                  aria-label="Copy Claude Code plugin commands"
+                >
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                  </svg>
+                </button>
+              </div>
+
+              <h2 id="agents-cursor">3. Cursor &amp; Antigravity</h2>
+              <p>
+                The repository includes <code>SKILL.md</code> plus domain references (<code>seo-and-geo-playbook.md</code>, <code>mcp-and-ci-setup.md</code>) loaded progressively only when needed.
+              </p>
+            </section>
+
+            <!-- Chapter 4: MCP Server -->
+            <section class="doc-chapter" data-chapter="mcp" hidden>
+              <h2 id="mcp-config">1. stdio Config</h2>
+              <p>
+                Start GrowthPilot’s built-in stdio Model Context Protocol server with zero external dependencies using <code>growthpilot --mcp</code>.
+              </p>
+
+              <div class="doc-codeblock">
+                <pre>{
+  <span class="syn-cmd">"mcpServers"</span>: {
+    <span class="syn-arg">"growthpilot"</span>: {
+      <span class="syn-str">"command"</span>: <span class="syn-str">"growthpilot"</span>,
+      <span class="syn-str">"args"</span>: [<span class="syn-arg">"--mcp"</span>]
     }
   }
 }</pre>
-          </div>
-        </section>
+                <button
+                  type="button"
+                  class="copy-icon-btn"
+                  data-copy='{"mcpServers":{"growthpilot":{"command":"growthpilot","args":["--mcp"]}}}'
+                  aria-label="Copy MCP JSON config"
+                >
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                  </svg>
+                </button>
+              </div>
 
-        <hr class="hairline" />
+              <h2 id="mcp-tools">2. 6 Native Tools</h2>
+              <div class="doc-table-wrap">
+                <table class="doc-table">
+                  <thead>
+                    <tr>
+                      <th>Tool Name</th>
+                      <th>Purpose</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><code>audit_project</code></td>
+                      <td>Scan directory or live URL across all 18 deterministic rules</td>
+                    </tr>
+                    <tr>
+                      <td><code>analyze_copy_cro</code></td>
+                      <td>Score hero headlines, active CTA verbs, proof figures, and slop words</td>
+                    </tr>
+                    <tr>
+                      <td><code>generate_geo_seo_pack</code></td>
+                      <td>Build <code>llms.txt</code>, <code>llms-full.txt</code>, <code>robots.txt</code>, and JSON-LD</td>
+                    </tr>
+                    <tr>
+                      <td><code>generate_launch_kit</code></td>
+                      <td>Draft tailored Product Hunt, X/LinkedIn, and Hacker News launch posts</td>
+                    </tr>
+                    <tr>
+                      <td><code>generate_programmatic_seo</code></td>
+                      <td>Map comparison, integration, and high-intent glossary URL structures</td>
+                    </tr>
+                    <tr>
+                      <td><code>apply_marketing_fixes</code></td>
+                      <td>Write missing SEO/GEO files non-destructively into the project root</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
 
-        <section id="ci" class="doc-section" aria-labelledby="ci-title">
-          <h2 id="ci-title" class="sec-title">3. GitHub Action &amp; SARIF 2.1.0 Quality Gate</h2>
-          <p class="sec-sub" style="margin-bottom: 0;">
-            Fail builds below a threshold or upload SARIF findings directly to GitHub Security alerts.
-          </p>
+              <h2 id="mcp-payloads">3. Tool Arguments</h2>
+              <p>
+                Every MCP tool accepts plain JSON arguments (<code>path</code>, <code>site_url</code>, <code>live_url</code>, <code>apply_fixes</code>) and returns structured JSON findings with remediation snippets.
+              </p>
+            </section>
 
-          <div class="cmd-card">
-            <div class="toolbar-between">
-              <strong>.github/workflows/growth-audit.yml</strong>
-              <button
-                type="button"
-                class="action-mini"
-                data-copy="uses: codesphere-u/growthpilot@v1&#10;with:&#10;  target: .&#10;  min-score: 85&#10;  sarif-file: growthpilot.sarif"
-              >
-                Copy
+            <!-- Chapter 5: GitHub Actions -->
+            <section class="doc-chapter" data-chapter="ci" hidden>
+              <h2 id="ci-workflow">1. PR Quality Gate</h2>
+              <p>
+                Prevent broken canonical tags, missing <code>llms.txt</code> indexes, or slop-heavy hero copy from merging to <code>main</code>.
+              </p>
+
+              <div class="doc-codeblock">
+                <pre><span class="syn-cmd">- uses:</span> <span class="syn-arg">codesphere-u/growthpilot@v1</span>
+  <span class="syn-cmd">with:</span>
+    <span class="syn-arg">target:</span> .
+    <span class="syn-arg">site-url:</span> https://yoursite.com
+    <span class="syn-arg">min-score:</span> 85
+    <span class="syn-arg">fail-on:</span> high
+    <span class="syn-arg">sarif-file:</span> growthpilot.sarif</pre>
+                <button
+                  type="button"
+                  class="copy-icon-btn"
+                  data-copy="- uses: codesphere-u/growthpilot@v1&#10;  with:&#10;    target: .&#10;    site-url: https://yoursite.com&#10;    min-score: 85&#10;    fail-on: high&#10;    sarif-file: growthpilot.sarif"
+                  aria-label="Copy GitHub Action YAML"
+                >
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                  </svg>
+                </button>
+              </div>
+
+              <h2 id="ci-sarif">2. SARIF 2.1.0 Alerts</h2>
+              <p>
+                Pass <code>sarif-file: growthpilot.sarif</code> and upload it via <code>github/codeql-action/upload-sarif@v3</code> to annotate pull requests inline in GitHub Code Scanning.
+              </p>
+
+              <h2 id="ci-inputs">3. Action Inputs</h2>
+              <div class="doc-table-wrap">
+                <table class="doc-table">
+                  <thead>
+                    <tr>
+                      <th>Input</th>
+                      <th>Default</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><code>target</code></td>
+                      <td><code>.</code></td>
+                      <td>Repository path or live deployment URL</td>
+                    </tr>
+                    <tr>
+                      <td><code>min-score</code></td>
+                      <td><code>0</code></td>
+                      <td>Minimum 0–100 score required for workflow success</td>
+                    </tr>
+                    <tr>
+                      <td><code>fail-on</code></td>
+                      <td><code>none</code></td>
+                      <td>Fail on severity threshold (<code>critical</code>, <code>high</code>, <code>medium</code>)</td>
+                    </tr>
+                    <tr>
+                      <td><code>sarif-file</code></td>
+                      <td>empty</td>
+                      <td>Path to write SARIF 2.1.0 diagnostics</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+
+            <!-- Chapter 6: Frameworks -->
+            <section class="doc-chapter" data-chapter="frameworks" hidden>
+              <h2 id="fw-nextjs">Next.js App Router</h2>
+              <p>
+                Place <code>llms.txt</code> and <code>llms-full.txt</code> inside <code>public/</code>. If dynamic route files like <code>app/robots.ts</code> or <code>app/sitemap.ts</code> exist, <code>--fix</code> detects them automatically and skips static overrides.
+              </p>
+
+              <h2 id="fw-static">Static HTML, Astro &amp; Vite</h2>
+              <p>
+                Keep <code>llms.txt</code>, <code>llms-full.txt</code>, <code>robots.txt</code>, <code>sitemap.xml</code>, and <code>manifest.webmanifest</code> at your public web root directly alongside <code>index.html</code>. GrowthPilot automatically discovers all sub-pages and checks every page for single-<code>&lt;h1&gt;</code>, canonical, title, and description tags.
+              </p>
+
+              <h2 id="fw-backend">Python &amp; Node APIs</h2>
+              <p>
+                FastAPI, Flask, Express, and CLI repositories are automatically classified so Schema.org <code>SoftwareApplication</code> or <code>Organization</code> graphs match your package metadata.
+              </p>
+            </section>
+
+            <!-- Chapter 7: 12 Generated Files -->
+            <section class="doc-chapter" data-chapter="artifacts" hidden>
+              <h2 id="art-geo">Discovery &amp; GEO</h2>
+              <ul>
+                <li><code>llms.txt</code> — Structured Markdown site index following <code>llmstxt.org</code>.</li>
+                <li><code>llms-full.txt</code> — Complete context pack for Claude, ChatGPT, Perplexity, and Gemini.</li>
+                <li><code>robots.txt</code> — Explicit <code>Allow: /</code> rules for <code>GPTBot</code>, <code>ClaudeBot</code>, and <code>PerplexityBot</code>.</li>
+                <li><code>sitemap.xml</code> — Clean XML sitemap covering every discovered route.</li>
+              </ul>
+
+              <h2 id="art-schema">Schema &amp; Social</h2>
+              <ul>
+                <li><code>SEO_SCHEMA.jsonld</code> — Validated Schema.org <code>@graph</code> tailored to your product archetype.</li>
+                <li><code>HEAD_TAGS.html</code> — Copy-paste <code>&lt;title&gt;</code>, canonical, OpenGraph, and Twitter card tags.</li>
+                <li><code>manifest.webmanifest</code> — App name, short name, theme colors, and icon definitions.</li>
+              </ul>
+
+              <h2 id="art-reports">Playbooks &amp; Reports</h2>
+              <ul>
+                <li><code>AUDIT_REPORT.md</code> — Score breakdown and prioritized fixes sorted by points recovered.</li>
+                <li><code>growth-summary.json</code> — Machine-readable audit payload for scripts and dashboards.</li>
+                <li><code>LAUNCH_PLAYBOOK.md</code>, <code>PROGRAMMATIC_SEO.md</code>, and <code>CRO_COPY_REWRITES.md</code>.</li>
+              </ul>
+            </section>
+
+            <!-- Chapter 8: Troubleshooting -->
+            <section class="doc-chapter" data-chapter="troubleshooting" hidden>
+              <h2 id="ts-subpath">Subpath GitHub Pages</h2>
+              <p>
+                When deploying to a project path such as <code>https://username.github.io/repo/</code>, pass the full subpath URL to <code>--site-url</code>. GrowthPilot checks both domain root and project subpath for <code>llms.txt</code>, <code>llms-full.txt</code>, and <code>robots.txt</code>.
+              </p>
+
+              <h2 id="ts-faq">Next.js Client FAQs</h2>
+              <p>
+                Client-only accordion components sometimes hide FAQ answers inside hydration JavaScript chunks while omitting them from initial SSR HTML. GrowthPilot inspects compiled chunks on <code>--live</code> scans and flags <code>MKT009</code> if search and AI bots receive questions without answers.
+              </p>
+
+              <h2 id="ts-slop">Slop Word Flags (MKT015)</h2>
+              <p>
+                Visible UI copy and meta descriptions trigger <code>MKT015</code> if inflated AI filler adjectives or vague hype phrases appear instead of concrete facts. Replace vague claims with real metrics, file counts, latency numbers, and direct active verbs.
+              </p>
+            </section>
+
+            <!-- Chapter 9: About -->
+            <section class="doc-chapter" data-chapter="about" hidden>
+              <h2 id="about-story">Origin Story</h2>
+              <p>
+                GrowthPilot started with a simple observation: small engineering teams build great software and then ship invisible landing pages because serious SEO and AI-search audits sit behind $99–$499 monthly dashboards.
+              </p>
+
+              <h2 id="about-goals">Project Goals</h2>
+              <p>
+                Rather than another black-box marketing dashboard, GrowthPilot gives builders an inspectable, local, zero-dependency CLI and MCP server that runs in under a second right next to your tests and linter.
+              </p>
+
+              <h2 id="about-hood">Under the Hood</h2>
+              <ul>
+                <li>Pure Python 3.10+ standard library — zero <code>pip</code> dependencies and zero network calls during local repo scans.</li>
+                <li>18 transparent rules weighted across 6 balanced pillars totaling 100 points.</li>
+                <li>Outputs both clean developer diagnostics (SARIF, JSON) and ready-to-deploy web files (<code>llms.txt</code>, JSON-LD, sitemaps).</li>
+              </ul>
+            </section>
+
+            <!-- Handy-style Bottom Chapter Pagination -->
+            <nav class="doc-pagination" aria-label="Documentation chapter pagination">
+              <button type="button" class="page-step-btn prev" id="doc-prev-btn" hidden>
+                <small>Previous</small>
+                <strong id="doc-prev-label">← Getting Started</strong>
               </button>
-            </div>
-            <pre class="code-block">- uses: codesphere-u/growthpilot@v1
-  with:
-    target: .
-    site-url: https://yoursite.com
-    min-score: 85
-    fail-on: high
-    sarif-file: growthpilot.sarif</pre>
-          </div>
-        </section>
-
-        <hr class="hairline" />
-
-        <section id="frameworks" class="doc-section" aria-labelledby="fw-title">
-          <h2 id="fw-title" class="sec-title">4. Framework Asset Placement</h2>
-          <div class="editorial-grid">
-            <div>
-              <h3 style="margin: 0 0 0.35rem; font-size: 1.05rem;">Next.js (App Router)</h3>
-              <p style="margin: 0; font-size: 0.9rem; color: var(--text-70);">
-                Place <code>llms.txt</code> and <code>llms-full.txt</code> under <code>public/</code>. If <code>app/robots.ts</code> or <code>app/sitemap.ts</code> exists, <code>--fix</code> automatically skips overwriting dynamic routes.
-              </p>
-            </div>
-            <div>
-              <h3 style="margin: 0 0 0.35rem; font-size: 1.05rem;">Static HTML / Astro / Vite</h3>
-              <p style="margin: 0; font-size: 0.9rem; color: var(--text-70);">
-                Keep <code>llms.txt</code>, <code>robots.txt</code>, <code>sitemap.xml</code>, and <code>manifest.webmanifest</code> at the public site root next to <code>index.html</code>.
-              </p>
-            </div>
-          </div>
-        </section>
-
-        <hr class="hairline" />
-
-        <section id="flags" class="doc-section" aria-labelledby="flags-title">
-          <h2 id="flags-title" class="sec-title">5. CLI Flags Reference</h2>
-          <div class="table-scroll">
-            <table>
-              <thead>
-                <tr>
-                  <th>Flag</th>
-                  <th>Default</th>
-                  <th>Behavior</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><code>target</code></td>
-                  <td><code>.</code></td>
-                  <td>Local directory path or public <code>http(s)://</code> URL</td>
-                </tr>
-                <tr>
-                  <td><code>--live URL</code></td>
-                  <td><code>off</code></td>
-                  <td>Fetch live HTML, subpath GEO files &amp; Next.js FAQ chunks</td>
-                </tr>
-                <tr>
-                  <td><code>--site-url URL</code></td>
-                  <td>auto</td>
-                  <td>Override canonical base URL when auditing codebases or staging</td>
-                </tr>
-                <tr>
-                  <td><code>--fix</code></td>
-                  <td><code>false</code></td>
-                  <td>Non-destructively scaffold missing SEO &amp; GEO files</td>
-                </tr>
-                <tr>
-                  <td><code>--output-dir DIR</code></td>
-                  <td><code>growthpilot-out</code></td>
-                  <td>Directory where all 12 generated artifacts are written</td>
-                </tr>
-                <tr>
-                  <td><code>--min-score N</code></td>
-                  <td><code>0</code></td>
-                  <td>Exit with code <code>1</code> if score drops below <code>N</code></td>
-                </tr>
-                <tr>
-                  <td><code>--sarif FILE</code></td>
-                  <td><code>off</code></td>
-                  <td>Emit SARIF 2.1.0 report for GitHub Code Scanning</td>
-                </tr>
-                <tr>
-                  <td><code>--mcp</code></td>
-                  <td><code>false</code></td>
-                  <td>Start zero-dependency stdio Model Context Protocol server</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </section>
+              <button type="button" class="page-step-btn next" id="doc-next-btn">
+                <small>Next</small>
+                <strong id="doc-next-label">CLI Reference →</strong>
+              </button>
+            </nav>
+          </article>
+        </div>
       </main>
 
       <footer class="site-footer">
@@ -285,7 +699,7 @@ growthpilot https://yoursite.com --fix</pre>
           <span>·</span>
           <a href="https://github.com/codesphere-u/growthpilot" target="_blank" rel="noopener noreferrer">github</a>
         </div>
-        <div>MIT Licensed · Zero external runtime dependencies · v1.4.2</div>
+        <div>MIT Licensed · Zero external runtime dependencies · v1.4.3</div>
       </footer>
     </div>
 

@@ -24,7 +24,7 @@
   const HOME_PREVIEWS = {
     term: `$ growthpilot https://funagigs.com --fix
 
-GrowthPilot v1.4.2 — Score: 100/100 (Grade A+)  [critical=0 high=0]
+GrowthPilot v1.4.3 — Score: 100/100 (Grade A+)  [critical=0 high=0]
   Technical SEO        20/20 (100%)
   GEO & AI Search      20/20 (100%)
   Structured Data      15/15 (100%)
@@ -49,7 +49,7 @@ Generated 12 deploy-ready files in 0.8s with 0 external dependencies.`,
           {
             "@type": "SoftwareApplication",
             name: "GrowthPilot",
-            softwareVersion: "1.4.2",
+            softwareVersion: "1.4.3",
             applicationCategory: "DeveloperApplication",
             operatingSystem: "macOS, Linux, Windows",
             offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
@@ -177,7 +177,7 @@ Generated 12 deploy-ready files in 0.8s with 0 external dependencies.`,
       code: JSON.stringify(
         {
           tool: "growthpilot",
-          version: "1.4.2",
+          version: "1.4.3",
           score: 100,
           grade: "A+",
           findings_count: 0,
@@ -223,7 +223,7 @@ Generated 12 deploy-ready files in 0.8s with 0 external dependencies.`,
     llmsfull: {
       title: "llms-full.txt — Complete Machine-Readable Brief",
       badge: "GEO / AEO",
-      code: `# GrowthPilot Complete Context (v1.4.2)\nCLI Flags: --live URL, --site-url, --min-score, --sarif, --mcp, --json\nDependencies: None (Python 3.10+ stdlib only)\nLicense: MIT\nOutputs: 12 deployable assets under growthpilot-out/ or website root.`,
+      code: `# GrowthPilot Complete Context (v1.4.3)\nCLI Flags: --live URL, --site-url, --min-score, --sarif, --mcp, --json\nDependencies: None (Python 3.10+ stdlib only)\nLicense: MIT\nOutputs: 12 deployable assets under growthpilot-out/ or website root.`,
     },
     sarif: {
       title: "growthpilot.sarif — GitHub Code Scanning 2.1.0",
@@ -419,12 +419,298 @@ Generated 12 deploy-ready files in 0.8s with 0 external dependencies.`,
   }
 
   function initCopyButtons() {
-    $$("[data-copy]").forEach((btn) => {
+    document.addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-copy]");
+      if (!btn) return;
+      const payload = btn.dataset.copy || "";
+      copyText(payload, "command");
+    });
+  }
+
+  const INSTALL_TABS = {
+    uv: {
+      eyebrow: "Install CLI",
+      buttons: [
+        { label: "Global CLI", ext: "uv tool", cls: "handy-pill-btn", copy: "uv tool install git+https://github.com/codesphere-u/growthpilot" },
+        { label: "Zero-Install Run", ext: ".uvx", cls: "handy-pill-btn sky", copy: "uvx --from git+https://github.com/codesphere-u/growthpilot growthpilot ." },
+      ],
+      helper: "Requires Python 3.10+ only — zero third-party packages installed.",
+      cmd: "uv tool install git+https://github.com/codesphere-u/growthpilot",
+      parts: [
+        ["syn-cmd", "uv"],
+        [null, " "],
+        ["syn-arg", "tool install"],
+        [null, " git+https://github.com/codesphere-u/growthpilot"],
+      ],
+    },
+    claude: {
+      eyebrow: "Claude Code Plugin",
+      buttons: [
+        { label: "Add Marketplace", ext: "/plugin", cls: "handy-pill-btn", copy: "/plugin marketplace add codesphere-u/growthpilot" },
+        { label: "Install Plugin", ext: "growthpilot", cls: "handy-pill-btn sky", copy: "/plugin install growthpilot@growthpilot-marketplace" },
+      ],
+      helper: "Runs inside Claude Code & Cowork with full progressive-disclosure references.",
+      cmd: "/plugin install growthpilot@growthpilot-marketplace",
+      parts: [
+        ["syn-cmd", "/plugin"],
+        [null, " "],
+        ["syn-arg", "install"],
+        [null, " growthpilot@growthpilot-marketplace"],
+      ],
+    },
+    cursor: {
+      eyebrow: "Cross-Agent Skill & MCP",
+      buttons: [
+        { label: "Add Agent Skill", ext: "npx", cls: "handy-pill-btn", copy: "npx skills add codesphere-u/growthpilot" },
+        { label: "Start stdio MCP", ext: "--mcp", cls: "handy-pill-btn sky", copy: "growthpilot --mcp" },
+      ],
+      helper: "Works with Cursor, Codex, Windsurf, OpenCode, and Antigravity via stdio JSON-RPC.",
+      cmd: "npx skills add codesphere-u/growthpilot",
+      parts: [
+        ["syn-cmd", "npx"],
+        [null, " "],
+        ["syn-arg", "skills add"],
+        [null, " codesphere-u/growthpilot"],
+      ],
+    },
+    ci: {
+      eyebrow: "GitHub Actions CI Gate",
+      buttons: [
+        { label: "Action v1", ext: "YAML", cls: "handy-pill-btn", copy: "- uses: codesphere-u/growthpilot@v1\n  with:\n    target: .\n    min-score: 85" },
+        { label: "Upload SARIF", ext: "2.1.0", cls: "handy-pill-btn sky", copy: "growthpilot . --sarif growthpilot.sarif --fail-on high" },
+      ],
+      helper: "Fail pull requests below threshold or upload SARIF findings to GitHub Security.",
+      cmd: "growthpilot . --min-score 85 --sarif growthpilot.sarif",
+      parts: [
+        ["syn-cmd", "growthpilot"],
+        [null, " . "],
+        ["syn-arg", "--min-score 85 --sarif"],
+        [null, " growthpilot.sarif"],
+      ],
+    },
+  };
+
+  function initInstallTabs() {
+    const widget = $("#install-widget");
+    if (!widget) return;
+    const eyebrow = $("#install-eyebrow");
+    const btnRow = $("#install-btn-row");
+    const helper = $("#install-helper");
+    const cmdPre = $("#install-cmd-pre");
+    const copyBtn = $("#install-copy-btn");
+
+    function selectTab(key) {
+      const data = INSTALL_TABS[key] || INSTALL_TABS.uv;
+      $$("[data-installtab]").forEach((t) => {
+        const match = t.dataset.installtab === key;
+        t.classList.toggle("active", match);
+        t.setAttribute("aria-selected", String(match));
+      });
+      if (eyebrow) eyebrow.textContent = data.eyebrow;
+      if (helper) helper.textContent = data.helper;
+      if (copyBtn) copyBtn.dataset.copy = data.cmd;
+
+      if (btnRow) {
+        const nodes = data.buttons.map((b) => {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = b.cls;
+          btn.dataset.copy = b.copy;
+          btn.append(document.createTextNode(b.label + " "));
+          const ext = document.createElement("span");
+          ext.textContent = b.ext;
+          btn.appendChild(ext);
+          return btn;
+        });
+        btnRow.replaceChildren(...nodes);
+      }
+
+      if (cmdPre) {
+        const nodes = data.parts.map(([cls, txt]) => {
+          if (!cls) return document.createTextNode(txt);
+          const span = document.createElement("span");
+          span.className = cls;
+          span.textContent = txt;
+          return span;
+        });
+        cmdPre.replaceChildren(...nodes);
+      }
+    }
+
+    $$("[data-installtab]").forEach((tab) => {
+      tab.addEventListener("click", () => selectTab(tab.dataset.installtab));
+    });
+  }
+
+  function initDocsNavigation() {
+    const titleEl = $("#doc-chapter-title");
+    const chapters = $$(".doc-chapter[data-chapter]");
+    if (!titleEl || chapters.length === 0) return;
+
+    const CHAPTER_ORDER = [
+      { id: "getting-started", label: "Getting Started" },
+      { id: "cli", label: "CLI Reference" },
+      { id: "agents", label: "AI Agents & Skills" },
+      { id: "mcp", label: "MCP Server" },
+      { id: "ci", label: "GitHub Actions" },
+      { id: "frameworks", label: "Frameworks" },
+      { id: "artifacts", label: "12 Generated Files" },
+      { id: "troubleshooting", label: "Troubleshooting" },
+      { id: "about", label: "About" },
+    ];
+
+    const prevBtn = $("#doc-prev-btn");
+    const prevLbl = $("#doc-prev-label");
+    const nextBtn = $("#doc-next-btn");
+    const nextLbl = $("#doc-next-label");
+    let currentChapter = "getting-started";
+
+    function highlightSubAnchor(hashId) {
+      $$(".doc-sub-link").forEach((a) => {
+        const targetHash = (a.getAttribute("href") || "").replace(/^#/, "");
+        a.classList.toggle("active", targetHash === hashId);
+      });
+    }
+
+    function openChapter(chapterId, scrollTargetId, scrollToTop = true) {
+      const idx = CHAPTER_ORDER.findIndex((c) => c.id === chapterId);
+      const entry = idx >= 0 ? CHAPTER_ORDER[idx] : CHAPTER_ORDER[0];
+      const activeIdx = idx >= 0 ? idx : 0;
+      currentChapter = entry.id;
+
+      titleEl.textContent = entry.label;
+      chapters.forEach((sec) => {
+        const match = sec.dataset.chapter === entry.id;
+        if (match) sec.removeAttribute("hidden");
+        else sec.setAttribute("hidden", "");
+      });
+
+      $$(".doc-nav-link[data-doc-target]").forEach((btn) => {
+        btn.classList.toggle("active", btn.dataset.docTarget === entry.id);
+      });
+      $$(".docs-mobile-chip[data-doc-target]").forEach((chip) => {
+        chip.classList.toggle("active", chip.dataset.docTarget === entry.id);
+      });
+      $$(".doc-subrail[data-subrail]").forEach((rail) => {
+        rail.classList.toggle("open", rail.dataset.subrail === entry.id);
+      });
+
+      if (prevBtn && prevLbl) {
+        if (activeIdx > 0) {
+          prevBtn.removeAttribute("hidden");
+          prevBtn.dataset.jumpIndex = String(activeIdx - 1);
+          prevLbl.textContent = `← ${CHAPTER_ORDER[activeIdx - 1].label}`;
+        } else {
+          prevBtn.setAttribute("hidden", "");
+        }
+      }
+
+      if (nextBtn && nextLbl) {
+        if (activeIdx < CHAPTER_ORDER.length - 1) {
+          nextBtn.removeAttribute("hidden");
+          nextBtn.dataset.jumpIndex = String(activeIdx + 1);
+          nextLbl.textContent = `${CHAPTER_ORDER[activeIdx + 1].label} →`;
+        } else {
+          nextBtn.setAttribute("hidden", "");
+        }
+      }
+
+      if (scrollTargetId) {
+        const el = document.getElementById(scrollTargetId);
+        if (el) {
+          highlightSubAnchor(scrollTargetId);
+          requestAnimationFrame(() => el.scrollIntoView({ behavior: "smooth", block: "start" }));
+          return;
+        }
+      }
+
+      const firstSub = $(`.doc-subrail[data-subrail="${entry.id}"] .doc-sub-link`);
+      if (firstSub) {
+        highlightSubAnchor((firstSub.getAttribute("href") || "").replace(/^#/, ""));
+      }
+      if (scrollToTop) window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    $$(".doc-nav-link[data-doc-target], .docs-mobile-chip[data-doc-target]").forEach((btn) => {
       btn.addEventListener("click", () => {
-        const payload = btn.dataset.copy || "";
-        copyText(payload, "command");
+        const target = btn.dataset.docTarget;
+        history.replaceState(null, "", `#${target}`);
+        openChapter(target);
       });
     });
+
+    $$(".doc-sub-link[data-doc-anchor]").forEach((link) => {
+      link.addEventListener("click", (e) => {
+        e.preventDefault();
+        const ch = link.dataset.docAnchor;
+        const hashId = (link.getAttribute("href") || "").replace(/^#/, "");
+        history.replaceState(null, "", `#${hashId}`);
+        openChapter(ch, hashId);
+      });
+    });
+
+    $$("[data-doc-jump]").forEach((link) => {
+      link.addEventListener("click", (e) => {
+        e.preventDefault();
+        const ch = link.dataset.docJump;
+        history.replaceState(null, "", `#${ch}`);
+        openChapter(ch);
+      });
+    });
+
+    if (prevBtn) {
+      prevBtn.addEventListener("click", () => {
+        const nextIdx = Number(prevBtn.dataset.jumpIndex || "0");
+        const entry = CHAPTER_ORDER[nextIdx];
+        if (entry) {
+          history.replaceState(null, "", `#${entry.id}`);
+          openChapter(entry.id);
+        }
+      });
+    }
+
+    if (nextBtn) {
+      nextBtn.addEventListener("click", () => {
+        const nextIdx = Number(nextBtn.dataset.jumpIndex || "1");
+        const entry = CHAPTER_ORDER[nextIdx];
+        if (entry) {
+          history.replaceState(null, "", `#${entry.id}`);
+          openChapter(entry.id);
+        }
+      });
+    }
+
+    window.addEventListener(
+      "scroll",
+      () => {
+        const activePanel = $(`.doc-chapter[data-chapter="${currentChapter}"]`);
+        if (!activePanel) return;
+        const headings = Array.from(activePanel.querySelectorAll("h2[id], h3[id]"));
+        let best = headings[0];
+        for (const h of headings) {
+          if (h.getBoundingClientRect().top <= 130) best = h;
+        }
+        if (best && best.id) highlightSubAnchor(best.id);
+      },
+      { passive: true }
+    );
+
+    const rawHash = (window.location.hash || "").replace(/^#/, "");
+    if (rawHash) {
+      if (CHAPTER_ORDER.some((c) => c.id === rawHash)) {
+        openChapter(rawHash);
+      } else {
+        const anchorEl = document.getElementById(rawHash);
+        const owner = anchorEl && anchorEl.closest(".doc-chapter[data-chapter]");
+        if (owner) {
+          openChapter(owner.dataset.chapter, rawHash);
+        } else {
+          openChapter("getting-started", null, false);
+        }
+      }
+    } else {
+      openChapter("getting-started", null, false);
+    }
   }
 
   function initStudioTabs() {
@@ -726,7 +1012,27 @@ Generated 12 deploy-ready files in 0.8s with 0 external dependencies.`,
     }
 
     if (searchEl) searchEl.addEventListener("input", renderRules);
-    if (pillarEl) pillarEl.addEventListener("change", renderRules);
+    if (pillarEl) {
+      pillarEl.addEventListener("change", () => {
+        const val = pillarEl.value;
+        $$("[data-pillarfilter]").forEach((btn) => {
+          btn.classList.toggle("active", btn.dataset.pillarfilter === val);
+        });
+        renderRules();
+      });
+    }
+
+    $$("[data-pillarfilter]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const val = btn.dataset.pillarfilter || "all";
+        if (pillarEl) pillarEl.value = val;
+        $$("[data-pillarfilter]").forEach((b) => {
+          b.classList.toggle("active", b.dataset.pillarfilter === val);
+        });
+        renderRules();
+      });
+    });
+
     renderRules();
   }
 
@@ -734,6 +1040,8 @@ Generated 12 deploy-ready files in 0.8s with 0 external dependencies.`,
     initCTA();
     initHomePreview();
     initCopyButtons();
+    initInstallTabs();
+    initDocsNavigation();
     initStudioTabs();
     initCRO();
     initGenerator();
