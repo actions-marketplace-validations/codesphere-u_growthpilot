@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GrowthPilot — Interactive CRO, GEO &amp; Schema Studio</title>
+    <meta
+      name="description"
+      content="Test hero copy for clarity, CTAs &amp; AI fluff, generate live llms.txt &amp; Schema.org JSON-LD files, and inspect all 12 GrowthPilot outputs in your browser."
+    />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#fffdf2" />
+    <link rel="canonical" href="https://codesphere-u.github.io/growthpilot/studio.html" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://codesphere-u.github.io/growthpilot/studio.html" />
+    <meta property="og:title" content="GrowthPilot — Interactive CRO, GEO &amp; Schema Studio" />
+    <meta
+      property="og:description"
+      content="In-browser CRO Copy Grader, llms.txt &amp; JSON-LD Schema generator, and 12-output inspector — zero server calls."
+    />
+    <meta property="og:image" content="https://codesphere-u.github.io/growthpilot/og-image.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="GrowthPilot — Interactive CRO, GEO &amp; Schema Studio" />
+    <meta
+      name="twitter:description"
+      content="Grade landing copy, build llms.txt and Schema.org markup, and preview all 12 GrowthPilot artifacts locally."
+    />
+    <meta name="twitter:image" content="https://codesphere-u.github.io/growthpilot/og-image.svg" />
+
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="page-col">
+      <header class="site-header">
+        <a class="brand-link" href="./" aria-label="GrowthPilot home">
+          <svg width="26" height="26" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+            <rect x="2" y="2" width="24" height="24" rx="7" fill="#8ce9bf" stroke="#1d2e28" stroke-width="2.2" />
+            <circle cx="14" cy="14" r="6.5" fill="#9dd8fb" stroke="#1d2e28" stroke-width="1.8" />
+            <path d="M14 9L17.2 17L14 15.2L10.8 17L14 9Z" fill="#1d2e28" />
+          </svg>
+          <span>growthpilot</span>
+        </a>
+
+        <nav class="header-nav" aria-label="Primary navigation">
+          <a class="active" href="./studio.html" aria-current="page">studio</a>
+          <a href="./proof.html">proof</a>
+          <a href="./docs.html">docs</a>
+          <a href="./rules.html">rules</a>
+          <a
+            class="icon-link"
+            href="https://github.com/codesphere-u/growthpilot"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="GrowthPilot on GitHub"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path
+                d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
+              />
+            </svg>
+          </a>
+          <a
+            class="nav-pill"
+            href="https://github.com/codesphere-u/growthpilot/releases"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            v1.4.2
+          </a>
+        </nav>
+      </header>
+
+      <main>
+        <section class="page-hero" aria-labelledby="studio-page-title">
+          <h1 id="studio-page-title">interactive studio</h1>
+          <p class="hero-sub">
+            Grade hero copy, generate valid <code>llms.txt</code> and Schema.org files, and inspect all 12 outputs directly in your browser.
+          </p>
+        </section>
+
+        <section class="studio-frame" id="studio" aria-label="Interactive GrowthPilot Studio">
+          <div class="frame-bar">
+            <div class="dots" aria-hidden="true">
+              <span></span><span></span><span></span>
+            </div>
+            <div class="frame-tabs" role="tablist" aria-label="Studio tools">
+              <button type="button" class="frame-tab active" role="tab" aria-selected="true" data-studio="cro">
+                CRO Copy Grader
+              </button>
+              <button type="button" class="frame-tab" role="tab" aria-selected="false" data-studio="gen">
+                GEO &amp; Schema Builder
+              </button>
+              <button type="button" class="frame-tab" role="tab" aria-selected="false" data-studio="outputs">
+                12 Outputs Explorer
+              </button>
+            </div>
+          </div>
+
+          <!-- Tab 1: CRO Copy Grader -->
+          <div class="studio-panel active" id="panel-cro" role="tabpanel">
+            <div class="form-row-2">
+              <div class="field">
+                <label for="cro-product">Product name</label>
+                <input id="cro-product" class="input" type="text" value="GrowthPilot" placeholder="Your product name" />
+              </div>
+              <div class="field">
+                <label for="cro-archetype">Product archetype</label>
+                <select id="cro-archetype" class="select">
+                  <option value="devtools">Developer Tool / CLI</option>
+                  <option value="saas">B2B SaaS Platform</option>
+                  <option value="marketplace">Marketplace / Gig Network</option>
+                  <option value="editorial">Editorial / Open Source</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="preset-pills" style="margin-bottom: 0.75rem;" aria-label="Sample hero copy presets">
+              <button type="button" class="chip-btn active" data-preset="devtools">Clear CLI pitch</button>
+              <button type="button" class="chip-btn" data-preset="weak">Weak buzzword draft</button>
+              <button type="button" class="chip-btn" data-preset="funagigs">funagigs.com draft</button>
+              <button type="button" class="chip-btn" data-preset="saas">B2B workflow</button>
+            </div>
+
+            <div class="field">
+              <label for="cro-input">Hero headline, subheadline &amp; primary CTA</label>
+              <textarea id="cro-input" class="textarea" rows="3">Audit any codebase or live URL across 18 SEO, GEO (llms.txt) &amp; CRO rules in under 1 second. Generates 12 deploy-ready files with zero dependencies. Run growthpilot .</textarea>
+            </div>
+
+            <div class="score-row">
+              <div class="score-cell">
+                <span>Overall</span>
+                <strong id="stat-overall">95/100</strong>
+              </div>
+              <div class="score-cell">
+                <span>Clarity</span>
+                <strong id="stat-clarity">30/35</strong>
+              </div>
+              <div class="score-cell">
+                <span>CTA</span>
+                <strong id="stat-cta">25/25</strong>
+              </div>
+              <div class="score-cell">
+                <span>Proof</span>
+                <strong id="stat-proof">20/20</strong>
+              </div>
+              <div class="score-cell">
+                <span>Slop Words</span>
+                <strong id="stat-slop">0</strong>
+              </div>
+            </div>
+
+            <p class="diag-note" id="cro-diagnostics">
+              Strong clarity, active CTA, quantified proof, and zero filler words. Click "Weak buzzword draft" to test fluff detection live.
+            </p>
+
+            <div class="rw-list">
+              <div class="rw-item">
+                <span>PAS (Problem -> Agitate -> Solve)</span>
+                <p id="rw-pas"></p>
+              </div>
+              <div class="rw-item">
+                <span>JTBD (Outcome without bloat)</span>
+                <p id="rw-jtbd"></p>
+              </div>
+              <div class="rw-item">
+                <span>Metric-first Developer Hook</span>
+                <p id="rw-metric"></p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab 2: GEO & Schema Builder -->
+          <div class="studio-panel" id="panel-gen" role="tabpanel">
+            <div class="form-row-2">
+              <div class="field">
+                <label for="gen-name">Site / Product name</label>
+                <input id="gen-name" class="input" type="text" value="AcmeDocs" />
+              </div>
+              <div class="field">
+                <label for="gen-url">Canonical HTTPS URL</label>
+                <input id="gen-url" class="input" type="url" value="https://acmedocs.dev" />
+              </div>
+              <div class="field">
+                <label for="gen-desc">One-line description</label>
+                <input id="gen-desc" class="input" type="text" value="Fast zero-config API docs built from OpenAPI specs in seconds." />
+              </div>
+              <div class="field">
+                <label for="gen-arch">Schema archetype</label>
+                <select id="gen-arch" class="select">
+                  <option value="SoftwareApplication">SoftwareApplication</option>
+                  <option value="WebSite">WebSite + Organization</option>
+                  <option value="Product">Product / Commerce</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="toolbar-between" style="margin: 0.75rem 0;">
+              <div class="preset-pills">
+                <button type="button" class="chip-btn active" data-genfile="llms">llms.txt</button>
+                <button type="button" class="chip-btn" data-genfile="schema">SEO_SCHEMA.jsonld</button>
+                <button type="button" class="chip-btn" data-genfile="robots">robots.txt</button>
+                <button type="button" class="chip-btn" data-genfile="head">HEAD_TAGS.html</button>
+              </div>
+              <div style="display: flex; gap: 6px;">
+                <button type="button" class="action-mini" id="copy-gen-btn">Copy</button>
+                <button type="button" class="action-mini" id="download-gen-btn">Download</button>
+              </div>
+            </div>
+
+            <pre class="code-block" id="gen-preview"></pre>
+          </div>
+
+          <!-- Tab 3: 12 Outputs Explorer -->
+          <div class="studio-panel" id="panel-outputs" role="tabpanel">
+            <div class="preset-pills" id="output-nav" style="margin-bottom: 0.8rem;">
+              <button type="button" class="chip-btn active" data-outfile="llms">llms.txt</button>
+              <button type="button" class="chip-btn" data-outfile="schema">SEO_SCHEMA.jsonld</button>
+              <button type="button" class="chip-btn" data-outfile="head">HEAD_TAGS.html</button>
+              <button type="button" class="chip-btn" data-outfile="robots">robots.txt</button>
+              <button type="button" class="chip-btn" data-outfile="sitemap">sitemap.xml</button>
+              <button type="button" class="chip-btn" data-outfile="audit">AUDIT_REPORT.md</button>
+              <button type="button" class="chip-btn" data-outfile="summary">growth-summary.json</button>
+              <button type="button" class="chip-btn" data-outfile="manifest">manifest.webmanifest</button>
+              <button type="button" class="chip-btn" data-outfile="playbook">LAUNCH_PLAYBOOK.md</button>
+              <button type="button" class="chip-btn" data-outfile="pseo">PROGRAMMATIC_SEO.md</button>
+              <button type="button" class="chip-btn" data-outfile="llmsfull">llms-full.txt</button>
+              <button type="button" class="chip-btn" data-outfile="sarif">growthpilot.sarif</button>
+            </div>
+
+            <div class="toolbar-between" style="margin-bottom: 0.65rem;">
+              <strong id="out-title">llms.txt — AI Answer-Engine Index</strong>
+              <span class="pill pill-mint" id="out-badge">GEO / AEO</span>
+            </div>
+
+            <pre class="code-block" id="out-code"></pre>
+          </div>
+        </section>
+
+        <section class="editorial-grid" aria-label="Next steps">
+          <div>
+            <h2>Automate in CI</h2>
+            <p>
+              Run the exact same scorer inside GitHub Actions with <code>--min-score 100</code>. See <a href="./docs.html#ci" style="text-decoration: underline;">CI setup</a>.
+            </p>
+          </div>
+          <div>
+            <h2>See Real Proof</h2>
+            <p>
+              Explore how these generated files raised <code>funagigs.com</code> from 40 to 100/100 in our <a href="./proof.html" style="text-decoration: underline;">case study</a>.
+            </p>
+          </div>
+        </section>
+      </main>
+
+      <footer class="site-footer">
+        <div class="footer-links">
+          <a href="./">home</a>
+          <span>·</span>
+          <a href="./studio.html">studio</a>
+          <span>·</span>
+          <a href="./proof.html">proof</a>
+          <span>·</span>
+          <a href="./docs.html">docs</a>
+          <span>·</span>
+          <a href="./rules.html">rules</a>
+          <span>·</span>
+          <a href="https://github.com/codesphere-u/growthpilot" target="_blank" rel="noopener noreferrer">github</a>
+        </div>
+        <div>MIT Licensed · 100% browser-local tools</div>
+      </footer>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="./app.js" defer></script>
+  </body>
+</html>

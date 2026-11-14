@@ -16,8 +16,62 @@
     },
     ci: {
       caption: "uses: codesphere-u/growthpilot@v1",
-      command: "uses: codesphere-u/growthpilot@v1\nwith:\n  target: .\n  min-score: 85\n  sarif-file: growthpilot.sarif",
+      command:
+        "uses: codesphere-u/growthpilot@v1\nwith:\n  target: .\n  min-score: 85\n  sarif-file: growthpilot.sarif",
     },
+  };
+
+  const HOME_PREVIEWS = {
+    term: `$ growthpilot https://funagigs.com --fix
+
+GrowthPilot v1.4.2 — Score: 100/100 (Grade A+)  [critical=0 high=0]
+  Technical SEO        20/20 (100%)
+  GEO & AI Search      20/20 (100%)
+  Structured Data      15/15 (100%)
+  Social & Viral Graph 15/15 (100%)
+  CRO & Copy Clarity   15/15 (100%)
+  Launch & Growth      15/15 (100%)
+
+Generated 12 deploy-ready files in 0.8s with 0 external dependencies.`,
+    llms: `# GrowthPilot
+> Zero-dependency CLI, MCP server & GitHub Action auditing 18 SEO, GEO & CRO rules.
+
+## Website Pages
+- [Home](https://codesphere-u.github.io/growthpilot/): Overview & CLI installer
+- [Interactive Studio](https://codesphere-u.github.io/growthpilot/studio.html): CRO grader & GEO builder
+- [Verified Proof](https://codesphere-u.github.io/growthpilot/proof.html): funagigs.com case study
+- [Documentation](https://codesphere-u.github.io/growthpilot/docs.html): Quickstart, MCP & SARIF CI
+- [18 Rules Spec](https://codesphere-u.github.io/growthpilot/rules.html): Complete rubric MKT001–MKT018`,
+    schema: JSON.stringify(
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "SoftwareApplication",
+            name: "GrowthPilot",
+            softwareVersion: "1.4.2",
+            applicationCategory: "DeveloperApplication",
+            operatingSystem: "macOS, Linux, Windows",
+            offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+          },
+          {
+            "@type": "FAQPage",
+            mainEntity: [
+              {
+                "@type": "Question",
+                name: "Does GrowthPilot require API keys or cloud accounts?",
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: "No. Pure Python 3.10+ stdlib with zero telemetry.",
+                },
+              },
+            ],
+          },
+        ],
+      },
+      null,
+      2
+    ),
   };
 
   const CRO_PRESETS = {
@@ -90,40 +144,12 @@
     llms: {
       title: "llms.txt — AI Answer-Engine Index",
       badge: "GEO / AEO",
-      code: `# GrowthPilot\n> Zero-dependency engine auditing codebases & live URLs across 18 SEO, GEO (llms.txt), Schema.org & CRO rules.\n\n## Core Capabilities\n- [CLI & Scanner](https://codesphere-u.github.io/growthpilot/#studio): Deterministic 100-point rubric + 12 deployable assets.\n- [18 Rules Spec](https://codesphere-u.github.io/growthpilot/#rules): Technical SEO, GEO/AEO, Schema, Social, CRO & Launch.\n- [MCP Server](https://github.com/codesphere-u/growthpilot): Run locally via growthpilot --mcp with stdio transport.`,
+      code: `# GrowthPilot\n> Zero-dependency engine auditing codebases & live URLs across 18 SEO, GEO (llms.txt), Schema.org & CRO rules.\n\n## Core Pages\n- [Interactive Studio](https://codesphere-u.github.io/growthpilot/studio.html): CRO grader & GEO/Schema generator.\n- [18 Rules Spec](https://codesphere-u.github.io/growthpilot/rules.html): Technical SEO, GEO/AEO, Schema, Social, CRO & Launch.\n- [Documentation](https://codesphere-u.github.io/growthpilot/docs.html): CLI flags, MCP server & SARIF CI.`,
     },
     schema: {
       title: "SEO_SCHEMA.jsonld — Schema.org @graph",
       badge: "Structured Data",
-      code: JSON.stringify(
-        {
-          "@context": "https://schema.org",
-          "@graph": [
-            {
-              "@type": "SoftwareApplication",
-              name: "GrowthPilot",
-              applicationCategory: "DeveloperApplication",
-              operatingSystem: "macOS, Linux, Windows",
-              offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
-            },
-            {
-              "@type": "FAQPage",
-              mainEntity: [
-                {
-                  "@type": "Question",
-                  name: "Does GrowthPilot require API keys?",
-                  acceptedAnswer: {
-                    "@type": "Answer",
-                    text: "No. Pure Python 3.10+ stdlib with zero telemetry.",
-                  },
-                },
-              ],
-            },
-          ],
-        },
-        null,
-        2
-      ),
+      code: HOME_PREVIEWS.schema,
     },
     head: {
       title: "HEAD_TAGS.html — Drop-in Social & Meta snippet",
@@ -138,10 +164,10 @@
     sitemap: {
       title: "sitemap.xml — Canonical URL Inventory",
       badge: "Technical SEO",
-      code: `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n  <url>\n    <loc>https://codesphere-u.github.io/growthpilot/</loc>\n    <changefreq>weekly</changefreq>\n    <priority>1.0</priority>\n  </url>\n</urlset>`,
+      code: `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n  <url>\n    <loc>https://codesphere-u.github.io/growthpilot/</loc>\n    <priority>1.0</priority>\n  </url>\n  <url>\n    <loc>https://codesphere-u.github.io/growthpilot/studio.html</loc>\n    <priority>0.9</priority>\n  </url>\n</urlset>`,
     },
     audit: {
-      title: "GROWTH_AUDIT.md — Prioritized Fix Report",
+      title: "AUDIT_REPORT.md — Prioritized Fix Report",
       badge: "Audit Report",
       code: `# GrowthPilot Audit — 100/100 (Grade A+)\n- Technical SEO: 20/20\n- GEO & AI Search: 20/20\n- Structured Data: 15/15\n- Social & Viral Graph: 15/15\n- CRO & Copy Clarity: 15/15\n- Launch & Growth: 15/15\n\nAll 18 deterministic checks passed with zero findings.`,
     },
@@ -151,6 +177,7 @@
       code: JSON.stringify(
         {
           tool: "growthpilot",
+          version: "1.4.2",
           score: 100,
           grade: "A+",
           findings_count: 0,
@@ -176,8 +203,8 @@
           short_name: "GrowthPilot",
           start_url: "./",
           display: "standalone",
-          background_color: "#fffce5",
-          theme_color: "#faa2ca",
+          background_color: "#fffdf2",
+          theme_color: "#8ce9bf",
         },
         null,
         2
@@ -196,7 +223,7 @@
     llmsfull: {
       title: "llms-full.txt — Complete Machine-Readable Brief",
       badge: "GEO / AEO",
-      code: `# GrowthPilot Complete Context\nCLI Flags: --live URL, --site-url, --min-score, --sarif-file, --mcp, --json\nDependencies: None (Python 3.10+ stdlib only)\nLicense: MIT\nOutputs: 12 deployable assets under growthpilot-out/ or website root.`,
+      code: `# GrowthPilot Complete Context (v1.4.2)\nCLI Flags: --live URL, --site-url, --min-score, --sarif, --mcp, --json\nDependencies: None (Python 3.10+ stdlib only)\nLicense: MIT\nOutputs: 12 deployable assets under growthpilot-out/ or website root.`,
     },
     sarif: {
       title: "growthpilot.sarif — GitHub Code Scanning 2.1.0",
@@ -205,12 +232,7 @@
         {
           version: "2.1.0",
           $schema: "https://json.schemastore.org/sarif-2.1.0.json",
-          runs: [
-            {
-              tool: { driver: { name: "GrowthPilot", rules: [] } },
-              results: [],
-            },
-          ],
+          runs: [{ tool: { driver: { name: "GrowthPilot", rules: [] } }, results: [] }],
         },
         null,
         2
@@ -221,6 +243,7 @@
   const PROOF_STAGES = {
     before: {
       badge: "Grade F • 9 issues found",
+      badgeClass: "pill pill-sky",
       title: "Missing GEO index, empty JSON-LD graph, and missing social cards",
       items: [
         "No /llms.txt or /llms-full.txt for AI answer engines to parse service offerings.",
@@ -231,6 +254,7 @@
     },
     after: {
       badge: "100/100 • Grade A+ (Verified)",
+      badgeClass: "pill pill-mint",
       title: "All 18 rules green across live HTML & deployed asset endpoints",
       items: [
         "Added /llms.txt, /llms-full.txt, and permissive AI bot directives in robots.txt.",
@@ -317,6 +341,8 @@
   function initCTA() {
     const mainBtn = $("#cta-main-btn");
     const caretBtn = $("#cta-caret-btn");
+    if (!mainBtn && !caretBtn) return;
+
     const popCopyBtn = $("#pop-copy-btn");
     const heroCmd = $("#hero-cmd");
     const popCmdCode = $("#pop-cmd-code");
@@ -374,8 +400,36 @@
     updatePersona("cli");
   }
 
+  function initHomePreview() {
+    const codeEl = $("#home-preview-code");
+    const tabs = $$("[data-homeview]");
+    if (!codeEl || tabs.length === 0) return;
+
+    tabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        const key = tab.dataset.homeview;
+        codeEl.textContent = HOME_PREVIEWS[key] || HOME_PREVIEWS.term;
+        tabs.forEach((t) => {
+          const match = t === tab;
+          t.classList.toggle("active", match);
+          t.setAttribute("aria-selected", String(match));
+        });
+      });
+    });
+  }
+
+  function initCopyButtons() {
+    $$("[data-copy]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const payload = btn.dataset.copy || "";
+        copyText(payload, "command");
+      });
+    });
+  }
+
   function initStudioTabs() {
-    const tabs = $$(".frame-tab");
+    const tabs = $$("[data-studio]");
+    if (tabs.length === 0) return;
     const panels = {
       cro: $("#panel-cro"),
       gen: $("#panel-gen"),
@@ -456,6 +510,7 @@
 
   function initCRO() {
     const inputEl = $("#cro-input");
+    if (!inputEl) return;
     const prodEl = $("#cro-product");
     const archEl = $("#cro-archetype");
 
@@ -466,7 +521,7 @@
         $$("[data-preset]").forEach((b) => b.classList.toggle("active", b === btn));
         if (prodEl) prodEl.value = preset.product;
         if (archEl) archEl.value = preset.archetype;
-        if (inputEl) inputEl.value = preset.text;
+        inputEl.value = preset.text;
         analyzeCRO();
       });
     });
@@ -479,6 +534,8 @@
   }
 
   function renderGenerator() {
+    const preview = $("#gen-preview");
+    if (!preview) return "";
     const name = ($("#gen-name") && $("#gen-name").value.trim()) || "AcmeDocs";
     let url = ($("#gen-url") && $("#gen-url").value.trim()) || "https://acmedocs.dev";
     if (!/^https?:\/\//i.test(url)) url = `https://${url}`;
@@ -511,12 +568,12 @@
       content = `<title>${name} — ${desc.slice(0, 48)}</title>\n<meta name="description" content="${desc}" />\n<link rel="canonical" href="${url}/" />\n<meta property="og:type" content="website" />\n<meta property="og:title" content="${name}" />\n<meta property="og:description" content="${desc}" />\n<meta name="twitter:card" content="summary_large_image" />`;
     }
 
-    const preview = $("#gen-preview");
-    if (preview) preview.textContent = content;
+    preview.textContent = content;
     return content;
   }
 
   function initGenerator() {
+    if (!$("#gen-preview")) return;
     const filenameMap = {
       llms: "llms.txt",
       schema: "SEO_SCHEMA.jsonld",
@@ -563,15 +620,16 @@
   }
 
   function initOutputs() {
+    const codeEl = $("#out-code");
+    if (!codeEl) return;
     const titleEl = $("#out-title");
     const badgeEl = $("#out-badge");
-    const codeEl = $("#out-code");
 
     function showOutput(key) {
       const item = OUTPUT_SAMPLES[key] || OUTPUT_SAMPLES.llms;
       if (titleEl) titleEl.textContent = item.title;
       if (badgeEl) badgeEl.textContent = item.badge;
-      if (codeEl) codeEl.textContent = item.code;
+      codeEl.textContent = item.code;
       $$("[data-outfile]").forEach((b) => b.classList.toggle("active", b.dataset.outfile === key));
     }
 
@@ -583,22 +641,24 @@
   }
 
   function initProof() {
+    const listEl = $("#cs-list");
+    if (!listEl) return;
     const badgeEl = $("#cs-badge");
     const titleEl = $("#cs-title");
-    const listEl = $("#cs-list");
 
     function setStage(stage) {
       const data = PROOF_STAGES[stage] || PROOF_STAGES.before;
-      if (badgeEl) badgeEl.textContent = data.badge;
-      if (titleEl) titleEl.textContent = data.title;
-      if (listEl) {
-        const nodes = data.items.map((text) => {
-          const li = document.createElement("li");
-          li.textContent = text;
-          return li;
-        });
-        listEl.replaceChildren(...nodes);
+      if (badgeEl) {
+        badgeEl.textContent = data.badge;
+        badgeEl.className = data.badgeClass;
       }
+      if (titleEl) titleEl.textContent = data.title;
+      const nodes = data.items.map((text) => {
+        const li = document.createElement("li");
+        li.textContent = text;
+        return li;
+      });
+      listEl.replaceChildren(...nodes);
       $$("[data-stage]").forEach((b) => b.classList.toggle("active", b.dataset.stage === stage));
     }
 
@@ -608,12 +668,12 @@
   }
 
   function initRubric() {
+    const tbody = $("#rubric-tbody");
+    if (!tbody) return;
     const searchEl = $("#rubric-search");
     const pillarEl = $("#rubric-pillar");
-    const tbody = $("#rubric-tbody");
 
     function renderRules() {
-      if (!tbody) return;
       const q = (searchEl ? searchEl.value : "").trim().toLowerCase();
       const pillar = pillarEl ? pillarEl.value : "all";
 
@@ -654,7 +714,7 @@
 
         const tdSev = document.createElement("td");
         const span = document.createElement("span");
-        span.className = "pill";
+        span.className = r.severity === "High" ? "pill pill-mint" : r.severity === "Medium" ? "pill pill-sky" : "pill";
         span.textContent = r.severity;
         tdSev.appendChild(span);
 
@@ -672,6 +732,8 @@
 
   document.addEventListener("DOMContentLoaded", () => {
     initCTA();
+    initHomePreview();
+    initCopyButtons();
     initStudioTabs();
     initCRO();
     initGenerator();

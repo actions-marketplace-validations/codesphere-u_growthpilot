@@ -31,7 +31,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Literal
 
-VERSION = "1.4.1"
+VERSION = "1.4.2"
 
 Severity = Literal["critical", "high", "medium", "low"]
 SEVERITY_ORDER: dict[str, int] = {"none": 99, "low": 1, "medium": 2, "high": 3, "critical": 4}
@@ -883,6 +883,11 @@ def scan_live_url(url: str, site_url_override: str | None = None) -> ProjectProf
     if llms_full and len(llms_full.strip()) > 40 and "<html" not in llms_full[:200].lower():
         profile.has_llms_full_txt = True
 
+    if (profile.has_llms_txt and profile.has_llms_full_txt and len(profile.routes) >= 2) or _fetch_resource(
+        "marketing/LAUNCH_PLAYBOOK.md"
+    ) is not None:
+        profile.has_launch_assets = True
+
     if not profile.features:
         profile.features = [f"Live production deployment at {base_url}"]
     _infer_market_positioning(profile)
@@ -1073,6 +1078,10 @@ def scan_directory(target: Path, site_url_override: str | None = None) -> Projec
                 route = "/" + "/".join(parts) if parts else "/"
                 if route not in profile.routes and "[" not in route and len(profile.routes) < 25:
                     profile.routes.append(route)
+            if lower.endswith(".html") and lower not in {"index.html", "head_tags.html", "growthpilot-report.html"}:
+                sub_route = "/" + str(rel_path).lstrip("/")
+                if sub_route not in profile.routes and len(profile.routes) < 25:
+                    profile.routes.append(sub_route)
 
             if lower.endswith((".html", ".tsx", ".jsx", ".ts", ".astro", ".vue", ".svelte")):
                 try:
@@ -1135,8 +1144,15 @@ def scan_directory(target: Path, site_url_override: str | None = None) -> Projec
                             profile.features.append(f_entry)
 
                 if lower.endswith(".html"):
-                    profile.primary_file = rel_path
-                    _scan_html_signals(code, profile)
+                    is_idx = lower == "index.html" or rel_path.lower().endswith("/index.html")
+                    if is_idx or not profile.primary_file.endswith(".html"):
+                        profile.primary_file = rel_path
+                    _scan_html_signals(
+                        code,
+                        profile,
+                        is_root=(is_idx or not profile.has_title),
+                        route_path="/" if is_idx else f"/{rel_path}",
+                    )
                 elif lower.endswith((".tsx", ".jsx", ".astro", ".vue", ".svelte")):
                     if lower in {"layout.tsx", "layout.jsx", "page.tsx", "index.astro"} and profile.primary_file == "README.md":
                         profile.primary_file = rel_path

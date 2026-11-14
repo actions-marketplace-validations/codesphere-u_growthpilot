@@ -1,4 +1,4 @@
-# GrowthPilot — Full AI Knowledge Pack (`v1.4.1`)
+# GrowthPilot — Full AI Knowledge Pack (`v1.4.2`)
 
 > Repository: https://github.com/codesphere-u/growthpilot
 > License: MIT

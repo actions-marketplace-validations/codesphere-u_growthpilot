@@ -20,6 +20,6 @@
 
 ## Releases & Governance
 
-- [Changelog](https://github.com/codesphere-u/growthpilot/blob/main/CHANGELOG.md): Version history (`v1.0.0` through `v1.4.1`).
+- [Changelog](https://github.com/codesphere-u/growthpilot/blob/main/CHANGELOG.md): Version history (`v1.0.0` through `v1.4.2`).
 - [Contributing](https://github.com/codesphere-u/growthpilot/blob/main/CONTRIBUTING.md): Contributor checklist, static checks (`ruff`, `mypy`, `pytest`, `billshock`), and rule authoring standards.
 - [Security Policy](https://github.com/codesphere-u/growthpilot/blob/main/SECURITY.md): Responsible disclosure, SSRF protections, broad-root guardrails, and zero-dependency guarantees.

@@ -5,6 +5,13 @@ All notable changes to **GrowthPilot** are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.2] - 2026-11-14
+
+### Changed
+- **Multi-Page Architecture (`website/`):** Split the cluttered single landing page into 5 dedicated, breathable pages (`index.html`, `studio.html`, `proof.html`, `docs.html`, `rules.html`) inside a `680px` Handy-style editorial layout with crisp top navigation, active page indicators, and complete `sitemap.xml` / `llms.txt` discovery.
+- **Light Mint Green & Sky Blue Visual Theme:** Replaced pink accents across CSS, SVG mascot, favicon, social OpenGraph card, and webmanifest with warm cream paper (`#fffdf2`), deep botanical charcoal (`#1d2e28`), light mint green (`#8ce9bf` / `#093b26`), and soft sky blue (`#9dd8fb` / `#0b3954`).
+- **Live URL & Multi-Page Scanner Improvements (`skills/growthpilot/scripts/growthpilot.py`):** Registered static HTML subpages in `scan_directory` while keeping `index.html` as root metadata, and marked live deployments with complete GEO packs and multi-page routes as passing `MKT017`.
+
 ## [1.4.1] - 2026-11-14
 
 ### Changed

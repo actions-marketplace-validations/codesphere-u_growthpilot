@@ -338,11 +338,14 @@ def test_html_script_style_blocks_do_not_trigger_slop() -> None:
 
 def test_flagship_website_scores_100_grade_a_plus() -> None:
     website_dir = REPO_ROOT / "website"
-    assert (website_dir / "index.html").is_file()
+    for page_name in ("index.html", "studio.html", "proof.html", "docs.html", "rules.html"):
+        assert (website_dir / page_name).is_file()
     prof = growthpilot.scan_directory(website_dir, site_url_override="https://codesphere-u.github.io/growthpilot")
     audit = growthpilot.evaluate_profile(prof)
     assert prof.name == "GrowthPilot"
     assert prof.framework == "Static HTML Website"
+    for expected_route in ("/", "/studio.html", "/proof.html", "/docs.html", "/rules.html"):
+        assert expected_route in prof.routes
     assert "FAQPage" in prof.schema_types_found
     assert "SoftwareApplication" in prof.schema_types_found
     assert audit["score"] == 100
