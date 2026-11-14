@@ -1,0 +1,17 @@
+{
+  "name": "GrowthPilot — Autonomous SEO, GEO & CRO Engine",
+  "short_name": "GrowthPilot",
+  "description": "Zero-dependency CLI, MCP Server, Agent Skill, and GitHub Action for 18-rule Technical SEO, GEO/AEO (llms.txt), Schema.org JSON-LD, and CRO copywriting.",
+  "start_url": "/growthpilot/",
+  "scope": "/growthpilot/",
+  "display": "standalone",
+  "background_color": "#050814",
+  "theme_color": "#38bdf8",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

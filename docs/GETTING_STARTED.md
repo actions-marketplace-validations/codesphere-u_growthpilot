@@ -103,6 +103,6 @@ uvx --from git+https://github.com/codesphere-u/growthpilot@v1 growthpilot --demo
   Running `growthpilot ~` or `growthpilot /` is blocked by default to avoid walking personal files. Pass a specific project subfolder (e.g. `growthpilot ./my-app`), a URL (`growthpilot https://...`), `--demo`, or explicitly pass `--allow-home`.
 - **Will `--fix` overwrite my existing `robots.txt` or `sitemap.ts`?**
   No. `--fix` strictly creates missing files (`_write_if_missing`) and skips static `robots.txt`/`sitemap.xml` if `app/robots.ts` or `app/sitemap.ts` exists.
-- **How do I update to the newest version (`v1.3.0`)?**
+- **How do I update to the newest version (`v1.4.0`)?**
   If using `uv tool`: run `uv tool install --force git+https://github.com/codesphere-u/growthpilot@v1`.
-  If using `uvx`: add `--refresh` or run `uvx --from git+https://github.com/codesphere-u/growthpilot@v1.3.0 growthpilot --version`.
+  If using `uvx`: add `--refresh` or run `uvx --from git+https://github.com/codesphere-u/growthpilot@v1.4.0 growthpilot --version`.

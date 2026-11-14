@@ -310,3 +310,43 @@ def test_docs_and_contributing_bash_blocks_are_zsh_safe() -> None:
                 )
 
 
+def test_html_script_style_blocks_do_not_trigger_slop() -> None:
+    prof = growthpilot.ProjectProfile(
+        name="CleanApp",
+        tagline="CleanApp — Fast Metrics",
+        description="Deterministic telemetry for CI pipelines.",
+        category="Developer Tool",
+        framework="Static HTML Website",
+        site_url="https://cleanapp.dev",
+        target_label="https://cleanapp.dev",
+        routes=["/"],
+        features=[],
+        keywords=[],
+        competitors=[],
+        install_cmd="pip install cleanapp",
+    )
+    html_doc = (
+        "<html><head><title>CleanApp — Fast Telemetry</title>"
+        "<style>/* revolutionary layout seamlessly */</style></head>"
+        "<body><h1>CleanApp</h1><p>Deterministic telemetry in 10 ms under MIT License.</p>"
+        "<script>const slop = ['revolutionary', 'seamlessly', 'delve'];</script>"
+        "</body></html>"
+    )
+    growthpilot._scan_html_signals(html_doc, prof, is_root=True)
+    assert prof.slop_words_found == []
+
+
+def test_flagship_website_scores_100_grade_a_plus() -> None:
+    website_dir = REPO_ROOT / "website"
+    assert (website_dir / "index.html").is_file()
+    prof = growthpilot.scan_directory(website_dir, site_url_override="https://codesphere-u.github.io/growthpilot")
+    audit = growthpilot.evaluate_profile(prof)
+    assert prof.name == "GrowthPilot"
+    assert prof.framework == "Static HTML Website"
+    assert "FAQPage" in prof.schema_types_found
+    assert "SoftwareApplication" in prof.schema_types_found
+    assert audit["score"] == 100
+    assert audit["grade"] == "A+"
+    assert audit["findings"] == []
+
+

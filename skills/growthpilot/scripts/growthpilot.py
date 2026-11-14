@@ -31,7 +31,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Literal
 
-VERSION = "1.3.0"
+VERSION = "1.4.0"
 
 Severity = Literal["critical", "high", "medium", "low"]
 SEVERITY_ORDER: dict[str, int] = {"none": 99, "low": 1, "medium": 2, "high": 3, "critical": 4}
@@ -708,9 +708,15 @@ def _scan_html_signals(raw_html: str, profile: ProjectProfile, is_root: bool = T
             ):
                 profile.faqs.append({"q": q_txt, "a": profile.description})
 
-    profile.proof_count += len(PROOF_PATTERNS.findall(raw_html))
-    profile.citability_count += len(re.findall(r"(?:<table\b|<dl\b|<details\b|\b\d+(?:\.\d+)?%)", raw_html, re.I))
-    for w in _extract_slop_words(raw_html):
+    visible_html = re.sub(
+        r"<(?:script|style)\b[^>]*>.*?</(?:script|style)>",
+        " ",
+        raw_html,
+        flags=re.IGNORECASE | re.DOTALL,
+    )
+    profile.proof_count += len(PROOF_PATTERNS.findall(visible_html))
+    profile.citability_count += len(re.findall(r"(?:<table\b|<dl\b|<details\b|\b\d+(?:\.\d+)?%)", visible_html, re.I))
+    for w in _extract_slop_words(visible_html):
         if w not in profile.slop_words_found:
             profile.slop_words_found.append(w)
 
@@ -718,8 +724,15 @@ def _scan_html_signals(raw_html: str, profile: ProjectProfile, is_root: bool = T
 def scan_live_url(url: str, site_url_override: str | None = None) -> ProjectProfile:
     parsed = urllib.parse.urlparse(url)
     base_url = f"{parsed.scheme}://{parsed.netloc}"
-    canonical_base = (site_url_override or base_url).rstrip("/")
-    host_name = parsed.netloc.split(":")[0].replace("www.", "").split(".")[0].title() or "WebApp"
+    clean_path = parsed.path.rstrip("/")
+    if "." in clean_path.rsplit("/", 1)[-1]:
+        clean_path = clean_path.rsplit("/", 1)[0]
+    subpath_base = f"{base_url}{clean_path}" if clean_path else base_url
+    canonical_base = (site_url_override or subpath_base).rstrip("/")
+    path_slug = clean_path.strip("/").split("/")[-1] if clean_path.strip("/") else ""
+    host_slug = parsed.netloc.split(":")[0].replace("www.", "").split(".")[0]
+    display_slug = path_slug if parsed.netloc.endswith(".github.io") and path_slug else host_slug
+    host_name = display_slug.replace("-", " ").replace("_", " ").title() or "WebApp"
 
     profile = ProjectProfile(
         name=host_name,
@@ -797,7 +810,16 @@ def scan_live_url(url: str, site_url_override: str | None = None) -> ProjectProf
                         profile.subpage_issues.append(defect_msg)
                     root_audit["issues"].append(f"{unmounted_count} FAQ answers unmounted in SSR HTML")
 
-    robots_txt = _fetch(f"{base_url}/robots.txt")
+    def _fetch_resource(rel_name: str) -> str | None:
+        clean_rel = rel_name.lstrip("/")
+        res = _fetch(f"{subpath_base}/{clean_rel}")
+        if res is not None:
+            return res
+        if subpath_base != base_url:
+            return _fetch(f"{base_url}/{clean_rel}")
+        return None
+
+    robots_txt = _fetch_resource("robots.txt")
     if robots_txt and ("user-agent" in robots_txt.lower() or "allow" in robots_txt.lower()):
         profile.has_robots_txt = True
         if any(bot.lower() in robots_txt.lower() for bot in AI_BOTS):
@@ -805,7 +827,7 @@ def scan_live_url(url: str, site_url_override: str | None = None) -> ProjectProf
         if "sitemap:" in robots_txt.lower():
             profile.has_sitemap = True
 
-    sitemap_xml = _fetch(f"{base_url}/sitemap.xml")
+    sitemap_xml = _fetch_resource("sitemap.xml")
     if sitemap_xml and "<urlset" in sitemap_xml.lower():
         profile.has_sitemap = True
         discovered_routes: list[str] = []
@@ -836,7 +858,7 @@ def scan_live_url(url: str, site_url_override: str | None = None) -> ProjectProf
     brand_lower = profile.name.lower()
     subpages_checked = 0
     for r_path in profile.routes:
-        if r_path in {"/", ""}:
+        if r_path in {"/", "", f"{clean_path}/", clean_path}:
             continue
         if subpages_checked >= 7:
             break
@@ -853,11 +875,11 @@ def scan_live_url(url: str, site_url_override: str | None = None) -> ProjectProf
                 if issue_msg not in profile.subpage_issues:
                     profile.subpage_issues.append(issue_msg)
 
-    llms_txt = _fetch(f"{base_url}/llms.txt")
+    llms_txt = _fetch_resource("llms.txt")
     if llms_txt and len(llms_txt.strip()) > 20 and "<html" not in llms_txt[:200].lower():
         profile.has_llms_txt = True
 
-    llms_full = _fetch(f"{base_url}/llms-full.txt")
+    llms_full = _fetch_resource("llms-full.txt")
     if llms_full and len(llms_full.strip()) > 40 and "<html" not in llms_full[:200].lower():
         profile.has_llms_full_txt = True
 
@@ -1161,6 +1183,18 @@ def scan_directory(target: Path, site_url_override: str | None = None) -> Projec
                         profile.has_analytics = True
                     if PROOF_PATTERNS.search(code):
                         profile.proof_count += len(PROOF_PATTERNS.findall(code))
+
+    if profile.primary_file.endswith(".html"):
+        if profile.framework == "Generic Repository":
+            profile.framework = "Static HTML Website"
+        has_manifest_meta = (root / "package.json").is_file() or (root / "pyproject.toml").is_file()
+        if profile.title_text and not has_manifest_meta:
+            extracted_brand = profile.title_text.split("|")[0].split("—")[0].split("·")[0].split("-")[0].strip()
+            if extracted_brand:
+                profile.name = extracted_brand
+            profile.tagline = profile.title_text
+        if profile.meta_desc_text and not has_manifest_meta:
+            profile.description = profile.meta_desc_text
 
     if not profile.features:
         profile.features = [

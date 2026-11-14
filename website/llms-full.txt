@@ -1,0 +1,36 @@
+# GrowthPilot — Extended Website Knowledge Pack (`v1.4.0`)
+
+> Live Website: https://codesphere-u.github.io/growthpilot/
+> Source Repository: https://github.com/codesphere-u/growthpilot
+> License: MIT
+
+## Overview
+
+GrowthPilot turns any local codebase or public website URL into full-stack Technical SEO, Generative Engine Optimization (GEO / AEO), Schema.org JSON-LD, conversion-focused copywriting, and archetype-specific launch kits in seconds with zero external dependencies, zero API keys, and zero telemetry.
+
+## 6 Weighted Pillars (100 Points Max)
+
+1. Technical SEO (20 pts): `MKT001` (title), `MKT002` (meta description), `MKT003` (canonical), `MKT004` (sitemap.xml), `MKT005` (`<h1>` and `alt` attributes).
+2. GEO & AI Search (20 pts): `MKT006` (`/llms.txt`), `MKT007` (`/llms-full.txt`), `MKT008` (`robots.txt` AI crawler rules), `MKT009` (factual citability density & SSR FAQ visibility).
+3. Structured Data (15 pts): `MKT010` (`Schema.org` JSON-LD `@graph`), `MKT011` (`manifest.webmanifest`).
+4. Social & Viral Graph (15 pts): `MKT012` (Open Graph tags), `MKT013` (X / Twitter summary card).
+5. CRO & Copy Clarity (15 pts): `MKT014` (clear primary CTA), `MKT015` (zero AI-slop filler copy), `MKT016` (concrete proof density).
+6. Launch & Growth (15 pts): `MKT017` (`LAUNCH_PLAYBOOK.md` & `PROGRAMMATIC_SEO.md`), `MKT018` (privacy-friendly analytics/attribution readiness).
+
+## Real-World Case Study (`https://funagigs.com/`)
+
+Auditing `funagigs.com` caught a `53/100 (Grade D)` initial live score driven by 6 FAQ answers trapped in client-only JS bundles invisible to SSR crawlers and LLMs, 4 duplicate route `<title>` suffixes (`/features`, `/post-a-job`, `/contact`, `/waitlist`), duplicate `"Funa Vault"` keywords, missing `llms.txt`, missing `FAQPage` JSON-LD, and 50 images missing `alt` attributes. Applying GrowthPilot's generated pack elevated the codebase score to `100/100 (Grade A+)`.
+
+## Frequently Asked Questions
+
+### What does GrowthPilot generate?
+Every run outputs 12 files into `--output-dir`: `AUDIT_REPORT.md`, `growthpilot-report.html`, `HEAD_TAGS.html`, `SEO_SCHEMA.jsonld`, `llms.txt`, `llms-full.txt`, `robots.txt`, `sitemap.xml`, `manifest.webmanifest`, `LAUNCH_PLAYBOOK.md`, `PROGRAMMATIC_SEO.md`, and `growth-summary.json` (plus optional `--sarif`).
+
+### Does GrowthPilot require an API key or upload my source code?
+No. Local codebase audits run 100% offline in pure Python 3.10+ stdlib with zero third-party packages and zero telemetry. Live URL audits fetch only user-supplied public pages with a 10-second timeout and 2 MB cap.
+
+### How does the Next.js client-bundle FAQ inspector work?
+During live URL scans, GrowthPilot inspects same-origin `/_next/static/chunks/app/page*.js` bundles and flags an SSR Content Visibility Defect whenever FAQ answers exist in JavaScript state without being rendered in initial HTML.
+
+### Can AI coding agents run GrowthPilot directly?
+Yes. Install the universal Agent Skill (`npx skills add codesphere-u/growthpilot`) or connect the built-in MCP server (`growthpilot --mcp`), which exposes `audit_project`, `analyze_copy_cro`, `generate_geo_seo_pack`, `generate_launch_kit`, `generate_programmatic_seo`, and `apply_marketing_fixes`.

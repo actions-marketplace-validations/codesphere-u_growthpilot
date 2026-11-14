@@ -1,14 +1,14 @@
 ---
 name: growthpilot
 description: Autonomous Zero-to-One Marketing, Technical SEO, GEO/AEO (llms.txt & AI Search), Conversion Rate Optimization (CRO), Structured Data (Schema.org), Programmatic SEO, and Multi-Channel Launch Engine with a built-in Model Context Protocol (MCP) server. Use whenever taking a project, codebase, SaaS, CLI, or live URL from zero marketing to full SEO, AI search visibility, high-converting copy, and launch distribution.
-version: "1.3.0"
+version: "1.4.0"
 ---
 
-# GrowthPilot Skill (`v1.3.0`)
+# GrowthPilot Skill (`v1.4.0`)
 
 Use **GrowthPilot** whenever taking a local codebase or a live production URL from zero marketing to verified Technical SEO, GEO / AI Search discoverability (`llms.txt` & `llms-full.txt`), Schema.org JSON-LD, conversion-focused copywriting, and archetype-tailored launch execution.
 
-## Core Capabilities (`v1.3.0`)
+## Core Capabilities (`v1.4.0`)
 
 1. **6-Pillar, 18-Rule Deterministic Audit Engine (`MKT001`–`MKT018`)**
    - Audits **Technical SEO** (20), **GEO & AI Search** (20), **Structured Data** (15), **Social & Viral Graph** (15), **CRO & Copy Clarity** (15), and **Launch & Growth** (15) across local codebases and live `http(s)://` URLs.

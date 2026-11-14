@@ -1,4 +1,4 @@
-# MCP Server & CI/CD Integration Guide (`v1.3.0`)
+# MCP Server & CI/CD Integration Guide (`v1.4.0`)
 
 GrowthPilot runs natively as a zero-dependency **Model Context Protocol (MCP)** server over `stdio` (newline-delimited JSON-RPC 2.0 and `Content-Length` framing), a **GitHub Action** with SARIF 2.1.0 output, and a non-root **Docker container**.
 

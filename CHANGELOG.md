@@ -5,6 +5,17 @@ All notable changes to **GrowthPilot** are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.0] - 2026-11-14
+
+### Added
+- **Flagship Website & Interactive Web Studio (`website/` + GitHub Pages):** Deployed responsive Obsidian/Light web showcase featuring an in-browser CRO Copy & AI-Slop Analyzer, instant `llms.txt` / Schema.org JSON-LD / `HEAD_TAGS.html` generator with file downloads, `funagigs.com` Before/After inspector, 18-rule filterable rubric, and 12-output previewer — passing all 18 GrowthPilot checks at `100/100 (Grade A+)`.
+- **GitHub Pages CI Workflow (`.github/workflows/pages.yml`):** Automated deployment of `website/` to `https://codesphere-u.github.io/growthpilot/`.
+- **Subpath Live URL Crawling (`scan_live_url`):** Automatically resolves `robots.txt`, `sitemap.xml`, `llms.txt`, and `llms-full.txt` relative to subpath deployments (such as GitHub Pages) before falling back to root host URLs.
+- **Static HTML Website Detection (`scan_directory`):** Promotes static HTML sites from `Generic Repository` to `Static HTML Website` and extracts brand/meta tags directly when no `package.json` or `pyproject.toml` exists.
+
+### Fixed
+- **HTML Script & Style Hygiene (`_scan_html_signals`):** Strips `<script>` and `<style>` blocks before running AI-slop and proof extraction so inline JavaScript dictionaries never cause false-positive `MKT015` deductions.
+
 ## [1.3.0] - 2026-11-14
 
 ### Added

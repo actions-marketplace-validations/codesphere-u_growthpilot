@@ -4,6 +4,7 @@
 
 ## Core Documentation
 
+- [Official Website & Interactive Studio](https://codesphere-u.github.io/growthpilot/): Flagship product website featuring the in-browser CRO AI-slop analyzer, live `llms.txt` / Schema.org builder, and 18-rule rubric explorer.
 - [README & Overview](https://github.com/codesphere-u/growthpilot/blob/main/README.md): Executive overview, comparison matrix, live URL proof (`funagigs.com`), quickstarts, CLI flags, and MCP reference.
 - [Getting Started Guide](https://github.com/codesphere-u/growthpilot/blob/main/docs/GETTING_STARTED.md): Persona workflows for founders, marketers, and developers, plus framework deployment guides.
 - [MCP & AI Agents Guide](https://github.com/codesphere-u/growthpilot/blob/main/docs/MCP_AND_AGENTS.md): Setup for Claude Code, Cursor, Antigravity, Codex, GitHub Actions SARIF gating, and Docker.
@@ -19,6 +20,6 @@
 
 ## Releases & Governance
 
-- [Changelog](https://github.com/codesphere-u/growthpilot/blob/main/CHANGELOG.md): Version history (`v1.0.0` through `v1.3.0`).
+- [Changelog](https://github.com/codesphere-u/growthpilot/blob/main/CHANGELOG.md): Version history (`v1.0.0` through `v1.4.0`).
 - [Contributing](https://github.com/codesphere-u/growthpilot/blob/main/CONTRIBUTING.md): Contributor checklist, static checks (`ruff`, `mypy`, `pytest`, `billshock`), and rule authoring standards.
 - [Security Policy](https://github.com/codesphere-u/growthpilot/blob/main/SECURITY.md): Responsible disclosure, SSRF protections, broad-root guardrails, and zero-dependency guarantees.

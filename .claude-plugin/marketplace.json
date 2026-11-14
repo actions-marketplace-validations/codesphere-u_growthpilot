@@ -10,7 +10,7 @@
       "name": "growthpilot",
       "source": "./",
       "description": "Take any codebase or URL from zero marketing to full-stack Technical SEO, GEO/AEO (llms.txt), CRO copywriting, Schema.org, and multi-channel launch kits.",
-      "version": "1.3.0",
+      "version": "1.4.0",
       "author": {
         "name": "codesphere-u"
       },

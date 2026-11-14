@@ -1,0 +1,15 @@
+# GrowthPilot
+
+> Zero-dependency Python CLI, MCP server, Agent Skill, and GitHub Action that audits codebases or live URLs across 6 pillars and 18 deterministic SEO, GEO (`llms.txt`), Schema.org, and CRO rules, then generates ready-to-deploy marketing assets.
+
+## Official Website & Interactive Studio
+
+- [GrowthPilot Home & Interactive Studio](https://codesphere-u.github.io/growthpilot/): Live CRO AI-slop analyzer, instant `llms.txt` / Schema.org JSON-LD generator, `funagigs.com` case study, and 18-rule rubric explorer.
+- [Full Knowledge Pack (`llms-full.txt`)](https://codesphere-u.github.io/growthpilot/llms-full.txt): Complete CLI reference, 6 MCP tool definitions, scoring model, and FAQs.
+
+## GitHub Source & Documentation
+
+- [GitHub Repository](https://github.com/codesphere-u/growthpilot): Source code, MIT license, GitHub Action (`codesphere-u/growthpilot@v1`), and v1.4.0 release.
+- [Getting Started Guide](https://github.com/codesphere-u/growthpilot/blob/main/docs/GETTING_STARTED.md): Founder, marketer, developer, and framework deployment tutorials.
+- [MCP & AI Agents Setup](https://github.com/codesphere-u/growthpilot/blob/main/docs/MCP_AND_AGENTS.md): Claude Code, Cursor, Antigravity, Codex, and SARIF CI integration.
+- [Architecture & Rubric](https://github.com/codesphere-u/growthpilot/blob/main/docs/ARCHITECTURE.md): Deterministic pipeline internals, Next.js chunk FAQ scanner, and security controls.
